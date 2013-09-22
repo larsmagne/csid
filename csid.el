@@ -203,8 +203,8 @@
   (loop for elem in (dom-elements-by-class dom "^mir_gig$")
 	collect (list (csid-parse-month-date
 		       (cdr (assq 'text (cdr (assq 'div elem)))))
-		      (cdr (assq 'text (cdr (assq 'h3 elem))))
-		      (shr-expand-url ""))))
+		      (shr-expand-url "")
+		      (cdr (assq 'text (cdr (assq 'h3 elem)))))))
 
 (defun csid-parse-crossroads (dom)
   (loop for elem in (cdr (dom-elements-by-name
@@ -270,17 +270,24 @@
 	(now (format-time-string "%Y-%m-%d"))
 	prev-date)
     (with-temp-file "/tmp/csid.html"
-      (insert "<head><title>Crowd Sourcing Is Dead</title><link href='csid.css' rel='stylesheet' type='text/css'><img src='csid.png'>")
+      (insert "<head><title>Crowdsourcing Is Dead</title><meta charset='utf-8'><link href='csid.css' rel='stylesheet' type='text/css'><img src='csid.png'>")
       (insert "<table>")
       (loop for (date venue url name) in data
 	    unless (string< date now)
 	    do (insert (format "<tr><td>%s<td>%s<td><a href='%s'>%s"
 			       (if (equal prev-date date)
 				   ""
-				 date)
+				 (csid-add-weekday date))
 			       venue url name))
 	    (setq prev-date date))
       (insert "</table>"))))
+
+(defun csid-add-weekday (date)
+  (let ((time (encode-time 0 0 0
+			   (string-to-number (substring date 8))
+			   (string-to-number (substring date 5 7))
+			   (string-to-number (substring date 0 4)))))
+    (format "%s %s" (format-time-string "%A" time) date)))
 
 (provide 'csid)
 

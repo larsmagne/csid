@@ -44,6 +44,7 @@
      csid-parse-parkteateret)
     ("Konsertforeninga" "http://www.konsertforeninga.no/konserter"
      csid-parse-konsertforeninga)
+    ("Maksitaksi" "http://maksitaksi.no/program-2/" csid-parse-maksitaksi)
     ;;("Mu" "http://www.soundofmu.no/" csid-parse-mu)
     ))
 
@@ -271,6 +272,13 @@
 	collect (list (csid-parse-month-date (cdr (car (last (nth 0 tds)))))
 		      (shr-expand-url (cdr (assq :href (cdr link))))
 		      (cdr (assq 'text (cdr link))))))
+
+(defun csid-parse-maksitaksi (dom)
+  (loop for elem in (dom-elements-by-class dom "ai1ec-event-title-wrap")
+	for link = (car (dom-elements-by-class elem "ai1ec-load-event"))
+	collect (list (csid-parse-month-date (cdr (assq 'text (cdr (car (dom-elements-by-class elem "ai1ec-event-time"))))))
+		      (cdr (assq :href (cdr link)))
+		      (cdr (assq :title (cdr link))))))
 
 (defun csid-parse-mu (dom)
   (switch-to-buffer (get-buffer-create "*scratch*"))

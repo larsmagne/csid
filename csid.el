@@ -42,6 +42,8 @@
     ("Mono" "http://www.cafemono.no/program/" csid-parse-mono)
     ("Parkteateret" "http://www.linticket.no/program/parkteatret/index.php3?"
      csid-parse-parkteateret)
+    ("Konsertforeninga" "http://www.konsertforeninga.no/konserter"
+     csid-parse-konsertforeninga)
     ;;("Mu" "http://www.soundofmu.no/" csid-parse-mu)
     ))
 
@@ -260,6 +262,16 @@
 		      (cdr (assq :href (cdr link)))
 		      (cdr (assq 'text (cdr link))))))
 
+(defun csid-parse-konsertforeninga (dom)
+  (loop for elem in (dom-elements-by-name
+		     (car (dom-elements-by-name dom 'table))
+		     'tr)
+	for tds = (dom-elements-by-name elem 'td)
+	for link = (car (dom-elements-by-name (nth 2 tds) 'a))
+	collect (list (csid-parse-month-date (cdr (car (last (nth 0 tds)))))
+		      (shr-expand-url (cdr (assq :href (cdr link))))
+		      (cdr (assq 'text (cdr link))))))
+
 (defun csid-parse-mu (dom)
   (switch-to-buffer (get-buffer-create "*scratch*"))
   (erase-buffer)
@@ -293,8 +305,8 @@
 				   ""
 				 (csid-add-weekday date))
 			       venue url
-			       (if (> (length name) 100)
-				   (substring name 0 100)
+			       (if (> (length name) 1000)
+				   (substring name 0 1000)
 				 name)))
 	    (setq prev-date date))
       (insert "</table>"))))

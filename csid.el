@@ -40,6 +40,7 @@
     ("Mono" "http://www.cafemono.no/program/" csid-parse-mono)
     ("Parkteateret" "http://www.linticket.no/program/parkteatret/index.php3?"
      csid-parse-parkteateret)
+    ;;("Mu" "http://www.soundofmu.no/" csid-parse-mu)
     ))
 
 (defvar csid-database nil)
@@ -83,7 +84,7 @@
 			    (intern
 			     (downcase
 			      (or (cdr (assq 'charset (cdr content-type)))
-				  (eww-detect-charsett )
+				  (eww-detect-charset t)
 				  "utf8"))))
 			   (shr-base (shr-parse-base url)))
 		      (decode-coding-region (point) (point-max) charset)
@@ -251,6 +252,12 @@
 		       (cdr (assq 'text (car (dom-elements-by-class elem "linticket_info$")))))
 		      (cdr (assq :href (cdr link)))
 		      (cdr (assq 'text (cdr link))))))
+
+(defun csid-parse-mu (dom)
+  (switch-to-buffer (get-buffer-create "*scratch*"))
+  (erase-buffer)
+  (pp dom (current-buffer))
+  (goto-char (point-min)))
 
 (defun csid-parse-new (dom)
   (switch-to-buffer (get-buffer-create "*scratch*"))

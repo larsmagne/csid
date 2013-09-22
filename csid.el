@@ -27,6 +27,8 @@
 
 (require 'cl)
 (require 'pp)
+(require 'eww)
+(require 'dom)
 
 (defvar csid-database-file-name "~/.emacs.d/csid.data")
 
@@ -54,7 +56,7 @@
   (dolist (elem data)
     (let ((old (assoc (car elem) csid-database)))
       (when old
-	(setq csid-database (delete old csid-database))))
+	(setq csid-database (delq old csid-database))))
     (push elem csid-database))
   csid-database)
 
@@ -227,12 +229,17 @@
 (defun csid-parse-rockefeller (dom)
   (loop for elem in (dom-elements-by-name
 		     (car (dom-elements-by-id dom "print"))
-		    'table)
+		     'table)
 	for tds = (dom-elements-by-name elem 'td)
 	for link = (assq 'a (nth 2 tds))
 	collect (list (csid-parse-full-numeric-date (cdar (last (nth 1 tds))))
 		      (shr-expand-url (cdr (assq :href (cdr link))))
-		      (cdr (assq 'text (cdr link))))))
+		      (mapconcat
+		       'identity
+		       (loop for elem in (cdr link)
+			     when (eq (car elem) 'text)
+			     collect (cdr elem))
+		       " "))))
 
 (defun csid-parse-mono (dom)
   (loop for elem in (dom-elements-by-class dom "artist")
@@ -265,7 +272,7 @@
   (pp dom (current-buffer))
   (goto-char (point-min)))
 
-(defun csid-generate-html ()
+(defun csid-generate-html (&optional file)
   (let ((data
 	 (sort
 	  (loop for elem in csid-database
@@ -276,8 +283,8 @@
 	(coding-system-for-write 'utf-8)
 	(now (format-time-string "%Y-%m-%d"))
 	prev-date)
-    (with-temp-file "/tmp/csid.html"
-      (insert "<head><title>Crowdsourcing Is Dead</title><meta charset='utf-8'><link href='csid.css' rel='stylesheet' type='text/css'><img src='csid.png'>")
+    (with-temp-file (or file "/tmp/csid.html")
+      (insert "<head><title>Crowdsourcing Is Dead</title><meta charset='utf-8'><link href='csid.css' rel='stylesheet' type='text/css'><img src='csid.png'><p>(Also known as <a href='http://lars.ingebrigtsen.no/2013/09/crowdsourcing-is-dead.html'>Concert Listings in Oslo</a>.)")
       (insert "<table>")
       (loop for (date venue url name) in data
 	    unless (string< date now)
@@ -285,7 +292,10 @@
 			       (if (equal prev-date date)
 				   ""
 				 (csid-add-weekday date))
-			       venue url name))
+			       venue url
+			       (if (> (length name) 100)
+				   (substring name 0 100)
+				 name)))
 	    (setq prev-date date))
       (insert "</table>"))))
 
@@ -295,6 +305,11 @@
 			   (string-to-number (substring date 5 7))
 			   (string-to-number (substring date 0 4)))))
     (format "%s %s" (format-time-string "%A" time) date)))
+
+(defun csid-update-html (file)
+  (csid-read-database)
+  (csid-parse-sources)
+  (csid-generate-html file))
 
 (provide 'csid)
 

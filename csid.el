@@ -69,15 +69,28 @@
     (loop for (name url function) in csid-sources
 	  when (or (not type)
 		   (string= type name))
-	  collect (cons name
-			(with-current-buffer (url-retrieve-synchronously url)
-			  (goto-char (point-min))
-			  (when (search-forward "\n\n")
-			    (let ((shr-base (shr-parse-base url)))
-			      (funcall function
-				       (shr-transform-dom 
-					(libxml-parse-html-region
-					 (point) (point-max))))))))))))
+	  collect
+	  (cons name
+		(with-current-buffer (url-retrieve-synchronously url)
+		  (goto-char (point-min))
+		  (when (search-forward "\n\n")
+		    (let* ((headers (eww-parse-headers))
+			   (content-type
+			    (mail-header-parse-content-type
+			     (or (cdr (assoc "content-type" headers))
+				 "text/plain")))
+			   (charset
+			    (intern
+			     (downcase
+			      (or (cdr (assq 'charset (cdr content-type)))
+				  (eww-detect-charsett )
+				  "utf8"))))
+			   (shr-base (shr-parse-base url)))
+		      (decode-coding-region (point) (point-max) charset)
+		      (funcall function
+			       (shr-transform-dom 
+				(libxml-parse-html-region
+				 (point) (point-max))))))))))))
 
 (defun csid-parse-revolver (dom)
   (loop for elem in (dom-elements-by-class dom "views-table")

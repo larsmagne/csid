@@ -212,10 +212,12 @@
 
 (defun csid-parse-mir (dom)
   (loop for elem in (dom-elements-by-class dom "^mir_gig$")
+	for text = (cdr (assq 'text (cdr (assq 'h3 elem))))
+	unless (string-match "quiz" text)
 	collect (list (csid-parse-month-date
 		       (cdr (assq 'text (cdr (assq 'div elem)))))
 		      (shr-expand-url "")
-		      (cdr (assq 'text (cdr (assq 'h3 elem)))))))
+		      text)))
 
 (defun csid-parse-crossroads (dom)
   (loop for elem in (cdr (dom-elements-by-name

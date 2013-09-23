@@ -68,9 +68,10 @@
 
 (defun csid-read-database ()
   (let ((coding-system-for-write 'utf-8))
-    (with-temp-buffer
-      (insert-file-contents csid-database-file-name)
-      (setq csid-database (read (current-buffer))))))
+    (when (file-exists-p csid-database-file-name)
+      (with-temp-buffer
+	(insert-file-contents csid-database-file-name)
+	(setq csid-database (read (current-buffer)))))))
 
 (defun csid-parse-sources (&optional type)
   (csid-write-database

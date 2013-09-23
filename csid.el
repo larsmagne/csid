@@ -81,7 +81,7 @@
 		   (string= type name))
 	  collect
 	  (cons name
-		(ignore-errors
+		(progn
 		  (with-current-buffer (url-retrieve-synchronously url)
 		    (goto-char (point-min))
 		    (when (search-forward "\n\n")

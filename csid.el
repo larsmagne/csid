@@ -323,7 +323,7 @@
       (let ((day-number (1+ (position (downcase (match-string 1 string))
 				      csid-weekdays
 				      :test #'equal)))
-	    (day (parse-integer (match-string 2 string)))
+	    (day (string-to-number (match-string 2 string)))
 	    (time (decode-time))
 	    found)
 	;; Start the previous month, but don't skip back on

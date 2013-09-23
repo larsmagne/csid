@@ -46,7 +46,7 @@
      csid-parse-konsertforeninga)
     ("Maksitaksi" "http://maksitaksi.no/program-2/" csid-parse-maksitaksi)
     ("Betong" "https://studentersamfundet.no/program/" csid-parse-betong)
-    ;;("Mu" "http://www.soundofmu.no/" csid-parse-mu)
+    ("Mu" "http://www.soundofmu.no/" csid-parse-mu)
     ))
 
 (defvar csid-database nil)
@@ -303,10 +303,50 @@
 		      (cdr (assq 'text (cdr link))))))
 
 (defun csid-parse-mu (dom)
-  (switch-to-buffer (get-buffer-create "*scratch*"))
-  (erase-buffer)
-  (pp dom (current-buffer))
-  (goto-char (point-min)))
+  (loop for elem in (dom-elements-by-name dom 'tr)
+	for tds = (dom-elements-by-name elem 'td)
+	for type = (cdr (assq 'text (cdr (nth 2 tds))))
+	when (and type
+		  (string-match "^konsert$" type))
+	collect (list (csid-parse-current-month
+		       (cdr (assq 'text (cdr (nth 1 tds)))))
+		      (shr-expand-url "")
+		      (cdr (assq 'text (cdr (nth 3 tds)))))))
+
+(defvar csid-weekdays '("mandag" "tirsdag" "onsdag" "torsdag"
+			"fredag" "lørdag" "søndag"))
+
+(defun csid-parse-current-month (string)
+  (if (string-match (format "\\(%s\\) \\([0-9]+\\)"
+			    (mapconcat 'identity csid-weekdays "\\|"))
+		    string)
+      (let ((day-number (1+ (position (downcase (match-string 1 string))
+				      csid-weekdays
+				      :test #'equal)))
+	    (day (parse-integer (match-string 2 string)))
+	    (time (decode-time))
+	    found)
+	;; Start the previous month, but don't skip back on
+	;; Februaries, since they have four weeks, so the heuristic
+	;; won't work.
+	(unless (= (nth 4 time) 2)
+	  (setcar (nthcdr 4 time) (1- (nth 4 time)))
+	  (when (zerop (nth 4 time))
+	    (setcar (nthcdr 4 time) 12)
+	    (setcar (nthcdr 5 time) (1- (nth 5 time)))))
+	(setcar (nthcdr 3 time) day)
+	(dotimes (i 12)
+	  (when (and (not found)
+		     (= (string-to-number
+			 (format-time-string "%u" (apply 'encode-time time)))
+			day-number))
+	    (setq found (copy-list time)))
+	  (setcar (nthcdr 4 time) (1+ (nth 4 time)))
+	  (when (= (nth 4 time) 13)
+	    (setcar (nthcdr 4 time) 1)
+	    (setcar (nthcdr 5 time) (1+ (nth 5 time)))))
+	(format-time-string "%Y-%m-%d" (apply 'encode-time found)))
+    string))
 
 (defun csid-parse-new (dom)
   (switch-to-buffer (get-buffer-create "*scratch*"))

@@ -45,6 +45,7 @@
     ("Konsertforeninga" "http://www.konsertforeninga.no/konserter"
      csid-parse-konsertforeninga)
     ("Maksitaksi" "http://maksitaksi.no/program-2/" csid-parse-maksitaksi)
+    ("Betong" "https://studentersamfundet.no/program/" csid-parse-betong)
     ;;("Mu" "http://www.soundofmu.no/" csid-parse-mu)
     ))
 
@@ -280,6 +281,19 @@
 		      (cdr (assq :href (cdr link)))
 		      (cdr (assq :title (cdr link))))))
 
+(defun csid-parse-betong (dom)
+  (loop for elem in (dom-elements-by-name
+		     (car (dom-elements-by-class dom "^table$"))
+		     'tr)
+	for tds = (dom-elements-by-name elem 'td)
+	for link = (car (dom-elements-by-name (nth 1 tds) 'a))
+	when (and link
+		  (string-match "konsert" (cdr (assq 'text (cdr (nth 3 tds))))))
+	collect (list (csid-parse-numeric-date
+		       (cdr (assq 'text (nth 0 tds))))
+		      (cdr (assq :href (cdr link)))
+		      (cdr (assq 'text (cdr link))))))
+
 (defun csid-parse-mu (dom)
   (switch-to-buffer (get-buffer-create "*scratch*"))
   (erase-buffer)
@@ -304,27 +318,29 @@
 	(now (format-time-string "%Y-%m-%d"))
 	prev-date)
     (with-temp-file (or file "/tmp/csid.html")
-      (insert "<head><title>Crowdsourcing Is Dead</title><meta charset='utf-8'><link href='csid.css' rel='stylesheet' type='text/css'><img src='csid.png'><p>(Also known as <a href='http://lars.ingebrigtsen.no/2013/09/crowdsourcing-is-dead.html'>Concert Listings in Oslo</a>.)")
+      (insert "<head><title>Crowdsourcing Is Dead</title><meta charset='utf-8'><link href='csid.css' rel='stylesheet' type='text/css'><img src='csid.png'><p>(Also known as <a href='http://lars.ingebrigtsen.no/2013/09/crowdsourcing-is-dead.html'>Concerts In Oslo</a>.)<p><div id='selector'></div>")
       (insert "<table>")
       (loop for (date venue url name) in data
 	    unless (string< date now)
-	    do (insert (format "<tr><td>%s<td>%s<td><a href='%s'>%s"
+	    do (insert (format "<tr name='%s'><td><div class='%s'>%s</div><td>%s<td><a href='%s'>%s</tr>"
+			       venue
 			       (if (equal prev-date date)
-				   ""
-				 (csid-add-weekday date))
+				   "invisible"
+				 "visible")
+			       (csid-add-weekday date)
 			       venue url
 			       (if (> (length name) 1000)
 				   (substring name 0 1000)
 				 name)))
 	    (setq prev-date date))
-      (insert "</table>"))))
+      (insert "</table><script type='text/javascript' src='jquery-1.10.2.min.js'></script><script type='text/javascript' src='jquery.cookie.js'></script><script type='text/javascript' src='csid.js'></script>"))))
 
 (defun csid-add-weekday (date)
   (let ((time (encode-time 0 0 0
 			   (string-to-number (substring date 8))
 			   (string-to-number (substring date 5 7))
 			   (string-to-number (substring date 0 4)))))
-    (format "%s %s" (format-time-string "%A" time) date)))
+    (format-time-string "%a %b %d" time)))
 
 (defun csid-update-html (file)
   (csid-read-database)

@@ -1,0 +1,43 @@
+body {
+  background: white;
+  text: black;
+  font-family: arial, sans-serif;
+}
+table {
+  padding-top: 0.5cm;
+  max-width: 1000px;
+}
+table tr {
+  vertical-align: top;
+}
+p {
+  padding-left: 1.1cm;
+}
+table td {
+  padding: 4px;
+  padding-right: 8px;
+  padding-left: 1cm;
+}
+img {
+  padding-top: 10px;
+}
+a {
+  color: black;
+  text-decoration: none;
+  font-weight: bold;
+}
+table tr td:first-child {
+  white-space: nowrap;
+}
+div.invisible {
+  display: none;
+}
+tr.hidden {
+  display: none;
+}
+label.venue {
+  padding-right: 10px;
+}
+div#selector {
+  padding-left: 1cm;
+}

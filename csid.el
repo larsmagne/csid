@@ -218,7 +218,7 @@
 	unless (string-match "quiz" text)
 	collect (list (csid-parse-month-date
 		       (cdr (assq 'text (cdr (assq 'div elem)))))
-		      (shr-expand-url "")
+		      (nth 3 shr-base)
 		      text)))
 
 (defun csid-parse-crossroads (dom)
@@ -310,7 +310,7 @@
 		  (string-match "^konsert$" type))
 	collect (list (csid-parse-current-month
 		       (cdr (assq 'text (cdr (nth 1 tds)))))
-		      (shr-expand-url "")
+		      (nth 3 shr-base)
 		      (cdr (assq 'text (cdr (nth 3 tds)))))))
 
 (defvar csid-weekdays '("mandag" "tirsdag" "onsdag" "torsdag"

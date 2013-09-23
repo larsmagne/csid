@@ -117,9 +117,11 @@
   (loop for (date contents) on (cddr dom) by #'cddr
 	for info = (car (dom-elements-by-class contents "event-info"))
 	for link = (car (dom-elements-by-name info 'a))
+	for text = (cdr (assq 'text link))
+	when text
 	collect (list (csid-parse-month-date (cdr (assq 'text date)))
 		      (shr-expand-url (cdr (assq :href link)))
-		      (cdr (assq 'text link)))))
+		      text)))
 
 (defvar csid-months '("januar" "februar" "mars" "april" "mai" "juni" "juli"
 		      "august" "september" "oktober" "november" "desember"))

@@ -329,7 +329,8 @@
 	;; Start the previous month, but don't skip back on
 	;; Februaries, since they have four weeks, so the heuristic
 	;; won't work.
-	(unless (= (nth 4 time) 2)
+	(when (or (not (= (nth 4 time) 3))
+		  (date-leap-year-p (nth 5 time)))
 	  (setcar (nthcdr 4 time) (1- (nth 4 time)))
 	  (when (zerop (nth 4 time))
 	    (setcar (nthcdr 4 time) 12)

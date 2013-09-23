@@ -58,10 +58,12 @@
 
 (defun csid-update-database (data)
   (dolist (elem data)
-    (let ((old (assoc (car elem) csid-database)))
-      (when old
-	(setq csid-database (delq old csid-database))))
-    (push elem csid-database))
+    ;; Don't update if we didn't get any data.
+    (when (> (length elem) 1)
+      (let ((old (assoc (car elem) csid-database)))
+	(when old
+	  (setq csid-database (delq old csid-database))))
+      (push elem csid-database)))
   csid-database)
 
 (defun csid-read-database ()
@@ -78,26 +80,27 @@
 		   (string= type name))
 	  collect
 	  (cons name
-		(with-current-buffer (url-retrieve-synchronously url)
-		  (goto-char (point-min))
-		  (when (search-forward "\n\n")
-		    (let* ((headers (eww-parse-headers))
-			   (content-type
-			    (mail-header-parse-content-type
-			     (or (cdr (assoc "content-type" headers))
-				 "text/plain")))
-			   (charset
-			    (intern
-			     (downcase
-			      (or (cdr (assq 'charset (cdr content-type)))
-				  (eww-detect-charset t)
-				  "utf8"))))
-			   (shr-base (shr-parse-base url)))
-		      (decode-coding-region (point) (point-max) charset)
-		      (funcall function
-			       (shr-transform-dom 
-				(libxml-parse-html-region
-				 (point) (point-max))))))))))))
+		(ignore-errors
+		  (with-current-buffer (url-retrieve-synchronously url)
+		    (goto-char (point-min))
+		    (when (search-forward "\n\n")
+		      (let* ((headers (eww-parse-headers))
+			     (content-type
+			      (mail-header-parse-content-type
+			       (or (cdr (assoc "content-type" headers))
+				   "text/plain")))
+			     (charset
+			      (intern
+			       (downcase
+				(or (cdr (assq 'charset (cdr content-type)))
+				    (eww-detect-charset t)
+				    "utf8"))))
+			     (shr-base (shr-parse-base url)))
+			(decode-coding-region (point) (point-max) charset)
+			(funcall function
+				 (shr-transform-dom 
+				  (libxml-parse-html-region
+				   (point) (point-max)))))))))))))
 
 (defun csid-parse-revolver (dom)
   (loop for elem in (dom-elements-by-class dom "views-table")

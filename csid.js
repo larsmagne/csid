@@ -1,3 +1,5 @@
+var reveal = false;
+
 function addNavigation() {
   var settings = $.cookie("venues");
   var venues = [];
@@ -13,12 +15,21 @@ function addNavigation() {
       $("#selector").append("<label class='venue'><input type=checkbox " + 
 			    checked + " id='" + name + "'>" +
 			    name + "</label>");
-      if ((++added % 5) == 0)
-	$("#selector").append("<br>");
       $("#" + name).bind("click", function(e) {
 	hideShow();
       });
+      if ((++added % 5) == 0)
+	$("#selector").append("<br>");
     }
+
+    $(node.childNodes[1]).bind("click", function(e) {
+      $("input[type=checkbox]").each(function(key, node) {
+	if (node.id != name)
+	  node.checked = reveal;
+      });
+      reveal = ! reveal;
+      hideShow();
+    });
   });
   hideShow();
 }

@@ -41,7 +41,7 @@ function hideShow() {
     if (node.checked)
       venues[i++] = node.id;
   });
-  $.cookie("venues", venues.join());
+  $.cookie("venues", venues.join(), { expires: 10000 });
   var prevDate = "";
   $("tr").each(function(key, node) {
     if (venues.indexOf(node.getAttribute("name")) != -1) {

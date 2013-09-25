@@ -14,12 +14,10 @@ function addNavigation() {
 	checked = "checked";
       $("#selector").append("<label class='venue'><input type=checkbox " + 
 			    checked + " id='" + name + "'>" +
-			    name + "</label>");
+			    name + "</label> ");
       $("#" + name).bind("click", function(e) {
 	hideShow();
       });
-      if ((++added % 5) == 0)
-	$("#selector").append("<br>");
     }
 
     $(node.childNodes[1]).bind("click", function(e) {

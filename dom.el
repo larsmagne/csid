@@ -41,6 +41,17 @@ A typical attribute is `:href."
 	 collect (cdr elem))
    " "))
 
+(defun dom-texts (node)
+  "Return all textual data under NODE."
+  (mapconcat
+   'identity
+   (loop for elem in (cdr node)
+	 when (eq (car elem) 'text)
+	 collect (cdr elem)
+	 when (consp (cdr elem))
+	 collect (dom-texts elem))
+   " "))
+
 (defun dom-by-name (dom name)
   "Return elements in DOM that is of type NAME.
 A name is a symbol like `td'."

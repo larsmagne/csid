@@ -47,6 +47,7 @@
     ("Maksitaksi" "http://maksitaksi.no/program-2/" csid-parse-maksitaksi)
     ("Betong" "https://studentersamfundet.no/program/" csid-parse-betong)
     ("Mu" "http://www.soundofmu.no/" csid-parse-mu)
+    ("Bidrobon" "http://www.bidrobon.no/" csid-parse-bidrobon)
     ))
 
 (defvar csid-database nil)
@@ -82,26 +83,29 @@
 	  collect
 	  (cons name
 		(progn
-		  (with-current-buffer (url-retrieve-synchronously url)
-		    (goto-char (point-min))
-		    (when (search-forward "\n\n")
-		      (let* ((headers (eww-parse-headers))
-			     (content-type
-			      (mail-header-parse-content-type
-			       (or (cdr (assoc "content-type" headers))
-				   "text/plain")))
-			     (charset
-			      (intern
-			       (downcase
-				(or (cdr (assq 'charset (cdr content-type)))
-				    (eww-detect-charset t)
-				    "utf8"))))
-			     (shr-base (shr-parse-base url)))
-			(decode-coding-region (point) (point-max) charset)
-			(funcall function
-				 (shr-transform-dom 
-				  (libxml-parse-html-region
-				   (point) (point-max)))))))))))))
+		  (csid-parse-source url function)))))))
+
+(defun csid-parse-source (url function)
+  (with-current-buffer (url-retrieve-synchronously url)
+    (goto-char (point-min))
+    (when (search-forward "\n\n")
+      (let* ((headers (eww-parse-headers))
+	     (content-type
+	      (mail-header-parse-content-type
+	       (or (cdr (assoc "content-type" headers))
+		   "text/plain")))
+	     (charset
+	      (intern
+	       (downcase
+		(or (cdr (assq 'charset (cdr content-type)))
+		    (eww-detect-charset t)
+		    "utf8"))))
+	     (shr-base (shr-parse-base url)))
+	(decode-coding-region (point) (point-max) charset)
+	(funcall function
+		 (shr-transform-dom 
+		  (libxml-parse-html-region
+		   (point) (point-max))))))))
 
 (defun csid-parse-revolver (dom)
   (loop for elem in (dom-by-class dom "views-table")
@@ -341,6 +345,25 @@
 	    (setcar (nthcdr 5 time) (1+ (nth 5 time)))))
 	(format-time-string "%Y-%m-%d" (apply 'encode-time found)))
     string))
+
+(defun csid-parse-bidrobon (dom)
+  (loop for meta in (dom-by-name dom 'meta)
+	when (equalp (dom-attr meta :http-equiv) "refresh")
+	do (let ((url (dom-attr meta :content)))
+	     (when (string-match "URL=\\(.*\\)" url)
+	       (csid-parse-source (shr-expand-url (match-string 1 url))
+				  'csid-parse-bidrobon-1)))))
+
+(defun csid-parse-bidrobon-1 (dom)
+  (loop for elem in (dom-by-name dom 'tr)
+	for tds = (dom-by-name elem 'td)
+	for text = (dom-texts (nth 0 tds))
+	when (string-match "#[0-9]+\n.*\\([0-9]+\\)/\\([0-9]+\\)" text)
+	collect (list (csid-expand-date
+		       (string-to-number (match-string 2 text))
+		       (string-to-number (match-string 1 text)))
+		      (nth 3 shr-base)
+		      (dom-texts (nth 1 tds)))))
 
 (defun csid-parse-new (dom)
   (switch-to-buffer (get-buffer-create "*scratch*"))

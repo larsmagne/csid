@@ -371,9 +371,10 @@
 				 "visible")
 			       (csid-add-weekday date)
 			       venue url
-			       (if (> (length name) 1000)
-				   (substring name 0 1000)
-				 name)))
+			       (url-insert-entities-in-string
+				(if (> (length name) 1000)
+				    (substring name 0 1000)
+				  name))))
 	    (setq prev-date date))
       (insert "</table><script type='text/javascript' src='jquery-1.10.2.min.js'></script><script type='text/javascript' src='jquery.cookie.js'></script><script type='text/javascript' src='csid.js'></script>"))))
 

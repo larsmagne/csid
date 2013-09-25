@@ -27,19 +27,35 @@
 
 (require 'cl)
 
-(defun dom-elements-by-name (dom name)
+(defmacro dom-attr (node attr)
+  "Return the attribute ATTR from NODE.
+A typical attribute is `:href."
+  `(cdr (assq ,attr (cdr ,node))))
+
+(defun dom-text (node)
+  "Return all the text bits in the current node contatenated."
+  (mapconcat
+   'identity
+   (loop for elem in (cdr node)
+	 when (eq (car elem) 'text)
+	 collect (cdr elem))
+   " "))
+
+(defun dom-by-name (dom name)
+  "Return elements in DOM that is of type NAME.
+A name is a symbol like `td'."
   (let ((dom-elements nil))
-    (dom-elements-by-name-1 dom name)
+    (dom-by-name-1 dom name)
     (nreverse dom-elements)))
 
-(defun dom-elements-by-name-1 (dom name)
+(defun dom-by-name-1 (dom name)
   (when (eq (car dom) name)
     (push dom dom-elements))
   (dolist (entry (cdr dom))
     (when (consp (cdr entry))
-      (dom-elements-by-name-1 entry name))))
+      (dom-by-name-1 entry name))))
 
-(defun dom-elements-by-class (dom match)
+(defun dom-by-class (dom match)
   (dom-elements dom :class match))
 
 (defun dom-elements-by-id (dom match)

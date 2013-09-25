@@ -349,10 +349,10 @@
 (defun csid-parse-bidrobon (dom)
   (loop for meta in (dom-by-name dom 'meta)
 	when (equalp (dom-attr meta :http-equiv) "refresh")
-	do (let ((url (dom-attr meta :content)))
-	     (when (string-match "URL=\\(.*\\)" url)
-	       (csid-parse-source (shr-expand-url (match-string 1 url))
-				  'csid-parse-bidrobon-1)))))
+	return (let ((url (dom-attr meta :content)))
+		 (when (string-match "URL=\\(.*\\)" url)
+		   (csid-parse-source (shr-expand-url (match-string 1 url))
+				      'csid-parse-bidrobon-1)))))
 
 (defun csid-parse-bidrobon-1 (dom)
   (loop for elem in (dom-by-name dom 'tr)
@@ -363,7 +363,8 @@
 		       (string-to-number (match-string 2 text))
 		       (string-to-number (match-string 1 text)))
 		      (nth 3 shr-base)
-		      (dom-texts (nth 1 tds)))))
+		      (replace-regexp-in-string "[\n\t ]+" " "
+						(dom-texts (nth 1 tds))))))
 
 (defun csid-parse-new (dom)
   (switch-to-buffer (get-buffer-create "*scratch*"))

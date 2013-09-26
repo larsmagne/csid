@@ -119,20 +119,20 @@
 (defun csid-parse-blaa (dom)
   (setq dom (car (dom-by-class dom "calendar-content")))
   (loop for (date contents) on (cddr dom) by #'cddr
-	for info = (car (dom-by-class contents "event-info"))
-	for link = (car (dom-by-name info 'a))
-	for text = (dom-text link)
-	when text
-	collect (list (csid-parse-month-date (dom-text date))
-		      (shr-expand-url (dom-attr link :href))
-		      text)))
+	append (loop for info in (dom-by-class contents "event-info")
+		     for link = (car (dom-by-name info 'a))
+		     for text = (dom-text link)
+		     when (plusp (length text))
+		     collect (list (csid-parse-month-date (dom-text date))
+				   (shr-expand-url (dom-attr link :href))
+				   text))))
 
 (defvar csid-months '("januar" "februar" "mars" "april" "mai" "juni" "juli"
 		      "august" "september" "oktober" "november" "desember"))
 
 ;; "Fredag 27. september"
 (defun csid-parse-month-date (string)
-  (setq date (downcase string))
+  (setq string (downcase string))
   (if (string-match (format "\\([0-9]+\\).*\\(%s\\)"
 			    (mapconcat 'identity csid-months "\\|"))
 		    string)
@@ -146,7 +146,7 @@
     "august" "september" "october" "november" "december"))
 
 (defun csid-parse-english-month-date (string)
-  (setq date (downcase string))
+  (setq string (downcase string))
   (if (string-match (format "\\([0-9]+\\).*\\(%s\\)"
 			    (mapconcat 'identity csid-english-months "\\|"))
 		    string)

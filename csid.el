@@ -384,11 +384,12 @@
 	(now (format-time-string "%Y-%m-%d"))
 	prev-date)
     (with-temp-file (or file "/tmp/csid.html")
-      (insert "<head><title>Crowdsourcing Is Dead</title><meta charset='utf-8'><link href='csid.css' rel='stylesheet' type='text/css'><img src='csid.png'><p>(Also known as <a href='http://lars.ingebrigtsen.no/2013/09/crowdsourcing-is-dead.html'>Concerts In Oslo</a>.)<p><div id='selector'></div>")
+      (insert "<head><title>Crowdsourcing Is Dead</title><meta charset='utf-8'><link href='csid.css' rel='stylesheet' type='text/css'><img src='csid.png'><p>(Also known as <a href='http://lars.ingebrigtsen.no/2013/09/crowdsourcing-is-dead.html'>Concerts In Oslo</a>.)</p>")
       (insert "<table>")
       (loop for (date venue url name) in data
+	    for lines from 0
 	    unless (string< date now)
-	    do (insert (format "<tr name='%s'><td><div class='%s'>%s</div><td>%s<td><a href='%s'>%s</tr>"
+	    do (insert (format "<tr name='%s'><td><div class='%s'>%s</div><td>%s<td><a href='%s'>%s%s</tr>"
 			       venue
 			       (if (equal prev-date date)
 				   "invisible"
@@ -398,7 +399,10 @@
 			       (url-insert-entities-in-string
 				(if (> (length name) 1000)
 				    (substring name 0 1000)
-				  name))))
+				  name))
+			       (if (zerop lines)
+				   "<td rowspan=30><div id='selector'></div>"
+				 "")))
 	    (setq prev-date date))
       (insert "</table><script type='text/javascript' src='jquery-1.10.2.min.js'></script><script type='text/javascript' src='jquery.cookie.js'></script><script type='text/javascript' src='csid.js'></script>"))))
 

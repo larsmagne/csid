@@ -41,7 +41,7 @@ A typical attribute is `:href."
 	 collect (cdr elem))
    " "))
 
-(defun dom-texts (node)
+(defun dom-texts (node &optional separator)
   "Return all textual data under NODE."
   (mapconcat
    'identity
@@ -49,8 +49,8 @@ A typical attribute is `:href."
 	 when (eq (car elem) 'text)
 	 collect (cdr elem)
 	 when (consp (cdr elem))
-	 collect (dom-texts elem))
-   " "))
+	 collect (dom-texts elem separator))
+   (or separator " ")))
 
 (defun dom-by-name (dom name)
   "Return elements in DOM that is of type NAME.

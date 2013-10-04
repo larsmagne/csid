@@ -209,10 +209,11 @@
 	      (string-to-number (match-string 1 string)))
     string))
 
-(defun csid-expand-date (month day)
+(defun csid-expand-date (month day &optional this-year-only)
   (let ((this-year (nth 5 (decode-time)))
 	(this-month (nth 4 (decode-time))))
-    (when (< month this-month)
+    (when (and (not this-year-only)
+	       (< month this-month))
       (incf this-year))
     (format "%s-%02d-%02d" this-year month day)))
 
@@ -358,10 +359,11 @@
   (loop for elem in (dom-by-name dom 'tr)
 	for tds = (dom-by-name elem 'td)
 	for text = (dom-texts (nth 0 tds))
-	when (string-match "#[0-9]+\n.*\\([0-9]+\\)/\\([0-9]+\\)" text)
+	when (string-match "#[0-9]+\n.*?\\([0-9]+\\)/\\([0-9]+\\)" text)
 	collect (list (csid-expand-date
 		       (string-to-number (match-string 2 text))
-		       (string-to-number (match-string 1 text)))
+		       (string-to-number (match-string 1 text))
+		       t)
 		      (nth 3 shr-base)
 		      (replace-regexp-in-string "[\n\t ]+" " "
 						(dom-texts (nth 1 tds))))))

@@ -62,9 +62,9 @@
 (defun csid-update-database (data)
   (dolist (elem data)
     ;; Don't update if we didn't get any data.
-    (unless (cl-member elem csid-database
-		       :key (lambda (elem)
-			      (nth 4 elem)))
+    (unless (cl-member (nth 4 elem) csid-database
+		       :key (lambda (event)
+			      (nth 4 event)))
       (push elem csid-database)))
   csid-database)
 

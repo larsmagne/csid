@@ -419,7 +419,7 @@
       (loop for (venue date url name id) in data
 	    unless (string< date now)
 	    do (insert (format "<tr name='%s' id='event-%s'><td><div class='%s'>%s</div><td>%s<td><a href='%s'>%s</tr>"
-			       venue
+			       (replace-regexp-in-string " " "_" venue)
 			       id
 			       (if (equal prev-date date)
 				   "invisible"

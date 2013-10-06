@@ -274,6 +274,8 @@
   (cond
    ((string-match "Bushwick" text)
     "Bushwick")
+   ((string-match "Leiligheten" text)
+    "Leiligheten")
    ((string-match "scene_R" img)
     "Rockefeller")
    ((string-match "scene_J" img)

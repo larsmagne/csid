@@ -32,22 +32,24 @@
 
 (defvar csid-database-file-name "~/.emacs.d/csid.data")
 
+(defvar csid-sequence 0)
+
 (defvar csid-sources
-  '(("Revolver" "http://www.revolveroslo.no/nb/program" csid-parse-revolver)
-    ("Blå" "http://www.blaaoslo.no/program/" csid-parse-blaa)
-    ("Mir" "http://www.lufthavna.no/cafe-mir/" csid-parse-mir)
-    ("Crossroads" "http://thecrossroadclub.no/program/" csid-parse-crossroads)
-    ("Victoria" "http://nasjonaljazzscene.no/arrangement/" csid-parse-victoria)
-    ("Rockefeller" "http://rockefeller.no/index.html" csid-parse-rockefeller)
-    ("Mono" "http://www.cafemono.no/program/" csid-parse-mono)
+  '(("Revolver" "http://www.revolveroslo.no/nb/program" revolver)
+    ("Blå" "http://www.blaaoslo.no/program/" blaa)
+    ("Mir" "http://www.lufthavna.no/cafe-mir/" mir :date)
+    ("Crossroads" "http://thecrossroadclub.no/program/" crossroads)
+    ("Victoria" "http://nasjonaljazzscene.no/arrangement/" victoria)
+    ("Rockefeller" "http://rockefeller.no/index.html" rockefeller :multi)
+    ("Mono" "http://www.cafemono.no/program/" mono)
     ("Parkteateret" "http://www.linticket.no/program/parkteatret/index.php3?"
-     csid-parse-parkteateret)
+     parkteateret)
     ("Konsertforeninga" "http://www.konsertforeninga.no/konserter"
-     csid-parse-konsertforeninga)
-    ("Maksitaksi" "http://maksitaksi.no/program-2/" csid-parse-maksitaksi)
-    ("Betong" "https://studentersamfundet.no/program/" csid-parse-betong)
-    ("Mu" "http://www.soundofmu.no/" csid-parse-mu)
-    ("Bidrobon" "http://www.bidrobon.no/" csid-parse-bidrobon)
+     konsertforeninga)
+    ("Maksitaksi" "http://maksitaksi.no/program-2/" maksitaksi)
+    ("Betong" "https://studentersamfundet.no/program/" betong)
+    ("Mu" "http://www.soundofmu.no/" mu :date)
+    ("Bidrobon" "http://www.bidrobon.no/" bidrobon :date)
     ))
 
 (defvar csid-database nil)
@@ -60,10 +62,9 @@
 (defun csid-update-database (data)
   (dolist (elem data)
     ;; Don't update if we didn't get any data.
-    (when (> (length elem) 1)
-      (let ((old (assoc (car elem) csid-database)))
-	(when old
-	  (setq csid-database (delq old csid-database))))
+    (unless (cl-member elem csid-database
+		       :key (lambda (elem)
+			      (nth 4 elem)))
       (push elem csid-database)))
   csid-database)
 
@@ -77,13 +78,27 @@
 (defun csid-parse-sources (&optional type)
   (csid-write-database
    (csid-update-database
-    (loop for (name url function) in csid-sources
+    (loop for source in csid-sources
+	  for (name url function) = source
 	  when (or (not type)
 		   (string= type name))
-	  collect
-	  (cons name
-		(progn
-		  (csid-parse-source url function)))))))
+	  append (loop for result in
+		       (csid-parse-source
+			url
+			(intern (format "csid-parse-%s" function) obarray))
+		       unless (memq :multi source)
+		       do (push name result)
+		       collect (csid-add-id result (memq :date source)))))))
+
+(defun csid-add-id (elem datep)
+  (let ((found nil))
+    (loop with index = (if datep 1 2)
+	  for old in csid-database
+	  when (and (equal (car elem) (car old))
+		    (equal (nth index elem)
+			   (nth index old)))
+	  do (setq found (nth 4 old)))
+    (append elem (list (or found (incf csid-sequence))))))
 
 (defun csid-parse-source (url function)
   (with-current-buffer (url-retrieve-synchronously url)
@@ -248,9 +263,25 @@
 		     'table)
 	for tds = (dom-by-name elem 'td)
 	for link = (assq 'a (nth 2 tds))
-	collect (list (csid-parse-full-numeric-date (cdar (last (nth 1 tds))))
+	collect (list (csid-parse-rockefeller-stage
+		       (dom-attr (car (dom-by-name (nth 0 tds) 'img)) :src)
+		       (dom-text link))
+		      (csid-parse-full-numeric-date (cdar (last (nth 1 tds))))
 		      (shr-expand-url (dom-attr link :href))
 		      (dom-text link))))
+
+(defun csid-parse-rockefeller-stage (img text)
+  (cond
+   ((string-match "scene_R" img)
+    (if (string-match "Bushwick" text)
+	"Bushwick"
+      "Rockefeller"))
+   ((string-match "scene_J" img)
+    "John Dee")
+   ((string-match "scene_S" img)
+    "Sentrum")
+   (t
+    "Rockefeller")))
 
 (defun csid-parse-mono (dom)
   (loop for elem in (dom-by-class dom "artist")
@@ -376,22 +407,20 @@
 
 (defun csid-generate-html (&optional file)
   (let ((data
-	 (sort
-	  (loop for elem in csid-database
-		append (loop for (date url name) in (cdr elem)
-			     collect (list date (car elem) url name)))
-	  (lambda (e1 e2)
-	    (string< (car e1) (car e2)))))
+	 (sort csid-database
+	       (lambda (e1 e2)
+		 (string< (cadr e1) (cadr e2)))))
 	(coding-system-for-write 'utf-8)
 	(now (format-time-string "%Y-%m-%d"))
 	prev-date)
     (with-temp-file (or file "/tmp/csid.html")
       (insert "<head><title>Crowdsourcing Is Dead</title><meta charset='utf-8'><link href='csid.css' rel='stylesheet' type='text/css'><img src='csid.png'><p>(Also known as <a href='http://lars.ingebrigtsen.no/2013/09/crowdsourcing-is-dead.html'>Concerts In Oslo</a>.)</p><div id='selector'></div>")
       (insert "<table>")
-      (loop for (date venue url name) in data
+      (loop for (venue date url name id) in data
 	    unless (string< date now)
-	    do (insert (format "<tr name='%s'><td><div class='%s'>%s</div><td>%s<td><a href='%s'>%s</tr>"
+	    do (insert (format "<tr name='%s' id='event-%s'><td><div class='%s'>%s</div><td>%s<td><a href='%s'>%s</tr>"
 			       venue
+			       id
 			       (if (equal prev-date date)
 				   "invisible"
 				 "visible")

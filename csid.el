@@ -272,10 +272,10 @@
 
 (defun csid-parse-rockefeller-stage (img text)
   (cond
+   ((string-match "Bushwick" text)
+    "Bushwick")
    ((string-match "scene_R" img)
-    (if (string-match "Bushwick" text)
-	"Bushwick"
-      "Rockefeller"))
+    "Rockefeller")
    ((string-match "scene_J" img)
     "John Dee")
    ((string-match "scene_S" img)

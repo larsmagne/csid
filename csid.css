@@ -2,10 +2,9 @@ body {
   background: white;
   text: black;
   font-family: arial, sans-serif;
+  width: 900px;
 }
 table {
-  padding-top: 25px;
-  max-width: 800px;
   padding-left: 80px;
 }
 table tr {
@@ -44,13 +43,26 @@ td > a {
   padding: 5px;
   padding-left: 10px;
   margin: 0px;
-  font-weight: normal;
   background: -ms-linear-gradient(top, #F0F0F0 0%, #E0E0E0 100%);
   background: -moz-linear-gradient(top, #F0F0F0 0%, #E0E0E0 100%);
   background: -o-linear-gradient(top, #F0F0F0 0%, #E0E0E0 100%);
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #F0F0F0), color-stop(1, #E0E0E0));
   background: -webkit-linear-gradient(top, #F0F0F0 0%, #E0E0E0 100%);
   background: linear-gradient(to bottom, #F0F0F0 0%, #E0E0E0 100%);
+}
+tr.checked td > a {
+  width: 100%;
+  height: 100%;
+  display: inline-block;
+  padding: 5px;
+  padding-left: 10px;
+  margin: 0px;
+  background: -ms-linear-gradient(top, #80F080 0%, #80E080 100%);
+  background: -moz-linear-gradient(top, #80F080 0%, #80E080 100%);
+  background: -o-linear-gradient(top, #80F080 0%, #80E080 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #80F080), color-stop(1, #80E080));
+  background: -webkit-linear-gradient(top, #80F080 0%, #80E080 100%);
+  background: linear-gradient(to bottom, #80F080 0%, #80E080 100%);
 }
 div.invisible {
   display: none;
@@ -63,7 +75,11 @@ label.venue {
   white-space: nowrap;
 }
 div#selector {
-  padding-top: 10px;
+  padding-left: 10px;
   padding-left: 80px;
-  max-width: 400px;
+  padding-bottom: 10px;
+}
+td.show {
+  padding-left: 15px;
+  vertical-align: middle;
 }

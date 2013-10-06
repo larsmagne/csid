@@ -32,7 +32,7 @@ function addNavigation() {
 
     $(node.childNodes[1]).bind("click", function(e) {
       $("input[type=checkbox]").each(function(key, node) {
-	if (node.id != name)
+	if (node.id != name && ! node.id.match(/show/))
 	  node.checked = reveal;
       });
       reveal = ! reveal;
@@ -58,7 +58,7 @@ function hideShow() {
   var venues = [];
   var i = 0;
   $("input[type=checkbox]").each(function(key, node) {
-    if (node.checked)
+    if (node.checked && ! node.id.match(/show/))
       venues[i++] = node.id;
   });
   $.cookie("venues", venues.join(), { expires: 10000 });

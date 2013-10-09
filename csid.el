@@ -73,7 +73,9 @@
     (when (file-exists-p csid-database-file-name)
       (with-temp-buffer
 	(insert-file-contents csid-database-file-name)
-	(setq csid-database (read (current-buffer)))))))
+	(setq csid-database (read (current-buffer))))))
+  (dolist (elem csid-database)
+    (setq csid-sequence (max (nth 4 elem) csid-sequence))))
 
 (defun csid-parse-sources (&optional type)
   (csid-write-database

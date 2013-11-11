@@ -33,7 +33,7 @@ A typical attribute is `:href."
   `(cdr (assq ,attr (cdr ,node))))
 
 (defun dom-text (node)
-  "Return all the text bits in the current node contatenated."
+  "Return all the text bits in the current node concatenated."
   (mapconcat
    'identity
    (loop for elem in (cdr node)

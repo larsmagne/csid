@@ -37,7 +37,7 @@
 (defvar csid-sources
   '(("Revolver" "http://www.revolveroslo.no/nb/program" revolver)
     ("Blå" "http://www.blaaoslo.no/program/" blaa)
-    ("Mir" "http://www.lufthavna.no/cafe-mir/" mir :date)
+    ("Mir" "http://www.lufthavna.no/" mir)
     ("Crossroads" "http://thecrossroadclub.no/program/" crossroads)
     ("Victoria" "http://nasjonaljazzscene.no/arrangement/" victoria)
     ("Rockefeller" "http://rockefeller.no/index.html" rockefeller :multi)
@@ -237,12 +237,13 @@
     (format "%s-%02d-%02d" this-year month day)))
 
 (defun csid-parse-mir (dom)
-  (loop for elem in (dom-by-class dom "^mir_gig$")
-	for text = (dom-text (assq 'h3 elem))
-	unless (string-match "quiz" text)
-	collect (list (csid-parse-month-date (dom-text (assq 'div elem)))
-		      (nth 3 shr-base)
-		      text)))
+  (loop for elem in (dom-by-id dom "program")
+	for time = (car (dom-by-class elem "programtid"))
+	for link = (car (dom-by-name
+			 (car (dom-by-class elem "programtittel")) 'a))
+	collect (list (csid-parse-month-date (dom-text time))
+		      (dom-attr link :href)
+		      (dom-attr link :title))))
 
 (defun csid-parse-crossroads (dom)
   (loop for elem in (cdr (dom-by-name
@@ -263,7 +264,7 @@
 
 (defun csid-parse-rockefeller (dom)
   (loop for elem in (dom-by-name
-		     (car (dom-elements-by-id dom "print"))
+		     (car (dom-by-id dom "print"))
 		     'table)
 	for tds = (dom-by-name elem 'td)
 	for link = (assq 'a (nth 2 tds))

@@ -121,7 +121,7 @@
 	       (downcase
 		(or (cdr (assq 'charset (cdr content-type)))
 		    (eww-detect-charset t)
-		    "utf8"))))
+		    "utf-8"))))
 	     (shr-base (shr-parse-base url)))
 	(decode-coding-region (point) (point-max) charset)
 	(funcall function

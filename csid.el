@@ -23,6 +23,8 @@
 
 ;;; Commentary:
 
+;; To test a new source: (csid-parse-sources "Vulkan")
+
 ;;; Code:
 
 (require 'cl)
@@ -52,6 +54,7 @@
     ("Bidrobon" "http://www.bidrobon.no/" bidrobon :date)
     ("Cosmopolite" "http://cosmopolite.no/program/cosmopolite" cosmopolite)
     ("Belleville" "http://cosmopolite.no/program/belleville" cosmopolite)
+    ("Vulkan" "http://vulkanarena.no/shows" vulkan)
     ))
 
 (defvar csid-database nil)
@@ -211,6 +214,10 @@
 		     :test 'equalp))
        (string-to-number (match-string 1 string)))
     string))
+
+;; "2014-03-20T21:00:00+01:00"
+(defun csid-parse-iso8601 (string)
+  (substring string 0 10))
 
 ;; 23.09
 (defun csid-parse-numeric-date (string)
@@ -420,6 +427,15 @@
 				 :href))
 		      (csid-clean-string
 		       (dom-texts (car (dom-by-name elem 'h2)))))))
+
+(defun csid-parse-vulkan (dom)
+  (loop for elem in (dom-by-name dom 'article)
+	for date = (cdr (assq :data-starts-at (cdr elem)))
+	when date
+	collect (list (csid-parse-iso8601 date)
+		      (shr-expand-url
+		       (cdr (assq :href (car (dom-by-name elem 'a)))))
+		      (cdr (assq :data-title (cdr elem))))))
 
 (defun csid-parse-new (dom)
   (switch-to-buffer (get-buffer-create "*scratch*"))

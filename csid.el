@@ -55,6 +55,7 @@
     ("Cosmopolite" "http://cosmopolite.no/program/cosmopolite" cosmopolite)
     ("Belleville" "http://cosmopolite.no/program/belleville" cosmopolite)
     ("Vulkan" "http://vulkanarena.no/shows" vulkan)
+    ("Jakob" "http://www.jakob.no/program/" jakob)
     ))
 
 (defvar csid-database nil)
@@ -413,8 +414,8 @@
 		      (csid-clean-string (dom-texts (nth 1 tds))))))
 
 (defun csid-clean-string (string)
-  (replace-regexp-in-string "^[\n\t ]\\|[\n\t ]$" "" 
-			    (replace-regexp-in-string "[\n\t ]+" " " string)))
+  (replace-regexp-in-string "^[\r\n\t ]\\|[\r\n\t ]$" "" 
+			    (replace-regexp-in-string "[\r\n\t ]+" " " string)))
 
 (defun csid-parse-cosmopolite (dom)
   (loop for elem in (dom-by-class dom "concert-item")
@@ -436,6 +437,19 @@
 		      (shr-expand-url
 		       (cdr (assq :href (car (dom-by-name elem 'a)))))
 		      (cdr (assq :data-title (cdr elem))))))
+
+(defun csid-parse-jakob (dom)
+  (loop for elem in (dom-by-class dom "eventItem")
+	for day = (csid-clean-string
+		   (dom-texts (car (dom-by-class elem "day"))))
+	for month = (csid-clean-string
+		     (dom-texts (car (dom-by-class elem "month"))))
+	collect (list (csid-parse-short-yearless-month
+		       (format "%s %s" day month))
+		      (shr-expand-url (dom-attr (car (dom-by-class elem "more"))
+						:href))
+		      (csid-clean-string
+		       (dom-texts (car (dom-by-name elem 'h2)))))))
 
 (defun csid-parse-new (dom)
   (switch-to-buffer (get-buffer-create "*scratch*"))

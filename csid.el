@@ -464,9 +464,10 @@
 		 (string< (cadr e1) (cadr e2)))))
 	(coding-system-for-write 'utf-8)
 	(now (format-time-string "%Y-%m-%d"))
-	prev-date)
+	prev-date start)
     (with-temp-file (or file "/tmp/csid.html")
       (insert "<head><title>Crowdsourcing Is Dead</title><meta charset='utf-8'><link href='csid.css' rel='stylesheet' type='text/css'><img src='csid.png'><p>(Also known as <a href='http://lars.ingebrigtsen.no/2013/09/crowdsourcing-is-dead.html'>Concerts In Oslo</a>.)</p><div id='selector'></div>")
+      (setq start (point))
       (insert "<table>")
       (loop for (venue date url name id) in data
 	    unless (string< date now)
@@ -483,7 +484,9 @@
 				    (substring name 0 1000)
 				  name))))
 	    (setq prev-date date))
-      (insert "</table><script type='text/javascript' src='jquery-1.10.2.min.js'></script><script type='text/javascript' src='jquery.cookie.js'></script><script type='text/javascript' src='csid.js'></script>"))))
+      (insert "</table>")
+      (write-region start (point) "/tmp/csid-table.html")
+      (insert "<script type='text/javascript' src='jquery-1.10.2.min.js'></script><script type='text/javascript' src='jquery.cookie.js'></script><script type='text/javascript' src='csid.js'></script>"))))
 
 (defun csid-add-weekday (date)
   (let ((time (encode-time 0 0 0

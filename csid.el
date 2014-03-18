@@ -56,6 +56,7 @@
     ("Belleville" "http://cosmopolite.no/program/belleville" cosmopolite)
     ("Vulkan" "http://vulkanarena.no/shows" vulkan)
     ("Jakob" "http://www.jakob.no/program/" jakob)
+    ("Vanguard" "https://www.facebook.com/vanguardoslo?sk=events" vanguard)
     ))
 
 (defvar csid-database nil)
@@ -450,6 +451,24 @@
 						:href))
 		      (csid-clean-string
 		       (dom-texts (car (dom-by-name elem 'h2)))))))
+
+(defun csid-parse-vanguard (dom)
+  (loop for comment in (dom-by-name dom 'comment)
+	for text = (dom-texts comment)
+	when (string-match "Kommende arrangementer" text)
+	return (loop with dom = (shr-transform-dom
+				 (with-temp-buffer
+				   (insert text)
+				   (libxml-parse-html-region
+				    (point-min) (point-max))))
+		     for elem in (dom-by-class dom "eventsGrid")
+		     for div = (car (dom-by-class elem "fsl"))
+		     for a = (car (dom-by-name div 'a))
+		     collect (list (csid-parse-month-date
+				    (dom-texts (car (dom-by-name elem 'span))))
+				   (shr-expand-url (dom-attr a :href))
+				   (dom-texts a)))))
+				   
 
 (defun csid-parse-new (dom)
   (switch-to-buffer (get-buffer-create "*scratch*"))

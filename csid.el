@@ -467,8 +467,8 @@
 	prev-date start)
     (with-temp-file (or file "/tmp/csid.html")
       (insert "<head><title>Crowdsourcing Is Dead</title><meta charset='utf-8'><link href='csid.css' rel='stylesheet' type='text/css'><img src='csid.png'><p>(Also known as <a href='http://lars.ingebrigtsen.no/2013/09/crowdsourcing-is-dead.html'>Concerts In Oslo</a>.)</p><div id='selector'></div>")
-      (setq start (point))
       (insert "<table>")
+      (setq start (point))
       (loop for (venue date url name id) in data
 	    unless (string< date now)
 	    do (insert (format "<tr name='%s' id='event-%s'><td><div class='%s'>%s</div><td>%s<td><a href='%s'>%s</tr>"

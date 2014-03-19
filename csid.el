@@ -490,7 +490,7 @@
       (setq start (point))
       (loop for (venue date url name id) in data
 	    unless (string< date now)
-	    do (insert (format "<tr name='%s' id='event-%s'><td><div class='%s'>%s</div><td>%s<td><a href='%s'>%s</tr>"
+	    do (insert (format "<tr name='%s' id='event-%s'><td><div class='%s'>%s</div><td>%s<td><a href='%s' target='_top'>%s</tr>"
 			       (replace-regexp-in-string " " "_" venue)
 			       id
 			       (if (equal prev-date date)

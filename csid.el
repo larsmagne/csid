@@ -23,7 +23,7 @@
 
 ;;; Commentary:
 
-;; To test a new source: (csid-parse-sources "Vulkan")
+;; To test a new source: (csid-parse-sources "Rockefeller")
 
 ;;; Code:
 
@@ -279,10 +279,10 @@
 	for link = (assq 'a (nth 2 tds))
 	collect (list (csid-parse-rockefeller-stage
 		       (dom-attr (car (dom-by-name (nth 0 tds) 'img)) :src)
-		       (dom-text link))
+		       (dom-texts link))
 		      (csid-parse-full-numeric-date (cdar (last (nth 1 tds))))
 		      (shr-expand-url (dom-attr link :href))
-		      (dom-text link))))
+		      (dom-texts link))))
 
 (defun csid-parse-rockefeller-stage (img text)
   (cond

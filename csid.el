@@ -188,7 +188,7 @@
 			       (substring month 0 3))
 			     csid-months "\\|"))
 		    string)
-      (format "%s-%02d-%s"
+      (format "%s-%02d-%02d"
 	      (match-string 3 string)
 	      (1+ (position (match-string 2 string)
 			    (mapcar
@@ -196,8 +196,8 @@
 			       (substring month 0 3))
 			     csid-months)
 			    :test 'equalp))
-	      (match-string 1 string))
-    string))
+	      (string-to-number (match-string 1 string)))
+    (csid-parse-month-date string)))
 
 ;; "Ma. 23. sep. "
 (defun csid-parse-short-yearless-month (string)

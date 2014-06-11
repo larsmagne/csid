@@ -356,7 +356,7 @@
 		  (string-match "^konsert$" type))
 	collect (list (csid-parse-current-month (dom-text (nth 1 tds)))
 		      (nth 3 shr-base)
-		      (dom-text (nth 3 tds)))))
+		      (dom-texts (nth 3 tds)))))
 
 (defvar csid-weekdays '("mandag" "tirsdag" "onsdag" "torsdag"
 			"fredag" "lørdag" "søndag"))

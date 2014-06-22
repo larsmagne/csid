@@ -31,6 +31,7 @@
 (require 'pp)
 (require 'eww)
 (require 'dom)
+(require 'vcalendar)
 
 (defvar csid-database-file-name "~/.emacs.d/csid.data")
 
@@ -57,6 +58,7 @@
     ("Vulkan" "http://vulkanarena.no/shows" vulkan)
     ("Jakob" "http://www.jakob.no/program/" jakob)
     ("Vanguard" "https://www.facebook.com/vanguardoslo?sk=events" vanguard)
+    ("Ultima" "http://ultima.no/program" ultima)
     ))
 
 (defvar csid-database nil)
@@ -469,6 +471,16 @@
 				   (shr-expand-url (dom-attr a :href))
 				   (dom-texts a)))))
 				   
+
+(defun csid-parse-ultima (dom)
+  (loop for link in (dom-by-name dom 'a)
+	for href = (dom-attr link :href)
+	when (and href
+		  (string-match "\\`webcal:\\(.*\\)" href))
+	return (csid-parse-vcal (concat "href:" (match-string 1 href)))))
+
+(defun csid-parse-vcal (url)
+  (debug url))
 
 (defun csid-parse-new (dom)
   (switch-to-buffer (get-buffer-create "*scratch*"))

@@ -223,6 +223,12 @@
 (defun csid-parse-iso8601 (string)
   (substring string 0 10))
 
+;; "20140916T210000"
+(defun csid-parse-compact-iso8601 (string)
+  (concat (substring string 0 4) "-"
+	  (substring string 4 6) "-"
+	  (substring string 6 8)))
+
 ;; 23.09
 (defun csid-parse-numeric-date (string)
   (if (string-match "\\([0-9]+\\).\\([0-9]+\\)" string)
@@ -477,10 +483,23 @@
 	for href = (dom-attr link :href)
 	when (and href
 		  (string-match "\\`webcal:\\(.*\\)" href))
-	return (csid-parse-vcal (concat "href:" (match-string 1 href)))))
+	return (csid-parse-vcalendar (concat "http:" (match-string 1 href)))))
 
-(defun csid-parse-vcal (url)
-  (debug url))
+(defun csid-parse-vcalendar (url)
+  (with-current-buffer (url-retrieve-synchronously url)
+    (goto-char (point-min))
+    (while (re-search-forward "\r" nil t)
+      (replace-match "" t t))
+    (goto-char (point-min))
+    (when (search-forward "\n\n")
+      (loop for event in (dom-by-name
+			  (vcalendar-parse-region (point) (point-max))
+			  'vevent)
+	    collect
+	    (list (csid-parse-compact-iso8601
+		   (dom-attr (car (dom-by-name event 'dtstart)) :value))
+		  (dom-attr (car (dom-by-name event 'url)) :value)
+		  (dom-attr (car (dom-by-name event 'summary)) :value))))))
 
 (defun csid-parse-new (dom)
   (switch-to-buffer (get-buffer-create "*scratch*"))

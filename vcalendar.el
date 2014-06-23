@@ -31,12 +31,14 @@
     (with-temp-buffer
       (insert-buffer-substring buffer start end)
       (goto-char (point-min))
+      ;; Fold continuation lines.
       (while (re-search-forward "\n " nil t)
 	(replace-match "" t t))      
       (goto-char (point-min))
       (vcalendar-parse-section))))
 
 (defun vcalendar-parse-section ()
+  ;; Skip past possible junk before the BEGIN line.
   (while (and (not (looking-at "BEGIN:\\(.*\\)"))
 	      (not (eobp)))
     (forward-line 1))
@@ -56,13 +58,14 @@
 	    (forward-line 1)
 	    (setq stop t))
 	   (t
+	    ;; Some items look like DATE;TZ=CET:FOOBAR.
 	    (if (string-match "\\`\\(.*\\);\\(.*\\)$" tag)
 		(let ((note (match-string 2 tag)))
-		  (setq tag (match-string 1 tag))
-		  (push (list (intern (downcase tag) obarray)
+		  (push (list (intern (match-string 1 tag) obarray)
 			      (cons :note note)
 			      (cons :value value))
 			result))
+	      ;; Regular, un-semicoloned items.
 	      (push (list (intern (downcase tag) obarray)
 			  (cons :value value))
 		    result))

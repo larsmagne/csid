@@ -61,7 +61,7 @@
 	    ;; Some items look like DATE;TZ=CET:FOOBAR.
 	    (if (string-match "\\`\\(.*\\);\\(.*\\)$" tag)
 		(let ((note (match-string 2 tag)))
-		  (push (list (intern (match-string 1 tag) obarray)
+		  (push (list (intern (downcase (match-string 1 tag)) obarray)
 			      (cons :note note)
 			      (cons :value value))
 			result))

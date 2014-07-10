@@ -59,6 +59,7 @@
     ("Jakob" "http://www.jakob.no/program/" jakob)
     ("Vanguard" "https://www.facebook.com/vanguardoslo?sk=events" vanguard)
     ("Ultima" "http://ultima.no/program" ultima)
+    ("Blitz" "http://www.blitz.no/kalender" blitz)
     ))
 
 (defvar csid-database nil)
@@ -500,6 +501,16 @@
 		   (dom-attr (car (dom-by-name event 'dtstart)) :value))
 		  (dom-attr (car (dom-by-name event 'url)) :value)
 		  (dom-attr (car (dom-by-name event 'summary)) :value))))))
+
+(defun csid-parse-blitz (dom)
+  (loop for elem in (dom-by-class dom "views-row")
+	for month = (dom-text (car (dom-by-class elem "calendar-date-month")))
+	for day = (dom-text (car (dom-by-class elem "calendar-date-day")))
+	for link = (car (dom-by-name elem 'a))
+	collect (list (csid-parse-short-yearless-month (format "%s %s"
+							       day month))
+		      (shr-expand-url (dom-attr link :href))
+		      (dom-text link))))
 
 (defun csid-parse-new (dom)
   (switch-to-buffer (get-buffer-create "*scratch*"))

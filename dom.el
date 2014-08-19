@@ -69,6 +69,9 @@ A name is a symbol like `td'."
 (defun dom-by-class (dom match)
   (dom-elements dom :class match))
 
+(defun dom-by-style (dom match)
+  (dom-elements dom :style match))
+
 (defun dom-by-id (dom match)
   (dom-elements dom :id match))
 

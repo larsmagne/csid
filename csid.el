@@ -57,11 +57,12 @@
     ("Belleville" "http://cosmopolite.no/program/belleville" cosmopolite)
     ("Vulkan" "http://vulkanarena.no/shows" vulkan)
     ("Jakob" "http://www.jakob.no/program/" jakob)
-    ("Vanguard" "https://www.facebook.com/vanguardoslo?sk=events" vanguard)
+    ("Vanguard" "http://www.fanrx.com/facebook/events.php?theme=custom&page=vanguardoslo&bgcolor=ffffff&textcolor=000000&linkcolor=555555&max=15" vanguard)
     ("Ultima" "http://ultima.no/program" ultima)
     ("Blitz" "http://www.blitz.no/kalender" blitz)
     ("Magneten" "http://magnetenpub.blogspot.no//feeds/pages/default?alt=json&v=2&dynamicviews=1"
      magneten :json)
+    ("HerrNilsen" "http://www.herrnilsen.no/program2009.html" nilsen)
     ))
 
 (defvar csid-database nil)
@@ -190,6 +191,14 @@
 				      :test 'equalp))
 			(string-to-number (match-string 1 string)))
     string))
+
+(defun csid-parse-rfc2822 (string)
+  (format-time-string "%Y-%m-%d"
+		      (apply 'encode-time
+			     (mapcar
+			      (lambda (number)
+				(or number 0))
+			      (parse-time-string string)))))
 
 ;; "06. aug 2013"
 (defun csid-parse-short-month (string)
@@ -468,22 +477,13 @@
 		       (dom-texts (car (dom-by-name elem 'h2)))))))
 
 (defun csid-parse-vanguard (dom)
-  (loop for comment in (dom-by-name dom 'comment)
-	for text = (dom-texts comment)
-	when (string-match "Kommende arrangementer" text)
-	return (loop with dom = (shr-transform-dom
-				 (with-temp-buffer
-				   (insert text)
-				   (libxml-parse-html-region
-				    (point-min) (point-max))))
-		     for elem in (dom-by-class dom "eventsGrid")
-		     for div = (car (dom-by-class elem "fsl"))
-		     for a = (car (dom-by-name div 'a))
-		     collect (list (csid-parse-month-date
-				    (dom-texts (car (dom-by-name elem 'span))))
-				   (shr-expand-url (dom-attr a :href))
-				   (dom-texts a)))))
-				   
+  (loop for elem in (dom-by-style dom "clear:both")
+	for a = (car (dom-by-name elem 'a))
+	when (plusp (length (dom-texts a)))
+	collect (list (csid-parse-rfc2822
+		       (dom-texts (car (dom-by-class elem "smalltext"))))
+		      (dom-attr a :href)
+		      (dom-texts a))))
 
 (defun csid-parse-ultima (dom)
   (loop for link in (dom-by-name dom 'a)

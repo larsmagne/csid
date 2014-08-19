@@ -32,6 +32,7 @@
 (require 'eww)
 (require 'dom)
 (require 'vcalendar)
+(require 'json)
 
 (defvar csid-database-file-name "~/.emacs.d/csid.data")
 
@@ -59,6 +60,8 @@
     ("Vanguard" "https://www.facebook.com/vanguardoslo?sk=events" vanguard)
     ("Ultima" "http://ultima.no/program" ultima)
     ("Blitz" "http://www.blitz.no/kalender" blitz)
+    ("Magneten" "http://magnetenpub.blogspot.no//feeds/pages/default?alt=json&v=2&dynamicviews=1"
+     magneten :json)
     ))
 
 (defvar csid-database nil)
@@ -96,7 +99,10 @@
 	  append (loop for result in
 		       (csid-parse-source
 			url
-			(intern (format "csid-parse-%s" function) obarray))
+			(intern (format "csid-parse-%s" function) obarray)
+			(if (memq :json source)
+			    :json
+			  :html))
 		       unless (memq :multi source)
 		       do (push name result)
 		       collect (csid-add-id result (memq :date source)))))))
@@ -111,7 +117,7 @@
 	  do (setq found (nth 4 old)))
     (append elem (list (or found (incf csid-sequence))))))
 
-(defun csid-parse-source (url function)
+(defun csid-parse-source (url function data-type)
   (with-current-buffer (url-retrieve-synchronously url)
     (goto-char (point-min))
     (when (search-forward "\n\n")
@@ -129,9 +135,12 @@
 	     (shr-base (shr-parse-base url)))
 	(decode-coding-region (point) (point-max) charset)
 	(funcall function
-		 (shr-transform-dom 
-		  (libxml-parse-html-region
-		   (point) (point-max))))))))
+		 (cond
+		  ((eq data-type :json)
+		   (json-read))
+		  (t
+		   (shr-transform-dom 
+		    (libxml-parse-html-region (point) (point-max))))))))))
 
 (defun csid-parse-revolver (dom)
   (loop for elem in (dom-by-class dom "views-table")
@@ -508,6 +517,37 @@
 							       day month))
 		      (shr-expand-url (dom-attr link :href))
 		      (dom-text link))))
+
+(defun csid-parse-magneten (data)
+  (let ((html
+	 (cdr (cadr
+	       (assq 'content (aref (cdr
+				     (assq 'entry (cdr (assq 'feed data))))
+				    0))))))
+    (with-temp-buffer
+      (insert html)
+      (csid-parse-magneten-html
+       (shr-transform-dom 
+	(libxml-parse-html-region (point-min) (point-max)))))))
+
+;; Magneten's list is apparently hand-written, but this seems to do
+;; the trick.
+(defun csid-parse-magneten-html (dom)
+  (let (result date)
+    (with-temp-buffer
+      (pp dom (current-buffer))
+      (goto-char (point-min))
+      (while (re-search-forward ":style . \"font-size: x-small;\".*\n.*text . \"\\([^\"]+\\)" nil t)
+	(setq date (ignore-errors
+		     (csid-parse-month-date (match-string 1))))
+	(when (re-search-forward ":style . \"font-size: large;\".*\n.*text . \"\\([^\"]+\\)" nil t)
+	  (when (and date
+		     (= (length date) 10))
+	    (push (list date
+			"http://magnetenpub.blogspot.com/p/konsertkalender.html"
+			(match-string 1))
+		  result)))))
+    (nreverse result)))
 
 (defun csid-parse-new (dom)
   (switch-to-buffer (get-buffer-create "*scratch*"))

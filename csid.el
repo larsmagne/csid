@@ -424,7 +424,8 @@
 	return (let ((url (dom-attr meta :content)))
 		 (when (string-match "URL=\\(.*\\)" url)
 		   (csid-parse-source (shr-expand-url (match-string 1 url))
-				      'csid-parse-bidrobon-1)))))
+				      'csid-parse-bidrobon-1
+				      :html)))))
 
 (defun csid-parse-bidrobon-1 (dom)
   (loop for elem in (dom-by-name dom 'tr)

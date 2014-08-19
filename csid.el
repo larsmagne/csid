@@ -64,6 +64,7 @@
      magneten :json)
     ("HerrNilsen" "http://www.herrnilsen.no/program2009.html" nilsen)
     ("Spektrum" "http://www.oslospektrum.no/" spektrum)
+    ("NyMusikk" "http://nymusikk.no/no/hva-skjer/" nymusikk)
     ))
 
 (defvar csid-database nil)
@@ -258,13 +259,17 @@
 			(string-to-number (match-string 1 string)))
     string))
 
-;; "22.09.13"
+;; "22.09.13" or "22.09.2013"
 (defun csid-parse-full-numeric-date (string)
   (if (string-match "\\([0-9]+\\).\\([0-9]+\\).\\([0-9]+\\)" string)
-      (format "%04d-%02d-%02d"
-	      (+ 2000 (string-to-number (match-string 3 string)))
-	      (string-to-number (match-string 2 string))
-	      (string-to-number (match-string 1 string)))
+      (let ((year (string-to-number (match-string 3 string))))
+	(format "%04d-%02d-%02d"
+		(+ (if (< year 100)
+		       2000
+		     0)
+		   year)
+		(string-to-number (match-string 2 string))
+		(string-to-number (match-string 1 string))))
     string))
 
 (defun csid-expand-date (month day &optional this-year-only)
@@ -575,6 +580,14 @@
 	collect (list (csid-parse-full-numeric-date
 		       (dom-text (car (dom-by-class elem "date"))))
 		      (shr-expand-url (dom-attr a :href))
+		      (dom-text a))))
+
+(defun csid-parse-nymusikk (dom)
+  (loop for elem in (dom-by-class dom "^tweet$")
+	for a = (car (dom-by-name elem 'a))
+	collect (list (csid-parse-full-numeric-date
+		       (dom-text (car (dom-by-class elem "date"))))
+		      (dom-attr a :href)
 		      (dom-text a))))
 
 (defun csid-parse-new (dom)

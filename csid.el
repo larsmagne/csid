@@ -63,6 +63,7 @@
     ("Magneten" "http://magnetenpub.blogspot.no//feeds/pages/default?alt=json&v=2&dynamicviews=1"
      magneten :json)
     ("HerrNilsen" "http://www.herrnilsen.no/program2009.html" nilsen)
+    ("Spektrum" "http://www.oslospektrum.no/" spektrum)
     ))
 
 (defvar csid-database nil)
@@ -95,12 +96,15 @@
    (csid-update-database
     (loop for source in csid-sources
 	  for (name url function) = source
+	  for function = (intern (format "csid-parse-%s" function) obarray)
 	  when (or (not type)
 		   (string= type name))
 	  append (loop for result in
 		       (csid-parse-source
 			url
-			(intern (format "csid-parse-%s" function) obarray)
+			(if (fboundp function)
+			    function
+			  'csid-parse-new)
 			(if (memq :json source)
 			    :json
 			  :html))
@@ -564,6 +568,14 @@
 			      (shr-expand-url
 			       (dom-attr (car (dom-by-name elem 'a)) :href))
 			      (dom-text (car (dom-by-name elem 'a)))))))
+
+(defun csid-parse-spektrum (dom)
+  (loop for elem in (dom-by-name dom 'li)
+	for a = (car (dom-by-name elem 'a))
+	collect (list (csid-parse-full-numeric-date
+		       (dom-text (car (dom-by-class elem "date"))))
+		      (shr-expand-url (dom-attr a :href))
+		      (dom-text a))))
 
 (defun csid-parse-new (dom)
   (switch-to-buffer (get-buffer-create "*scratch*"))

@@ -66,6 +66,8 @@
     ("NyMusikk" "http://nymusikk.no/no/hva-skjer/" nymusikk)
     ("Konserthuset" "http://oslokonserthus.no/public/eventschedule.jsp?month=8&year=2014" konserthuset)
     ("Riksscenen" "http://www.riksscenen.no/program.95415.no.html" riksscenen)
+    ("Olsen" "http://olsenbar.no/?page_id=3447" olsen)
+    ("Verkstedet" "http://www.verkstedetbar.no/program/" verkstedet)
     ))
 
 (defvar csid-database nil)
@@ -248,6 +250,25 @@
 	      (string-to-number (match-string 1 string)))
     (csid-parse-month-date string)))
 
+;; "06. sept 2013"
+(defun csid-parse-shortish-month (string)
+  (when (string-match (format "\\([0-9]+\\).*\\(%s\\).? \\([0-9]+\\)"
+			      (mapconcat
+			       (lambda (month)
+				 (substring month 0 3))
+			       csid-months "\\|"))
+		      string)
+    (format "%s-%02d-%02d"
+	    (match-string 3 string)
+	    (1+ (position (match-string 2 string)
+			  (mapcar
+			   (lambda (month)
+			     (substring month 0
+					(length (match-string 2 string))))
+			   csid-months)
+			  :test 'equalp))
+	    (string-to-number (match-string 1 string)))))
+
 ;; "Ma. 23. sep. "
 (defun csid-parse-short-yearless-month (string &optional englishp)
   (when (string-match (format "\\([0-9]+\\).*\\(%s\\)"
@@ -269,6 +290,13 @@
 		      csid-months))
 		   :test 'equalp))
      (string-to-number (match-string 1 string)))))
+
+;; "aug 23"
+(defun csid-parse-short-reverse-yearless-month (string)
+  (csid-parse-short-yearless-month (mapconcat 'identity
+					      (reverse (split-string string))
+					      " ")))
+
 
 ;; "2014-03-20T21:00:00+01:00"
 (defun csid-parse-iso8601 (string)
@@ -647,6 +675,27 @@
 	collect (list (csid-parse-month-date (dom-text date))
 		      (shr-expand-url (dom-attr a :href))
 		      (dom-text a))))
+
+(defun csid-parse-olsen (dom)
+  (loop for elem in (dom-by-class dom "^ai1ec-event$")
+	collect (list (csid-parse-short-reverse-yearless-month
+		       (dom-texts (car (dom-by-class elem "ai1ec-event-time"))))
+		      (dom-attr (car (dom-by-name elem 'a)) :href)
+		      (csid-clean-string
+		       (dom-texts
+			(car (dom-by-class elem "ai1ec-event-title")))))))
+
+(defun csid-parse-verkstedet (dom)
+  (loop for elem in (dom-by-class dom "^event$")
+	collect (list
+		 (csid-parse-shortish-month
+		  (format "%s %s %s"
+			  (dom-text (car (dom-by-class elem "^day$")))
+			  (dom-text (car (dom-by-class elem "^month$")))
+			  (dom-text (car (dom-by-class elem "^year$")))))
+		 "http://www.verkstedetbar.no/program/"
+		 (dom-text (car (dom-by-name elem 'h3))))))
+	
 
 (defun csid-parse-new (dom)
   (switch-to-buffer (get-buffer-create "*scratch*"))

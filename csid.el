@@ -610,20 +610,20 @@
 		      (dom-text a))))
 
 (defun csid-parse-konserthuset (dom)
-  (loop with time = (decode-time (current-time))
-	for i from 0 upto 10
-	append (csid-parse-konserthuset-1 dom)
-	when (< i 10)
-	append (progn
-		 (setcar (nthcdr 4 time) (1+ (nth 4 time)))
-		 (when (> (nth 4 time) 12)
-		   (setcar (nthcdr 4 time) 1)
-		   (setcar (nthcdr 5 time) (1+ (nth 5 time))))
-		 (csid-parse-source
-		  (format-time-string
-		   "http://oslokonserthus.no/public/eventschedule.jsp?month=%m&year=%Y"
-		   (apply 'encode-time time))
-		  'csid-parse-konserthuset-1 :html))))
+  (append
+   (csid-parse-konserthuset-1 dom)
+   (loop with time = (decode-time (current-time))
+	 repeat 10
+	 append (progn
+		  (setcar (nthcdr 4 time) (1+ (nth 4 time)))
+		  (when (> (nth 4 time) 12)
+		    (setcar (nthcdr 4 time) 1)
+		    (setcar (nthcdr 5 time) (1+ (nth 5 time))))
+		  (csid-parse-source
+		   (format-time-string
+		    "http://oslokonserthus.no/public/eventschedule.jsp?month=%m&year=%Y"
+		    (apply 'encode-time time))
+		   'csid-parse-konserthuset-1 :html)))))
 
 (defun csid-parse-konserthuset-1 (dom)
   (loop for row in (dom-by-name

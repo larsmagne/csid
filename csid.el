@@ -49,7 +49,7 @@
     ("Parkteateret" "http://parkteatret.no/program/" parkteateret)
     ("Konsertforeninga" "http://www.konsertforeninga.no/konserter"
      konsertforeninga)
-    ("Maksitaksi" "http://maksitaksi.no/program-2/" maksitaksi)
+    ;;("Maksitaksi" "http://maksitaksi.no/program-2/" maksitaksi)
     ("Betong" "https://studentersamfundet.no/program/" betong)
     ("Bidrobon" "http://www.bidrobon.no/" bidrobon :date)
     ("Cosmopolite" "http://cosmopolite.no/program/cosmopolite" cosmopolite)

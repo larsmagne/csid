@@ -45,8 +45,7 @@
     ("Victoria" "http://nasjonaljazzscene.no/arrangement/" victoria)
     ("Rockefeller" "http://rockefeller.no/index.html" rockefeller :multi)
     ("Mono" "http://www.cafemono.no/program/" mono)
-    ("Parkteateret" "http://www.linticket.no/program/parkteatret/index.php3?"
-     parkteateret)
+    ("Parkteateret" "http://parkteatret.no/program/" parkteateret)
     ("Konsertforeninga" "http://www.konsertforeninga.no/konserter"
      konsertforeninga)
     ("Maksitaksi" "http://maksitaksi.no/program-2/" maksitaksi)
@@ -319,13 +318,11 @@
 		      (dom-text link))))
 
 (defun csid-parse-parkteateret (dom)
-  (loop for elem in (dom-by-name dom 'tr)
-	for link = (car (dom-by-class elem "linticket_arrnavn"))
-	when link
-	collect (list (csid-parse-short-yearless-month
-		       (dom-text (car (dom-by-class elem "linticket_info$"))))
-		      (dom-attr link :href)
-		      (dom-text link))))
+  (loop for elem in (dom-by-class dom "concert-item")
+	collect (list (csid-parse-month-date
+		       (dom-texts (car (dom-by-class elem "concert-date"))))
+		      (dom-attr (car (dom-by-name elem 'a)) :href)
+		      (dom-texts (car (dom-by-name elem 'h2))))))
 
 (defun csid-parse-konsertforeninga (dom)
   (loop for elem in (dom-by-name

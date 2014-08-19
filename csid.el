@@ -65,6 +65,7 @@
     ("Spektrum" "http://www.oslospektrum.no/" spektrum)
     ("NyMusikk" "http://nymusikk.no/no/hva-skjer/" nymusikk)
     ("Konserthuset" "http://oslokonserthus.no/public/eventschedule.jsp?month=8&year=2014" konserthuset)
+    ("Riksscenen" "http://www.riksscenen.no/program.95415.no.html" riksscenen)
     ))
 
 (defvar csid-database nil)
@@ -637,6 +638,15 @@
 		      (shr-expand-url (dom-attr (car (dom-by-name row 'a))
 						:href))
 		      (dom-text (nth 2 tds)))))
+
+(defun csid-parse-riksscenen (dom)
+  (loop for date in (dom-by-class dom "event-date")
+	for elem = (dom-parent dom date)
+	for a = (car (dom-by-name elem 'a))
+	when a
+	collect (list (csid-parse-month-date (dom-text date))
+		      (shr-expand-url (dom-attr a :href))
+		      (dom-text a))))
 
 (defun csid-parse-new (dom)
   (switch-to-buffer (get-buffer-create "*scratch*"))

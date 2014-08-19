@@ -68,6 +68,7 @@
     ("Riksscenen" "http://www.riksscenen.no/program.95415.no.html" riksscenen)
     ("Olsen" "http://olsenbar.no/?page_id=3447" olsen)
     ("Verkstedet" "http://www.verkstedetbar.no/program/" verkstedet)
+    ("Gamla" "http://www.gamla.no/" gamla)
     ))
 
 (defvar csid-database nil)
@@ -252,7 +253,7 @@
 
 ;; "06. sept 2013"
 (defun csid-parse-shortish-month (string)
-  (when (string-match (format "\\([0-9]+\\).*\\(%s\\).? \\([0-9]+\\)"
+  (when (string-match (format "\\([0-9]+\\).*\\(%s\\).*?\\([0-9]+\\)"
 			      (mapconcat
 			       (lambda (month)
 				 (substring month 0 3))
@@ -695,7 +696,15 @@
 			  (dom-text (car (dom-by-class elem "^year$")))))
 		 "http://www.verkstedetbar.no/program/"
 		 (dom-text (car (dom-by-name elem 'h3))))))
-	
+
+(defun csid-parse-gamla (dom)
+  (loop for elem in (dom-by-class dom "event-small")
+	for link = (car (dom-by-name elem 'a))
+	collect (list
+		 (csid-parse-shortish-month
+		  (dom-text (car (dom-by-name elem 'h4))))
+		 (dom-attr link :href)
+		 (dom-attr link :title))))
 
 (defun csid-parse-new (dom)
   (switch-to-buffer (get-buffer-create "*scratch*"))

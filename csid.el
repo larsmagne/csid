@@ -51,7 +51,6 @@
      konsertforeninga)
     ("Maksitaksi" "http://maksitaksi.no/program-2/" maksitaksi)
     ("Betong" "https://studentersamfundet.no/program/" betong)
-    ("Mu" "http://www.soundofmu.no/" mu :date)
     ("Bidrobon" "http://www.bidrobon.no/" bidrobon :date)
     ("Cosmopolite" "http://cosmopolite.no/program/cosmopolite" cosmopolite)
     ("Belleville" "http://cosmopolite.no/program/belleville" cosmopolite)
@@ -380,16 +379,6 @@
 	collect (list (csid-parse-numeric-date (dom-text (nth 0 tds)))
 		      (dom-attr link :href)
 		      (dom-text link))))
-
-(defun csid-parse-mu (dom)
-  (loop for elem in (dom-by-name dom 'tr)
-	for tds = (dom-by-name elem 'td)
-	for type = (dom-text (nth 2 tds))
-	when (and type
-		  (string-match "^konsert$" type))
-	collect (list (csid-parse-current-month (dom-text (nth 1 tds)))
-		      (nth 3 shr-base)
-		      (dom-texts (nth 3 tds)))))
 
 (defvar csid-weekdays '("mandag" "tirsdag" "onsdag" "torsdag"
 			"fredag" "lørdag" "søndag"))

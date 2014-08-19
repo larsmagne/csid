@@ -71,7 +71,8 @@
 (defun csid-write-database (data)
   (let ((coding-system-for-write 'utf-8))
     (with-temp-file csid-database-file-name
-      (pp data (current-buffer)))))
+      (pp data (current-buffer))))
+  nil)
 
 (defun csid-update-database (data)
   (dolist (elem data)
@@ -99,18 +100,21 @@
 	  for function = (intern (format "csid-parse-%s" function) obarray)
 	  when (or (not type)
 		   (string= type name))
-	  append (loop for result in
-		       (csid-parse-source
-			url
-			(if (fboundp function)
-			    function
-			  'csid-parse-new)
-			(if (memq :json source)
-			    :json
-			  :html))
-		       unless (memq :multi source)
-		       do (push name result)
-		       collect (csid-add-id result (memq :date source)))))))
+	  append (let ((results 
+			(csid-parse-source
+			 url
+			 (if (fboundp function)
+			     function
+			   'csid-parse-new)
+			 (if (memq :json source)
+			     :json
+			   :html))))
+		   (unless results
+		     (message "No results for type %s" type))
+		   (loop for result in results
+			 unless (memq :multi source)
+			 do (push name result)
+			 collect (csid-add-id result (memq :date source))))))))
 
 (defun csid-add-id (elem datep)
   (let ((found nil))
@@ -180,6 +184,18 @@
 				      :test 'equalp))
 			(string-to-number (match-string 1 string)))
     string))
+
+;; "fredag, august 8, 2014"
+(defun csid-parse-month-date-with-year (string)
+  (setq string (downcase string))
+  (when (string-match (format "\\(%s\\).*?\\([0-9]+\\).*?\\([0-9]+\\)"
+			      (mapconcat 'identity csid-months "\\|"))
+		      string)
+    (format "%04d-%02d-%02d"
+	    (string-to-number (match-string 3 string))
+	    (1+ (position (match-string 1 string) csid-months
+			  :test 'equalp))
+	    (string-to-number (match-string 2 string)))))
 
 (defvar csid-english-months
   '("january" "february" "march" "april" "may" "june" "july"
@@ -289,13 +305,13 @@
 		      (dom-attr link :title))))
 
 (defun csid-parse-crossroads (dom)
-  (loop for elem in (cdr (dom-by-name
-			  (car (dom-by-name dom 'table))
-			  'tr))
-	for tds = (dom-by-name elem 'td)
-	collect (list (csid-parse-short-month (dom-text (nth 0 tds)))
-		      (dom-attr (car (dom-by-name (nth 3 tds) 'a)) :href)
-		      (dom-text (nth 1 tds)))))
+  (loop for elem in (dom-by-class dom "post")
+	for link = (car (dom-by-name elem 'a))
+	when link
+	collect (list (csid-parse-month-date-with-year
+		       (dom-text (car (dom-by-class elem "entry-date"))))
+		      (dom-attr link :href)
+		      (dom-text link))))
 
 (defun csid-parse-victoria (dom)
   (loop for elem in (dom-by-class dom "event-entry")

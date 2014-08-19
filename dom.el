@@ -91,6 +91,17 @@ ATTRIBUTE would typically be `:class', `:id' or the like."
     (when (consp (cdr entry))
       (dom-elements-1 entry attribute match))))
 
+(defun dom-parent (dom node)
+  "Return the parent of NODE in DOM."
+  (if (memq node dom)
+      dom
+    (let ((result nil))
+      (dolist (entry (cdr dom))
+	(when (and (not result)
+		   (consp (cdr entry)))
+	  (setq result (dom-parent entry node))))
+      result)))
+
 (provide 'dom)
 
 ;;; dom.el ends here

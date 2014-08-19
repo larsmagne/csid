@@ -84,7 +84,10 @@
 	  (push elem csid-database)
 	;; Update the title.
 	(when (plusp (length (nth 3 elem)))
-	  (setcar (nthcdr 3 (car old)) (nth 3 elem))))))
+	  (setcar (nthcdr 3 (car old)) (nth 3 elem)))
+	;; Update the date.
+	(when (plusp (length (nth 1 elem)))
+	  (setcar (nthcdr 1 (car old)) (nth 1 elem))))))
   csid-database)
 
 (defun csid-read-database ()
@@ -244,22 +247,26 @@
     (csid-parse-month-date string)))
 
 ;; "Ma. 23. sep. "
-(defun csid-parse-short-yearless-month (string)
-  (if (string-match (format "\\([0-9]+\\).*\\(%s\\)"
-			    (mapconcat
-			     (lambda (month)
-			       (substring month 0 3))
-			     csid-months "\\|"))
-		    string)
-      (csid-expand-date
-       (1+ (position (match-string 2 string)
-		     (mapcar
-		      (lambda (month)
-			(substring month 0 3))
-		      csid-months)
-		     :test 'equalp))
-       (string-to-number (match-string 1 string)))
-    string))
+(defun csid-parse-short-yearless-month (string &optional englishp)
+  (when (string-match (format "\\([0-9]+\\).*\\(%s\\)"
+			      (mapconcat
+			       (lambda (month)
+				 (substring month 0 3))
+			       (if englishp
+				   csid-english-months
+				 csid-months)
+			       "\\|"))
+		      string)
+    (csid-expand-date
+     (1+ (position (match-string 2 string)
+		   (mapcar
+		    (lambda (month)
+		      (substring month 0 3))
+		    (if englishp
+			csid-english-months
+		      csid-months))
+		   :test 'equalp))
+     (string-to-number (match-string 1 string)))))
 
 ;; "2014-03-20T21:00:00+01:00"
 (defun csid-parse-iso8601 (string)
@@ -532,8 +539,10 @@
 	for month = (dom-text (car (dom-by-class elem "calendar-date-month")))
 	for day = (dom-text (car (dom-by-class elem "calendar-date-day")))
 	for link = (car (dom-by-name elem 'a))
-	collect (list (csid-parse-short-yearless-month (format "%s %s"
-							       day month))
+	when (plusp (length month))
+	collect (list (csid-parse-short-yearless-month
+		       (format "%s %s" day month)
+		       t)
 		      (shr-expand-url (dom-attr link :href))
 		      (dom-text link))))
 

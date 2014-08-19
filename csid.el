@@ -76,11 +76,15 @@
 
 (defun csid-update-database (data)
   (dolist (elem data)
-    ;; Don't update if we didn't get any data.
-    (unless (cl-member (nth 4 elem) csid-database
+    (let ((old
+	   (cl-member (nth 4 elem) csid-database
 		       :key (lambda (event)
-			      (nth 4 event)))
-      (push elem csid-database)))
+			      (nth 4 event)))))
+      (if (not old)
+	  (push elem csid-database)
+	;; Update the title.
+	(when (plusp (length (nth 3 elem)))
+	  (setcar (nthcdr 3 (car old)) (nth 3 elem))))))
   csid-database)
 
 (defun csid-read-database ()

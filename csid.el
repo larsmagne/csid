@@ -616,7 +616,10 @@
 
 (defun csid-generate-html (&optional file)
   (let ((data
-	 (sort csid-database
+	 ;; Sort by dates, and then names.
+	 (sort (sort (copy-list csid-database)
+		     (lambda (e1 e2)
+		       (string< (car e1) (car e2))))
 	       (lambda (e1 e2)
 		 (string< (cadr e1) (cadr e2)))))
 	(coding-system-for-write 'utf-8)

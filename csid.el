@@ -549,6 +549,21 @@
 		  result)))))
     (nreverse result)))
 
+(defun csid-parse-nilsen (dom)
+  (loop for row in (dom-by-class dom "program3sp")
+	append (loop with date
+		     for elem in (cdr row)
+		     when (and (eq (car elem) 'p)
+			       (equal (dom-attr elem :class) "arrdato"))
+		     do (setq date (dom-text elem))
+		     when (and (eq (car elem) 'p)
+			       (equal (dom-attr elem :class) "arrheading"))
+		     collect (list
+			      (csid-parse-full-numeric-date date)
+			      (shr-expand-url
+			       (dom-attr (car (dom-by-name elem 'a)) :href))
+			      (dom-text (car (dom-by-name elem 'a)))))))
+
 (defun csid-parse-new (dom)
   (switch-to-buffer (get-buffer-create "*scratch*"))
   (erase-buffer)

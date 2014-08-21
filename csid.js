@@ -103,9 +103,11 @@ function hideShow(onlyVenue) {
   var prevDate = "";
   $("tr").each(function(key, node) {
     var name = node.getAttribute("name");
-    var visible;
-    if (! name)
+    var visible; 
+    if (! name) {
+      $(node).removeClass("invisible");
       return;
+    }
 
     var match = node.id.match("event-(.*)");
     var eventId = match[1];
@@ -117,21 +119,15 @@ function hideShow(onlyVenue) {
     else
       visible = venues.indexOf(name) != -1;
     
-    if (visible) {
+    if (visible)
       $(node).removeClass("invisible");
-      // Make just a single date field per day visible.
-      $(node).prev().children("td").each(function(key, date) {
-	var text = date.innerHTML;
-	if (text != prevDate)
-	  $(date).parent().removeClass("invisible");
-	else 
-	  $(date).parent().addClass("invisible");
-	prevDate = text;
-      });
-    } else {
+    else
       $(node).addClass("invisible");
-      $(node).prev().addClass("invisible");
-    }
+  });
+  // Hide superfluous date lines.
+  $("tr.date").each(function(key, node) {
+    if (! $(node).nextAll('tr:visible').first().attr("name"))
+      $(node).addClass("invisible");
   });
 }
 

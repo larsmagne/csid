@@ -727,21 +727,26 @@
       (insert "<head><title>Crowdsourcing Is Dead</title><meta charset='utf-8'><link href='csid.css' rel='stylesheet' type='text/css'><body><div id='body-container'><img src='csid.png'><p>(Also known as <a href='http://lars.ingebrigtsen.no/2013/09/crowdsourcing-is-dead.html'>'Concerts In Oslo' or 'Konserter i Oslo'</a>.)</p><div id='selector'></div>")
       (insert "<table></div>")
       (setq start (point))
-      (loop for (venue date url name id) in data
+      (loop with prev-date
+	    for (venue date url name id) in data
 	    unless (string< date now)
-	    do (insert (format "<tr class='%s date'><td colspan=3>%s</tr><tr name='%s' id='event-%s'><td><a href='%s'>%s<td>%s</tr>"
-			       (if (equal prev-date date)
-				   "invisible"
-				 "visible")
-			       (csid-add-weekday date)
-			       (replace-regexp-in-string " " "_" venue)
-			       id
-			       url
-			       (url-insert-entities-in-string
-				(if (> (length name) 1000)
-				    (substring name 0 1000)
-				  name))
-			       venue))
+	    do (progn
+		 (unless (equal date prev-date)
+		   (insert (format "<tr class='%s date'><td colspan=3>%s</tr>"
+				   (if (equal prev-date date)
+				       "invisible"
+				     "visible")
+				   (csid-add-weekday date))))
+		 (setq prev-date date)
+		 (insert (format "<tr name='%s' id='event-%s'><td><a href='%s'>%s<td>%s</tr>"
+				 (replace-regexp-in-string " " "_" venue)
+				 id
+				 url
+				 (url-insert-entities-in-string
+				  (if (> (length name) 1000)
+				      (substring name 0 1000)
+				    name))
+				 venue)))
 	    (setq prev-date date))
       (insert "</table>")
       (write-region start (point) "/tmp/csid-table.html")

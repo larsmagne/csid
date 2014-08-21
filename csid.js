@@ -8,6 +8,8 @@ function getSettings(name) {
   return data;
 }
 
+var lastVenue = false;
+
 function addNavigation() {
   var venues = getSettings("venues");
   var shows = getSettings("shows");
@@ -22,23 +24,30 @@ function addNavigation() {
       var checked = "";
       if (venues.length == 0 || venues.indexOf(name) != -1)
 	checked = "checked";
-      $("#selector").append("<label class='venue'><input type=checkbox " + 
-			    checked + " id='" + name + "'>" +
-			    name.replace("_", " ") + "</label> ");
+      $("#selector").append("<span class='venue'><input type=checkbox " + 
+			    checked + " id='" + name + "'><span id='venue-" +
+			    name + "'>" +
+			    name.replace("_", " ") + "</span></span>");
       $("#" + name).bind("click", function(e) {
 	hideShow();
       });
+      $("#venue-" + name).bind("click", function(e) {
+	if (lastVenue != name) {
+	  hideShow(name);
+	  lastVenue = name;
+	} else {
+	  hideShow();
+	  lastVenue = false;
+	}
+      });
     }
 
-    $(node.childNodes[1]).bind("click", function(e) {
-      $("input[type=checkbox]").each(function(key, node) {
-	if (node.id != name && ! node.id.match(/show/))
-	  node.checked = reveal;
+    $(node).children("td").each(function(key, td) {
+      $(td).bind("click", function() {
+	top.location.href = $(node).find("a").attr("href");
       });
-      reveal = ! reveal;
-      hideShow();
     });
-
+    
     var id = node.id.replace("event-", "");
     $(node).append("<td class=show><input type=checkbox id='show-" + id + 
 		   "' " + 
@@ -49,12 +58,23 @@ function addNavigation() {
     $("#show-" + id).bind("click", function(e) {
       toggleShow(id, this.checked);
     });
-
   });
+
+  // Sort all the venues.
+  $("#selector")
+    .children("span")
+    .sort(function(a, b) {
+      return $(a).find("span").attr("id")
+	.localeCompare($(b).find("span").attr("id"));
+    })
+    .detach()
+    .appendTo("#selector");
+  
   hideShow();
 }
 
-function hideShow() {
+function hideShow(onlyVenue) {
+  console.log(onlyVenue);
   var venues = [];
   var i = 0;
   $("input[type=checkbox]").each(function(key, node) {
@@ -67,19 +87,22 @@ function hideShow() {
     var name = node.getAttribute("name");
     if (! name)
       return;
-    if (venues.indexOf(name) != -1) {
-      $(node).removeClass("hidden");
+    if ((onlyVenue && name == onlyVenue) ||
+	(! onlyVenue && venues.indexOf(name) != -1)) {
+      $(node).removeClass("invisible");
       // Make just a single date field per day visible.
-      $(node).find("div").each(function(key, date) {
+      $(node).prev().children("td").each(function(key, date) {
 	var text = date.innerHTML;
 	if (text != prevDate)
-	  $(date).removeClass("invisible");
+	  $(date).parent().removeClass("invisible");
 	else 
-	  $(date).addClass("invisible");
+	  $(date).parent().addClass("invisible");
 	prevDate = text;
       });
-    } else
-      $(node).addClass("hidden");
+    } else {
+      $(node).addClass("invisible");
+      $(node).prev().addClass("invisible");
+    }
   });
 }
 

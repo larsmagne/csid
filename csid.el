@@ -724,23 +724,24 @@
 	(now (format-time-string "%Y-%m-%d"))
 	prev-date start)
     (with-temp-file (or file "/tmp/csid.html")
-      (insert "<head><title>Crowdsourcing Is Dead</title><meta charset='utf-8'><link href='csid.css' rel='stylesheet' type='text/css'><img src='csid.png'><p>(Also known as <a href='http://lars.ingebrigtsen.no/2013/09/crowdsourcing-is-dead.html'>'Concerts In Oslo' or 'Konserter i Oslo'</a>.)</p><div id='selector'></div>")
+      (insert "<head><title>Crowdsourcing Is Dead</title><meta charset='utf-8'><link href='csid.css' rel='stylesheet' type='text/css'><body><img src='csid.png'><p>(Also known as <a href='http://lars.ingebrigtsen.no/2013/09/crowdsourcing-is-dead.html'>'Concerts In Oslo' or 'Konserter i Oslo'</a>.)</p><div id='selector'></div>")
       (insert "<table>")
       (setq start (point))
       (loop for (venue date url name id) in data
 	    unless (string< date now)
-	    do (insert (format "<tr name='%s' id='event-%s'><td><div class='%s'>%s</div><td>%s<td><a href='%s' target='_top'>%s</tr>"
-			       (replace-regexp-in-string " " "_" venue)
-			       id
+	    do (insert (format "<tr class='%s date'><td colspan=3>%s</tr><tr name='%s' id='event-%s'><td><a href='%s'>%s<td>%s</tr>"
 			       (if (equal prev-date date)
 				   "invisible"
 				 "visible")
 			       (csid-add-weekday date)
-			       venue url
+			       (replace-regexp-in-string " " "_" venue)
+			       id
+			       url
 			       (url-insert-entities-in-string
 				(if (> (length name) 1000)
 				    (substring name 0 1000)
-				  name))))
+				  name))
+			       venue))
 	    (setq prev-date date))
       (insert "</table>")
       (write-region start (point) "/tmp/csid-table.html")
@@ -753,9 +754,10 @@
 			   (string-to-number (substring date 0 4)))))
     (format-time-string "%a %b %d" time)))
 
-(defun csid-update-html (file)
+(defun csid-update-html (file &optional inhibit-fetch)
   (csid-read-database)
-  (csid-parse-sources)
+  (unless inhibit-fetch
+    (csid-parse-sources))
   (csid-generate-html file))
 
 (provide 'csid)

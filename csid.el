@@ -724,8 +724,8 @@
 	(now (format-time-string "%Y-%m-%d"))
 	prev-date start)
     (with-temp-file (or file "/tmp/csid.html")
-      (insert "<head><title>Crowdsourcing Is Dead</title><meta charset='utf-8'><link href='csid.css' rel='stylesheet' type='text/css'><body><img src='csid.png'><p>(Also known as <a href='http://lars.ingebrigtsen.no/2013/09/crowdsourcing-is-dead.html'>'Concerts In Oslo' or 'Konserter i Oslo'</a>.)</p><div id='selector'></div>")
-      (insert "<table>")
+      (insert "<head><title>Crowdsourcing Is Dead</title><meta charset='utf-8'><link href='csid.css' rel='stylesheet' type='text/css'><body><div id='body-container'><img src='csid.png'><p>(Also known as <a href='http://lars.ingebrigtsen.no/2013/09/crowdsourcing-is-dead.html'>'Concerts In Oslo' or 'Konserter i Oslo'</a>.)</p><div id='selector'></div>")
+      (insert "<table></div>")
       (setq start (point))
       (loop for (venue date url name id) in data
 	    unless (string< date now)
@@ -752,7 +752,7 @@
 			   (string-to-number (substring date 8))
 			   (string-to-number (substring date 5 7))
 			   (string-to-number (substring date 0 4)))))
-    (format-time-string "%a %b %d" time)))
+    (format-time-string "%A, %B %d" time)))
 
 (defun csid-update-html (file &optional inhibit-fetch)
   (csid-read-database)

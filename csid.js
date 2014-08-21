@@ -33,6 +33,7 @@ function addNavigation() {
 	setVenueCookie();
       });
       $("#venue-" + name).bind("click", function(e) {
+	fixPosition();
 	if (lastVenue != name) {
 	  hideShow(name);
 	  lastVenue = name;
@@ -136,6 +137,16 @@ function setVenueCookie() {
       venues[i++] = node.id;
   });
   $.cookie("deniedVenues", venues.join(), { expires: 10000 });
+}
+
+function fixPosition() {
+  console.log("fixing");
+  $("#body-container").each(function(key, body) {
+    var pos = $(body).offset();
+    body.style.position = "absolute";
+    body.style.left = pos.left + "px";
+    body.style.top = pos.top + "px";
+  });
 }
 
 addNavigation();

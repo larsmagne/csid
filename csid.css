@@ -54,8 +54,8 @@ td > a {
   margin: 0px;
 }
 tr.date {
-  background: #c0c0ff;
-  border-top: 1px solid black;
+  background: #800000;
+  color: white;
 }
 tr.date td {
   text-align: right;
@@ -75,6 +75,7 @@ span.venue {
 div#selector {
   padding-bottom: 10px;
   margin-left: -4px;
+  width: 700px;
 }
 td.show {
   padding-left: 15px;

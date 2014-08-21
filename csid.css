@@ -64,6 +64,9 @@ tr.date td {
 tr.invisible {
   display: none;
 }
+tr td:nth-child(2) {
+  white-space: nowrap;
+}
 span.venue {
   padding-right: 10px;
   white-space: nowrap;

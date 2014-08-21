@@ -11,7 +11,7 @@ function getSettings(name) {
 var lastVenue = false;
 
 function addNavigation() {
-  var venues = getSettings("venues");
+  var deniedVenues = getSettings("deniedVenues");
   var shows = getSettings("shows");
 
   var added = 0;
@@ -22,7 +22,7 @@ function addNavigation() {
 
     if (! $("input#" + name)[0]) {
       var checked = "";
-      if (venues.length == 0 || venues.indexOf(name) != -1)
+      if (deniedVenues.indexOf(name) == -1)
 	checked = "checked";
       $("#selector").append("<span class='venue'><input type=checkbox " + 
 			    checked + " id='" + name + "'><span id='venue-" +
@@ -30,6 +30,7 @@ function addNavigation() {
 			    name.replace("_", " ") + "</span></span>");
       $("#" + name).bind("click", function(e) {
 	hideShow();
+	setVenueCookie();
       });
       $("#venue-" + name).bind("click", function(e) {
 	if (lastVenue != name) {
@@ -74,14 +75,12 @@ function addNavigation() {
 }
 
 function hideShow(onlyVenue) {
-  console.log(onlyVenue);
   var venues = [];
   var i = 0;
   $("input[type=checkbox]").each(function(key, node) {
     if (node.checked && ! node.id.match(/show/))
       venues[i++] = node.id;
   });
-  $.cookie("venues", venues.join(), { expires: 10000 });
   var prevDate = "";
   $("tr").each(function(key, node) {
     var name = node.getAttribute("name");
@@ -127,6 +126,16 @@ function toggleShow(id, checked) {
     $("#event-" + id).removeClass("checked");
   }
   $.cookie("shows", shows.join(), { expires: 10000 });
+}
+
+function setVenueCookie() {
+  var venues = [];
+  var i = 0;
+  $("input[type=checkbox]").each(function(key, node) {
+    if (! node.id.match(/show/) && ! node.checked)
+      venues[i++] = node.id;
+  });
+  $.cookie("deniedVenues", venues.join(), { expires: 10000 });
 }
 
 addNavigation();

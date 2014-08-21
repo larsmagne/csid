@@ -91,6 +91,7 @@ function hideShow(onlyVenue) {
   var venues = [];
   var i = 0;
   var onlyShows = window.location.href.match("shows=([0-9,]+)");
+  var prevDate = false, anyVisible = false;
 
   // We've gotten an URL with a show list from somebody.
   if (onlyShows)
@@ -100,12 +101,19 @@ function hideShow(onlyVenue) {
     if (node.checked && ! node.id.match(/show/))
       venues[i++] = node.id;
   });
-  var prevDate = "";
+
   $("tr").each(function(key, node) {
     var name = node.getAttribute("name");
     var visible; 
     if (! name) {
-      $(node).removeClass("invisible");
+      if (prevDate) {
+	if (anyVisible)
+	  $(prevDate).removeClass("invisible");
+	else
+	  $(prevDate).addClass("invisible");
+      }
+      prevDate = node;
+      anyVisible = false;
       return;
     }
 
@@ -119,16 +127,19 @@ function hideShow(onlyVenue) {
     else
       visible = venues.indexOf(name) != -1;
     
-    if (visible)
+    if (visible) {
       $(node).removeClass("invisible");
+      anyVisible = true;
+    } else
+      $(node).addClass("invisible");
+  });
+
+  if (prevDate) {
+    if (anyVisible)
+      $(prevDate).removeClass("invisible");
     else
-      $(node).addClass("invisible");
-  });
-  // Hide superfluous date lines.
-  $("tr.date").each(function(key, node) {
-    if (! $(node).nextAll('tr:visible').first().attr("name"))
-      $(node).addClass("invisible");
-  });
+      $(prevDate).addClass("invisible");
+  }
 }
 
 function removeElement(arr, val) {

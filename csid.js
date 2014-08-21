@@ -14,13 +14,12 @@ function addNavigation() {
   var deniedVenues = getSettings("deniedVenues");
   var shows = getSettings("shows");
 
-  var added = 0;
   $("tr").each(function(key, node) {
     var name = node.getAttribute("name");
     if (! name)
       return;
 
-    if (! $("input#" + name)[0]) {
+    if (! document.getElementById(name)) {
       var checked = "";
       if (deniedVenues.indexOf(name) == -1)
 	checked = "checked";
@@ -71,6 +70,19 @@ function addNavigation() {
     })
     .detach()
     .appendTo("#selector");
+
+  $("#selector").append("<a class='export'>Export the show list</a>");
+  $(".export").bind("click", function(e) {
+    exportShows();
+  });
+
+  if (window.location.href.match("shows=")) {
+    $("#selector").append(" - <a class='clear'>Clear the show list</a>");
+    $(".clear").bind("click", function(e) {
+      window.location.href = window.location.href.replace(/[?].*/, "");
+      hideShow();
+    });
+  }
   
   hideShow();
 }
@@ -78,6 +90,12 @@ function addNavigation() {
 function hideShow(onlyVenue) {
   var venues = [];
   var i = 0;
+  var onlyShows = window.location.href.match("shows=([0-9,]+)");
+
+  // We've gotten an URL with a show list from somebody.
+  if (onlyShows)
+    onlyShows = onlyShows[1].split(",");
+
   $("input[type=checkbox]").each(function(key, node) {
     if (node.checked && ! node.id.match(/show/))
       venues[i++] = node.id;
@@ -85,10 +103,21 @@ function hideShow(onlyVenue) {
   var prevDate = "";
   $("tr").each(function(key, node) {
     var name = node.getAttribute("name");
+    var visible;
     if (! name)
       return;
-    if ((onlyVenue && name == onlyVenue) ||
-	(! onlyVenue && venues.indexOf(name) != -1)) {
+
+    var match = node.id.match("event-(.*)");
+    var eventId = match[1];
+    
+    if (onlyShows)
+      visible = onlyShows.indexOf(eventId) != -1;
+    else if (onlyVenue)
+      visible = name == onlyVenue;
+    else
+      visible = venues.indexOf(name) != -1;
+    
+    if (visible) {
       $(node).removeClass("invisible");
       // Make just a single date field per day visible.
       $(node).prev().children("td").each(function(key, date) {
@@ -140,13 +169,23 @@ function setVenueCookie() {
 }
 
 function fixPosition() {
-  console.log("fixing");
   $("#body-container").each(function(key, body) {
     var pos = $(body).offset();
     body.style.position = "absolute";
     body.style.left = pos.left + "px";
     body.style.top = pos.top + "px";
   });
+}
+
+function exportShows() {
+  var shows = getSettings("shows");
+  var visible = [];
+  $.map(shows, function(elem) {
+    if ($("#event-" + elem)[0])
+      visible.push(elem);
+  });
+  window.location.href = window.location.href.replace(/[?].*/, "") +
+    "?shows=" + visible.join();
 }
 
 addNavigation();

@@ -104,7 +104,10 @@ function hideShow(onlyVenue) {
 
   $("tr").each(function(key, node) {
     var name = node.getAttribute("name");
-    var visible; 
+    var visible;
+
+    // Don't show date lines for dates where we're not displaying any
+    // shows.
     if (! name) {
       if (prevDate) {
 	if (anyVisible)

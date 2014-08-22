@@ -709,15 +709,20 @@
 		 (dom-attr link :title))))
 
 (defun csid-parse-sawol (dom)
-  (loop for elem in (dom-by-class dom "category-program")
-	for link = (car (dom-by-name elem 'a))
-	when (dom-attr link :title)
-	collect (list (csid-parse-short-month
-		       (format "%s %s"
-			       (dom-text (car (dom-by-class elem "dayInfo")))
-			       (dom-text (car (dom-by-class elem "monthInfo")))))
-		      (dom-attr link :href)
-		      (dom-attr link :title))))
+  (append
+   (loop for elem in (dom-by-class dom "category-program")
+	 for link = (car (dom-by-name elem 'a))
+	 when (dom-attr link :title)
+	 collect (list (csid-parse-short-month
+			(format "%s %s"
+				(dom-text (car (dom-by-class elem "dayInfo")))
+				(dom-text (car (dom-by-class elem "monthInfo")))))
+		       (dom-attr link :href)
+		       (dom-attr link :title)))
+   (let* ((next (car (dom-by-id dom "^nextpage$")))
+	  (link (and next (dom-attr (car (dom-by-name next 'a)) :href))))
+     (when link
+       (csid-parse-source link 'csid-parse-sawol :html)))))
 
 (defun csid-parse-buckleys (dom)
   (loop for elem in (dom-by-name dom 'h2)

@@ -333,114 +333,6 @@
 		(string-to-number (match-string 1 string))))
     string))
 
-(defun csid-expand-date (month day &optional this-year-only)
-  (let ((this-year (nth 5 (decode-time)))
-	(this-month (nth 4 (decode-time))))
-    (when (and (not this-year-only)
-	       (< month this-month))
-      (incf this-year))
-    (format "%s-%02d-%02d" this-year month day)))
-
-(defun csid-parse-mir (dom)
-  (loop for elem in (dom-by-id dom "program")
-	for time = (car (dom-by-class elem "programtid"))
-	for link = (car (dom-by-name
-			 (car (dom-by-class elem "programtittel")) 'a))
-	collect (list (csid-parse-month-date (dom-text time))
-		      (dom-attr link :href)
-		      (dom-attr link :title))))
-
-(defun csid-parse-crossroads (dom)
-  (loop for elem in (dom-by-class dom "post")
-	for link = (car (dom-by-name elem 'a))
-	when link
-	collect (list (csid-parse-month-date-with-year
-		       (dom-text (car (dom-by-class elem "entry-date"))))
-		      (dom-attr link :href)
-		      (dom-text link))))
-
-(defun csid-parse-victoria (dom)
-  (loop for elem in (dom-by-class dom "event-entry")
-	for date = (car (dom-by-class elem "show-for-small"))
-	collect (list (csid-parse-numeric-date
-		       (dom-text (car (dom-by-name date 'p))))
-		      (dom-attr (car (dom-by-name elem 'a)) :href)
-		      (dom-text (car (dom-by-name elem 'h2))))))
-
-(defun csid-parse-rockefeller (dom)
-  (loop for elem in (dom-by-name
-		     (car (dom-by-id dom "print"))
-		     'table)
-	for tds = (dom-by-name elem 'td)
-	for link = (assq 'a (nth 2 tds))
-	collect (list (csid-parse-rockefeller-stage
-		       (dom-attr (car (dom-by-name (nth 0 tds) 'img)) :src)
-		       (dom-texts link))
-		      (csid-parse-full-numeric-date (cdar (last (nth 1 tds))))
-		      (shr-expand-url (dom-attr link :href))
-		      (dom-texts link))))
-
-(defun csid-parse-rockefeller-stage (img text)
-  (cond
-   ((string-match "Bushwick" text)
-    "Bushwick")
-   ((string-match "Leiligheten" text)
-    "Leiligheten")
-   ((string-match "scene_R" img)
-    "Rockefeller")
-   ((string-match "scene_J" img)
-    "John Dee")
-   ((string-match "scene_S" img)
-    "Sentrum")
-   (t
-    "Rockefeller")))
-
-(defun csid-parse-mono (dom)
-  (loop for elem in (dom-by-class dom "artist")
-	for link = (car (dom-by-name
-			 (car (dom-by-name elem 'h2))
-			 'a))
-	collect (list (csid-parse-english-month-date
-		       (dom-text (car (dom-by-name elem 'h3))))
-		      (dom-attr link :href)
-		      (dom-text link))))
-
-(defun csid-parse-parkteateret (dom)
-  (loop for elem in (dom-by-class dom "concert-item")
-	collect (list (csid-parse-month-date
-		       (dom-texts (car (dom-by-class elem "concert-date"))))
-		      (dom-attr (car (dom-by-name elem 'a)) :href)
-		      (dom-texts (car (dom-by-name elem 'h2))))))
-
-(defun csid-parse-konsertforeninga (dom)
-  (loop for elem in (dom-by-name
-		     (car (dom-by-name dom 'table))
-		     'tr)
-	for tds = (dom-by-name elem 'td)
-	for link = (car (dom-by-name (nth 2 tds) 'a))
-	collect (list (csid-parse-month-date (cdr (car (last (nth 0 tds)))))
-		      (shr-expand-url (dom-attr link :href))
-		      (dom-text link))))
-
-(defun csid-parse-maksitaksi (dom)
-  (loop for elem in (dom-by-class dom "ai1ec-event-title-wrap")
-	for link = (car (dom-by-class elem "ai1ec-load-event"))
-	collect (list (csid-parse-month-date
-		       (dom-text (car (dom-by-class elem "ai1ec-event-time"))))
-		      (dom-attr link :href)
-		      (dom-attr link :title))))
-
-(defun csid-parse-betong (dom)
-  (loop for elem in (dom-by-name
-		     (car (dom-by-class dom "^table$"))
-		     'tr)
-	for tds = (dom-by-name elem 'td)
-	for link = (car (dom-by-name (nth 1 tds) 'a))
-	when (and link
-		  (string-match "konsert" (dom-text (nth 3 tds))))
-	collect (list (csid-parse-numeric-date (dom-text (nth 0 tds)))
-		      (dom-attr link :href)
-		      (dom-text link))))
 
 (defvar csid-weekdays '("mandag" "tirsdag" "onsdag" "torsdag"
 			"fredag" "lørdag" "søndag"))
@@ -478,6 +370,108 @@
 	(format-time-string "%Y-%m-%d" (apply 'encode-time found)))
     string))
 
+(defun csid-expand-date (month day &optional this-year-only)
+  (let ((this-year (nth 5 (decode-time)))
+	(this-month (nth 4 (decode-time))))
+    (when (and (not this-year-only)
+	       (< month this-month))
+      (incf this-year))
+    (format "%s-%02d-%02d" this-year month day)))
+
+(defun csid-parse-mir (dom)
+  (loop for elem in (dom-by-id dom "program")
+	for time = (dom-by-class elem "programtid")
+	for link = (dom-by-name (dom-by-class elem "programtittel") 'a)
+	collect (list (csid-parse-month-date (dom-text time))
+		      (dom-attr link :href)
+		      (dom-attr link :title))))
+
+(defun csid-parse-crossroads (dom)
+  (loop for elem in (dom-by-class dom "post")
+	for link = (dom-by-name elem 'a)
+	when link
+	collect (list (csid-parse-month-date-with-year
+		       (dom-text (dom-by-class elem "entry-date")))
+		      (dom-attr link :href)
+		      (dom-text link))))
+
+(defun csid-parse-victoria (dom)
+  (loop for elem in (dom-by-class dom "event-entry")
+	for date = (dom-by-class elem "show-for-small")
+	collect (list (csid-parse-numeric-date
+		       (dom-text (dom-by-name date 'p)))
+		      (dom-attr (dom-by-name elem 'a) :href)
+		      (dom-text (dom-by-name elem 'h2)))))
+
+(defun csid-parse-rockefeller (dom)
+  (loop for elem in (dom-by-name (dom-by-id dom "print") 'table)
+	for tds = (dom-by-name elem 'td)
+	for link = (assq 'a (nth 2 tds))
+	collect (list (csid-parse-rockefeller-stage
+		       (dom-attr (dom-by-name (nth 0 tds) 'img) :src)
+		       (dom-texts link))
+		      (csid-parse-full-numeric-date (cdar (last (nth 1 tds))))
+		      (shr-expand-url (dom-attr link :href))
+		      (dom-texts link))))
+
+(defun csid-parse-rockefeller-stage (img text)
+  (cond
+   ((string-match "Bushwick" text)
+    "Bushwick")
+   ((string-match "Leiligheten" text)
+    "Leiligheten")
+   ((string-match "scene_R" img)
+    "Rockefeller")
+   ((string-match "scene_J" img)
+    "John Dee")
+   ((string-match "scene_S" img)
+    "Sentrum")
+   (t
+    "Rockefeller")))
+
+(defun csid-parse-mono (dom)
+  (loop for elem in (dom-by-class dom "artist")
+	for link = (dom-by-name (dom-by-name elem 'h2) 'a)
+	collect (list (csid-parse-english-month-date
+		       (dom-text (dom-by-name elem 'h3)))
+		      (dom-attr link :href)
+		      (dom-text link))))
+
+(defun csid-parse-parkteateret (dom)
+  (loop for elem in (dom-by-class dom "concert-item")
+	collect (list (csid-parse-month-date
+		       (dom-texts (dom-by-class elem "concert-date")))
+		      (dom-attr (dom-by-name elem 'a) :href)
+		      (dom-texts (dom-by-name elem 'h2)))))
+
+(defun csid-parse-konsertforeninga (dom)
+  (loop for elem in (dom-by-name (dom-by-name dom 'table) 'tr)
+	for tds = (dom-by-name elem 'td)
+	for link = (dom-by-name (nth 2 tds) 'a)
+	collect (list (csid-parse-month-date (cdr (car (last (nth 0 tds)))))
+		      (shr-expand-url (dom-attr link :href))
+		      (dom-text link))))
+
+(defun csid-parse-maksitaksi (dom)
+  (loop for elem in (dom-by-class dom "ai1ec-event-title-wrap")
+	for link = (dom-by-class elem "ai1ec-load-event")
+	collect (list (csid-parse-month-date
+		       (dom-text (dom-by-class elem "ai1ec-event-time")))
+		      (dom-attr link :href)
+		      (dom-attr link :title))))
+
+(defun csid-parse-betong (dom)
+  (loop for elem in (dom-by-name
+		     (car (dom-by-class dom "^table$"))
+		     'tr)
+	for tds = (dom-by-name elem 'td)
+	for link = (dom-by-name (nth 1 tds) 'a)
+	when (and link
+		  (string-match "konsert" (dom-text (nth 3 tds))))
+	collect (list (csid-parse-numeric-date (dom-text (nth 0 tds)))
+		      (dom-attr link :href)
+		      (dom-text link))))
+
 (defun csid-parse-bidrobon (dom)
   (loop for meta in (dom-by-name dom 'meta)
 	when (equalp (dom-attr meta :http-equiv) "refresh")
@@ -505,44 +499,40 @@
 
 (defun csid-parse-cosmopolite (dom)
   (loop for elem in (dom-by-class dom "concert-item")
-	for day = (dom-text (car (dom-by-class elem "day-of-the-month")))
-	for month = (dom-text (car (dom-by-class elem "^month$")))
+	for day = (dom-text (dom-by-class elem "day-of-the-month"))
+	for month = (dom-text (dom-by-class elem "^month$"))
 	collect (list (csid-parse-short-yearless-month
 		       (format "%s %s" day month))
-		      (shr-expand-url
-		       (dom-attr (car (dom-by-name elem 'a))
-				 :href))
-		      (csid-clean-string
-		       (dom-texts (car (dom-by-name elem 'h2)))))))
+		      (shr-expand-url (dom-attr (dom-by-name elem 'a) :href))
+		      (csid-clean-string (dom-texts (dom-by-name elem 'h2))))))
 
 (defun csid-parse-vulkan (dom)
   (loop for elem in (dom-by-name dom 'article)
 	for date = (cdr (assq :data-starts-at (cdr elem)))
 	when date
 	collect (list (csid-parse-iso8601 date)
-		      (shr-expand-url
-		       (cdr (assq :href (car (dom-by-name elem 'a)))))
-		      (cdr (assq :data-title (cdr elem))))))
+		      (shr-expand-url (dom-attr (dom-by-name elem 'a) :href))
+		      (dom-attr elem :data-title))))
 
 (defun csid-parse-jakob (dom)
   (loop for elem in (dom-by-class dom "eventItem")
 	for day = (csid-clean-string
-		   (dom-texts (car (dom-by-class elem "day"))))
+		   (dom-texts (dom-by-class elem "day")))
 	for month = (csid-clean-string
-		     (dom-texts (car (dom-by-class elem "month"))))
+		     (dom-texts (dom-by-class elem "month")))
 	collect (list (csid-parse-short-yearless-month
 		       (format "%s %s" day month))
-		      (shr-expand-url (dom-attr (car (dom-by-class elem "more"))
-						:href))
+		      (shr-expand-url
+		       (dom-attr (dom-by-class elem "more") :href))
 		      (csid-clean-string
-		       (dom-texts (car (dom-by-name elem 'h2)))))))
+		       (dom-texts (dom-by-name elem 'h2))))))
 
 (defun csid-parse-vanguard (dom)
   (loop for elem in (dom-by-style dom "clear:both")
-	for a = (car (dom-by-name elem 'a))
+	for a = (dom-by-name elem 'a)
 	when (plusp (length (dom-texts a)))
 	collect (list (csid-parse-rfc2822
-		       (dom-texts (car (dom-by-class elem "smalltext"))))
+		       (dom-texts (dom-by-class elem "smalltext")))
 		      (dom-attr a :href)
 		      (dom-texts a))))
 
@@ -571,9 +561,9 @@
 
 (defun csid-parse-blitz (dom)
   (loop for elem in (dom-by-class dom "views-row")
-	for month = (dom-text (car (dom-by-class elem "calendar-date-month")))
-	for day = (dom-text (car (dom-by-class elem "calendar-date-day")))
-	for link = (car (dom-by-name elem 'a))
+	for month = (dom-text (dom-by-class elem "calendar-date-month"))
+	for day = (dom-text (dom-by-class elem "calendar-date-day"))
+	for link = (dom-by-name elem 'a)
 	when (plusp (length month))
 	collect (list (csid-parse-short-yearless-month
 		       (format "%s %s" day month)
@@ -624,22 +614,22 @@
 		     collect (list
 			      (csid-parse-full-numeric-date date)
 			      (shr-expand-url
-			       (dom-attr (car (dom-by-name elem 'a)) :href))
-			      (dom-text (car (dom-by-name elem 'a)))))))
+			       (dom-attr (dom-by-name elem 'a) :href))
+			      (dom-text (dom-by-name elem 'a))))))
 
 (defun csid-parse-spektrum (dom)
   (loop for elem in (dom-by-name dom 'li)
-	for a = (car (dom-by-name elem 'a))
+	for a = (dom-by-name elem 'a)
 	collect (list (csid-parse-full-numeric-date
-		       (dom-text (car (dom-by-class elem "date"))))
+		       (dom-text (dom-by-class elem "date")))
 		      (shr-expand-url (dom-attr a :href))
 		      (dom-text a))))
 
 (defun csid-parse-nymusikk (dom)
   (loop for elem in (dom-by-class dom "^tweet$")
-	for a = (car (dom-by-name elem 'a))
+	for a = (dom-by-name elem 'a)
 	collect (list (csid-parse-full-numeric-date
-		       (dom-text (car (dom-by-class elem "date"))))
+		       (dom-text (dom-by-class elem "date")))
 		      (dom-attr a :href)
 		      (dom-text a))))
 
@@ -663,19 +653,18 @@
   (loop for row in (dom-by-name
 		    (dom-parent
 		     dom (dom-parent
-			  dom (car (dom-by-class dom "scheduleHeadingTD"))))
+			  dom (dom-by-class dom "scheduleHeadingTD")))
 		    'tr)
 	for tds = (dom-by-name row 'td)
 	when (not (string-match "scheduleHeading" (dom-attr (car tds) :class)))
 	collect (list (csid-parse-numeric-date (dom-text (car tds)))
-		      (shr-expand-url (dom-attr (car (dom-by-name row 'a))
-						:href))
+		      (shr-expand-url (dom-attr (dom-by-name row 'a) :href))
 		      (dom-text (nth 2 tds)))))
 
 (defun csid-parse-riksscenen (dom)
   (loop for date in (dom-by-class dom "event-date")
 	for elem = (dom-parent dom date)
-	for a = (car (dom-by-name elem 'a))
+	for a = (dom-by-name elem 'a)
 	when a
 	collect (list (csid-parse-month-date (dom-text date))
 		      (shr-expand-url (dom-attr a :href))
@@ -684,45 +673,43 @@
 (defun csid-parse-olsen (dom)
   (loop for elem in (dom-by-class dom "^ai1ec-event$")
 	collect (list (csid-parse-short-reverse-yearless-month
-		       (dom-texts (car (dom-by-class elem "ai1ec-event-time"))))
-		      (dom-attr (car (dom-by-name elem 'a)) :href)
+		       (dom-texts (dom-by-class elem "ai1ec-event-time")))
+		      (dom-attr (dom-by-name elem 'a) :href)
 		      (csid-clean-string
-		       (dom-texts
-			(car (dom-by-class elem "ai1ec-event-title")))))))
+		       (dom-texts (dom-by-class elem "ai1ec-event-title"))))))
 
 (defun csid-parse-verkstedet (dom)
   (loop for elem in (dom-by-class dom "^event$")
 	collect (list
 		 (csid-parse-shortish-month
 		  (format "%s %s %s"
-			  (dom-text (car (dom-by-class elem "^day$")))
-			  (dom-text (car (dom-by-class elem "^month$")))
-			  (dom-text (car (dom-by-class elem "^year$")))))
+			  (dom-text (dom-by-class elem "^day$"))
+			  (dom-text (dom-by-class elem "^month$"))
+			  (dom-text (dom-by-class elem "^year$"))))
 		 "http://www.verkstedetbar.no/program/"
-		 (dom-text (car (dom-by-name elem 'h3))))))
+		 (dom-text (dom-by-name elem 'h3)))))
 
 (defun csid-parse-gamla (dom)
   (loop for elem in (dom-by-class dom "event-small")
-	for link = (car (dom-by-name elem 'a))
+	for link = (dom-by-name elem 'a)
 	collect (list
-		 (csid-parse-shortish-month
-		  (dom-text (car (dom-by-name elem 'h4))))
+		 (csid-parse-shortish-month (dom-text (dom-by-name elem 'h4)))
 		 (dom-attr link :href)
 		 (dom-attr link :title))))
 
 (defun csid-parse-sawol (dom)
   (append
    (loop for elem in (dom-by-class dom "category-program")
-	 for link = (car (dom-by-name elem 'a))
+	 for link = (dom-by-name elem 'a)
 	 when (dom-attr link :title)
 	 collect (list (csid-parse-short-month
 			(format "%s %s"
-				(dom-text (car (dom-by-class elem "dayInfo")))
-				(dom-text (car (dom-by-class elem "monthInfo")))))
+				(dom-text (dom-by-class elem "dayInfo"))
+				(dom-text (dom-by-class elem "monthInfo"))))
 		       (dom-attr link :href)
 		       (dom-attr link :title)))
-   (let* ((next (car (dom-by-id dom "^nextpage$")))
-	  (link (and next (dom-attr (car (dom-by-name next 'a)) :href))))
+   (let* ((next (dom-by-id dom "^nextpage$"))
+	  (link (and next (dom-attr (dom-by-name next 'a) :href))))
      (when link
        (csid-parse-source link 'csid-parse-sawol :html)))))
 
@@ -745,21 +732,21 @@
 (defun csid-parse-neworleans (dom)
   (loop for title in (dom-by-class dom "views-field-title")
 	for elem = (dom-parent dom (dom-parent dom title))
-	for month = (car (dom-by-class elem "views-field-field_dato_1"))
+	for month = (dom-by-class elem "views-field-field_dato_1")
 	when (and (eq (car elem) 'div)
 		  month)
 	collect (list (csid-parse-month-date
-		       (format "%s %s" (dom-texts (car (dom-by-class elem "views-field-field_dato$")))
+		       (format "%s %s" (dom-texts (dom-by-class elem "views-field-field_dato$"))
 			       (dom-texts month)))
 		      "http://www.neworleansworkshop.com/program"
 		      (dom-texts title))))
 
 (defun csid-parse-nasjonalbiblioteket (dom)
   (loop for elem in (dom-by-class dom "kalendar-item")
-	for link = (car (dom-by-name elem 'a))
+	for link = (dom-by-name elem 'a)
 	collect (list (csid-parse-short-yearless-month
 		       (csid-clean-string
-			(dom-texts (car (dom-by-class elem "item-date")))))
+			(dom-texts (dom-by-class elem "item-date"))))
 		      (shr-expand-url (dom-attr link :href))
 		      (csid-clean-string (dom-texts link)))))
 		      
@@ -782,7 +769,7 @@
 	(now (format-time-string "%Y-%m-%d"))
 	prev-date start)
     (with-temp-file (or file "/tmp/csid.html")
-      (insert "<head><title>Crowdsourcing Is Dead</title><meta charset='utf-8'><link href='csid.css' rel='stylesheet' type='text/css'><body><div id='body-container'><img src='csid.png'><p>(Also known as <a href='http://lars.ingebrigtsen.no/2013/09/crowdsourcing-is-dead.html'>'Concerts In Oslo' or 'Konserter i Oslo'</a>.)</p><div id='selector'></div>")
+      (insert "<head><title>Crowdsourcing Is Dead</title><meta charset='utf-8'><link href='csid.css' rel='stylesheet' type='text/css'><meta name='viewport' content='width=device-width, initial-scale=1'><body><div id='body-container'><img src='csid.png'><p>(Also known as <a href='http://lars.ingebrigtsen.no/2013/09/crowdsourcing-is-dead.html'>'Concerts In Oslo' or 'Konserter i Oslo'</a>.)</p><div id='selector'></div>")
       (insert "<table></div>")
       (setq start (point))
       (loop with prev-date

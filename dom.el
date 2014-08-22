@@ -30,10 +30,18 @@
 (defmacro dom-attr (node attr)
   "Return the attribute ATTR from NODE.
 A typical attribute is `:href."
-  `(cdr (assq ,attr (cdr ,node))))
+  (let ((n (gensym)))
+    `(let ((,n ,node))
+       ;; Called on a list of nodes.  Use the first.
+       (when (consp (car ,n))
+	 (setq ,n (car ,n)))
+       (cdr (assq ,attr (cdr ,n))))))
 
 (defun dom-text (node)
   "Return all the text bits in the current node concatenated."
+  ;; Called on a list of nodes.  Use the first.
+  (when (consp (car node))
+    (setq node (car node)))
   (mapconcat
    'identity
    (loop for elem in (cdr node)
@@ -43,6 +51,9 @@ A typical attribute is `:href."
 
 (defun dom-texts (node &optional separator)
   "Return all textual data under NODE."
+  ;; Called on a list of nodes.  Use the first.
+  (when (consp (car node))
+    (setq node (car node)))
   (mapconcat
    'identity
    (loop for elem in (cdr node)
@@ -55,6 +66,9 @@ A typical attribute is `:href."
 (defun dom-by-name (dom name)
   "Return elements in DOM that is of type NAME.
 A name is a symbol like `td'."
+  ;; Called on a list of nodes.  Use the first.
+  (when (consp (car dom))
+    (setq dom (car dom)))
   (let ((dom-elements nil))
     (dom-by-name-1 dom name)
     (nreverse dom-elements)))
@@ -67,12 +81,21 @@ A name is a symbol like `td'."
       (dom-by-name-1 entry name))))
 
 (defun dom-by-class (dom match)
+  ;; Called on a list of nodes.  Use the first.
+  (when (consp (car dom))
+    (setq dom (car dom)))
   (dom-elements dom :class match))
 
 (defun dom-by-style (dom match)
+  ;; Called on a list of nodes.  Use the first.
+  (when (consp (car dom))
+    (setq dom (car dom)))
   (dom-elements dom :style match))
 
 (defun dom-by-id (dom match)
+  ;; Called on a list of nodes.  Use the first.
+  (when (consp (car dom))
+    (setq dom (car dom)))
   (dom-elements dom :id match))
 
 (defun dom-elements (dom attribute match)
@@ -93,6 +116,9 @@ ATTRIBUTE would typically be `:class', `:id' or the like."
 
 (defun dom-parent (dom node)
   "Return the parent of NODE in DOM."
+  ;; Called on a list of nodes.  Use the first.
+  (when (consp (car node))
+    (setq node (car node)))
   (if (memq node dom)
       dom
     (let ((result nil))

@@ -123,10 +123,10 @@ function hideShow(onlyVenue) {
     var match = node.id.match("event-(.*)");
     var eventId = match[1];
     
-    if (onlyShows)
-      visible = onlyShows.indexOf(eventId) != -1;
-    else if (onlyVenue)
+    if (onlyVenue)
       visible = name == onlyVenue;
+    else if (onlyShows)
+      visible = onlyShows.indexOf(eventId) != -1;
     else
       visible = venues.indexOf(name) != -1;
     

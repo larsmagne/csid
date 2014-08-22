@@ -722,6 +722,7 @@
 (defun csid-parse-buckleys (dom)
   (loop for elem in (dom-by-name dom 'h2)
 	collect (list (csid-parse-short-yearless-month (cdr (assq 'text elem)))
+		      "http://www.buckleys.no/kommende-konserter.html"
 		      (mapconcat
 		       'identity
 		       (loop with i = 0
@@ -732,8 +733,7 @@
 					     ""
 					   (cdr elem))
 				       (incf i)))
-		       " ")
-		      "http://www.buckleys.no/kommende-konserter.html")))
+		       " "))))
 
 (defun csid-parse-new (dom)
   (switch-to-buffer (get-buffer-create "*scratch*"))

@@ -93,3 +93,6 @@ html {
 body {
   display: table-cell;
 }
+span.venue-name {
+  cursor: pointer;
+}

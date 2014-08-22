@@ -25,7 +25,7 @@ function addNavigation() {
 	checked = "checked";
       $("#selector").append("<span class='venue'><input type=checkbox " + 
 			    checked + " id='" + name + "'><span id='venue-" +
-			    name + "'>" +
+			    name + "' class='venue-name'>" +
 			    name.replace("_", " ") + "</span></span>");
       $("#" + name).bind("click", function(e) {
 	hideShow();

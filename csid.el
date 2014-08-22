@@ -72,6 +72,7 @@
     ("Sawol" "http://www.sawol.no/category/program/" sawol)
     ("Buckleys" "http://www.buckleys.no/kommende-konserter.html" buckleys :date)
     ("New Orleans" "http://www.neworleansworkshop.com/program" neworleans :date)
+    ("NB" "http://www.nb.no/Hva-skjer/Arrangementer/Konserter" nasjonalbiblioteket)
     ))
 
 (defvar csid-database nil)
@@ -752,6 +753,15 @@
 			       (dom-texts month)))
 		      "http://www.neworleansworkshop.com/program"
 		      (dom-texts title))))
+
+(defun csid-parse-nasjonalbiblioteket (dom)
+  (loop for elem in (dom-by-class dom "kalendar-item")
+	for link = (car (dom-by-name elem 'a))
+	collect (list (csid-parse-short-yearless-month
+		       (csid-clean-string
+			(dom-texts (car (dom-by-class elem "item-date")))))
+		      (shr-expand-url (dom-attr link :href))
+		      (csid-clean-string (dom-texts link)))))
 		      
 
 (defun csid-parse-new (dom)

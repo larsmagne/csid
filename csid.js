@@ -71,7 +71,7 @@ function addNavigation() {
     .detach()
     .appendTo("#selector");
 
-  $("#selector").append("<a class='export'>Export the show list</a>");
+  $("#selector").append("<a class='export'>Export your chosen show list</a>");
   $(".export").bind("click", function(e) {
     exportShows();
   });

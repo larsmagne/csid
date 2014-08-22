@@ -711,6 +711,7 @@
 (defun csid-parse-sawol (dom)
   (loop for elem in (dom-by-class dom "category-program")
 	for link = (car (dom-by-name elem 'a))
+	when (dom-attr link :title)
 	collect (list (csid-parse-short-month
 		       (format "%s %s"
 			       (dom-text (car (dom-by-class elem "dayInfo")))

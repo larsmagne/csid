@@ -69,6 +69,8 @@
     ("Olsen" "http://olsenbar.no/?page_id=3447" olsen)
     ("Verkstedet" "http://www.verkstedetbar.no/program/" verkstedet :date)
     ("Gamla" "http://www.gamla.no/" gamla)
+    ("Sawol" "http://www.sawol.no/category/program/" sawol)
+    ("Buckleys" "http://www.buckleys.no/kommende-konserter.html" buckleys :date)
     ))
 
 (defvar csid-database nil)
@@ -705,6 +707,32 @@
 		  (dom-text (car (dom-by-name elem 'h4))))
 		 (dom-attr link :href)
 		 (dom-attr link :title))))
+
+(defun csid-parse-sawol (dom)
+  (loop for elem in (dom-by-class dom "category-program")
+	for link = (car (dom-by-name elem 'a))
+	collect (list (csid-parse-short-month
+		       (format "%s %s"
+			       (dom-text (car (dom-by-class elem "dayInfo")))
+			       (dom-text (car (dom-by-class elem "monthInfo")))))
+		      (dom-attr link :href)
+		      (dom-attr link :title))))
+
+(defun csid-parse-buckleys (dom)
+  (loop for elem in (dom-by-name dom 'h2)
+	collect (list (csid-parse-short-yearless-month (cdr (assq 'text elem)))
+		      (mapconcat
+		       'identity
+		       (loop with i = 0
+			     for elem in (cdr elem)
+			     when (eq (car elem) 'text)
+			     collect (prog1
+					 (if (zerop i)
+					     ""
+					   (cdr elem))
+				       (incf i)))
+		       " ")
+		      "http://www.buckleys.no/kommende-konserter.html")))
 
 (defun csid-parse-new (dom)
   (switch-to-buffer (get-buffer-create "*scratch*"))

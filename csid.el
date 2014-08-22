@@ -753,11 +753,18 @@
       (insert "<script type='text/javascript' src='jquery-1.10.2.min.js'></script><script type='text/javascript' src='jquery.cookie.js'></script><script type='text/javascript' src='csid.js'></script>"))))
 
 (defun csid-add-weekday (date)
-  (let ((time (encode-time 0 0 0
-			   (string-to-number (substring date 8))
-			   (string-to-number (substring date 5 7))
-			   (string-to-number (substring date 0 4)))))
-    (format-time-string "%A, %B %d" time)))
+  (let* ((day (string-to-number (substring date 8)))
+	 (time (encode-time 0 0 0
+			    day
+			    (string-to-number (substring date 5 7))
+			    (string-to-number (substring date 0 4)))))
+    (concat (format-time-string "%A, %B %e" time)
+	    (cond
+	     ((<= 10 day 20) "th")
+	     ((= (mod day 10) 1) "st")
+	     ((= (mod day 10) 2) "nd")
+	     ((= (mod day 10) 3) "rd")
+	     (t "th")))))
 
 (defun csid-update-html (file &optional inhibit-fetch)
   (csid-read-database)

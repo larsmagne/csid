@@ -21,7 +21,7 @@ function addNavigation() {
 
     if (! document.getElementById(name)) {
       var checked = "";
-      if (deniedVenues.indexOf(name) == -1)
+      if ($.inArray(deniedVenues, name) == -1)
 	checked = "checked";
       $("#selector").append("<span class='venue'><input type=checkbox " + 
 			    checked + " id='" + name + "'><span id='venue-" +
@@ -52,9 +52,9 @@ function addNavigation() {
     var id = node.id.replace("event-", "");
     $(node).append("<td class=show><input type=checkbox id='show-" + id + 
 		   "' " + 
-		   (shows.indexOf(id) == -1? "": "checked") +
+		   ($.inArray(shows, id) == -1? "": "checked") +
 		   ">");
-    if (shows.indexOf(id) != -1)
+    if ($.inArray(shows, id) != -1)
       $("#event-" + id).addClass("checked");
     $("#show-" + id).bind("click", function(e) {
       toggleShow(id, this.checked);
@@ -126,9 +126,9 @@ function hideShow(onlyVenue) {
     if (onlyVenue)
       visible = name == onlyVenue;
     else if (onlyShows)
-      visible = onlyShows.indexOf(eventId) != -1;
+      visible = $.inArray(onlyShows, eventId) != -1;
     else
-      visible = venues.indexOf(name) != -1;
+      visible = $.inArray(venues, name) != -1;
     
     if (visible) {
       $(node).removeClass("invisible");
@@ -158,7 +158,7 @@ function removeElement(arr, val) {
 function toggleShow(id, checked) {
   var shows = getSettings("shows");
   if (checked) {
-    if (shows.indexOf(id) == -1)
+    if ($.inArray(shows, id) == -1)
       shows.push(id);
     $("#event-" + id).addClass("checked");
   } else {

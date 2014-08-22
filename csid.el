@@ -71,6 +71,7 @@
     ("Gamla" "http://www.gamla.no/" gamla)
     ("Sawol" "http://www.sawol.no/category/program/" sawol)
     ("Buckleys" "http://www.buckleys.no/kommende-konserter.html" buckleys :date)
+    ("New Orleans" "http://www.neworleansworkshop.com/program" neworleans :date)
     ))
 
 (defvar csid-database nil)
@@ -739,6 +740,19 @@
 					   (cdr elem))
 				       (incf i)))
 		       " "))))
+
+(defun csid-parse-neworleans (dom)
+  (loop for title in (dom-by-class dom "views-field-title")
+	for elem = (dom-parent dom (dom-parent dom title))
+	for month = (car (dom-by-class elem "views-field-field_dato_1"))
+	when (and (eq (car elem) 'div)
+		  month)
+	collect (list (csid-parse-month-date
+		       (format "%s %s" (dom-texts (car (dom-by-class elem "views-field-field_dato$")))
+			       (dom-texts month)))
+		      "http://www.neworleansworkshop.com/program"
+		      (dom-texts title))))
+		      
 
 (defun csid-parse-new (dom)
   (switch-to-buffer (get-buffer-create "*scratch*"))

@@ -66,6 +66,7 @@ tr.invisible {
 }
 tr td:nth-child(2) {
   white-space: nowrap;
+  padding-left: 8px;
 }
 span.venue {
   padding-right: 10px;

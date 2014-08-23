@@ -21,7 +21,7 @@ function addNavigation() {
 
     if (! document.getElementById(name)) {
       var checked = "";
-      if ($.inArray(deniedVenues, name) == -1)
+      if (deniedVenues.indexOf(name) == -1)
 	checked = "checked";
       $("#selector").append("<span class='venue'><input type=checkbox " + 
 			    checked + " id='" + name + "'><span id='venue-" +
@@ -52,9 +52,9 @@ function addNavigation() {
     var id = node.id.replace("event-", "");
     $(node).append("<td class=show><input type=checkbox id='show-" + id + 
 		   "' " + 
-		   ($.inArray(shows, id) == -1? "": "checked") +
+		   (shows.indexOf(id) == -1? "": "checked") +
 		   ">");
-    if ($.inArray(shows, id) != -1)
+    if (shows.indexOf(id) != -1)
       $("#event-" + id).addClass("checked");
     $("#show-" + id).bind("click", function(e) {
       toggleShow(id, this.checked);
@@ -71,20 +71,24 @@ function addNavigation() {
     .detach()
     .appendTo("#selector");
 
-  $("#selector").append("<a class='export'>Export your chosen show list</a>");
-  $(".export").bind("click", function(e) {
+  hideShow();
+  
+  var visible = "invisible";
+  if ($("tr.checked").length > 0 || window.location.href.match("shows="))
+    visible = "";
+  $("#selector").after("<div id='export' class='export " + visible + 
+		       "'><a class='export'>Export your chosen show list</a></div>");
+  $("a.export").bind("click", function(e) {
     exportShows();
   });
 
   if (window.location.href.match("shows=")) {
-    $("#selector").append(" - <a class='clear'>Clear the show list</a>");
-    $(".clear").bind("click", function(e) {
+    $("#export").append(" - <a class='clear'>Clear the show list</a>");
+    $("a.clear").bind("click", function(e) {
       window.location.href = window.location.href.replace(/[?].*/, "");
-      hideShow();
     });
   }
   
-  hideShow();
 }
 
 function hideShow(onlyVenue) {
@@ -126,9 +130,9 @@ function hideShow(onlyVenue) {
     if (onlyVenue)
       visible = name == onlyVenue;
     else if (onlyShows)
-      visible = $.inArray(onlyShows, eventId) != -1;
+      visible = onlyShows.indexOf(eventId) != -1;
     else
-      visible = $.inArray(venues, name) != -1;
+      visible = venues.indexOf(name) != -1;
     
     if (visible) {
       $(node).removeClass("invisible");
@@ -158,12 +162,15 @@ function removeElement(arr, val) {
 function toggleShow(id, checked) {
   var shows = getSettings("shows");
   if (checked) {
-    if ($.inArray(shows, id) == -1)
+    if (shows.indexOf(id) == -1)
       shows.push(id);
     $("#event-" + id).addClass("checked");
+    $("#export").removeClass("invisible");
   } else {
     shows = removeElement(shows, id);
     $("#event-" + id).removeClass("checked");
+    if ($("tr.checked").length == 0)
+      $("#export").addClass("invisible");
   }
   $.cookie("shows", shows.join(), { expires: 10000 });
 }

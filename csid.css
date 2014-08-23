@@ -2,11 +2,21 @@ body {
   background: white;
   text: black;
   font-family: arial, sans-serif;
-  max-width: 800px;
+  max-width: 1000px;
+}
+div#body-container {
+  overflow: hidden;
 }
 table {
   border-collapse: collapse;
   max-width: 800px;
+  float: left;
+}
+div#selector {
+  padding-bottom: 10px;
+  margin-left: 10px;
+  width: 100px;
+  float: right;
 }
 table tr {
   vertical-align: top;
@@ -75,11 +85,6 @@ span.venue {
   padding-right: 10px;
   white-space: nowrap;
   display:inline-block;
-}
-div#selector {
-  padding-bottom: 10px;
-  margin-left: -4px;
-  max-width: 800px;
 }
 td.show {
   padding-left: 15px;

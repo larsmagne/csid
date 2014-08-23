@@ -773,8 +773,8 @@
 	(now (format-time-string "%Y-%m-%d"))
 	prev-date start)
     (with-temp-file (or file "/tmp/csid.html")
-      (insert "<head><title>Crowdsourcing Is Dead</title><meta charset='utf-8'><link href='csid.css' rel='stylesheet' type='text/css'><meta name='viewport' content='width=device-width, initial-scale=1'><body><div id='body-container'><img src='csid.png'><p>(Also known as <a href='http://lars.ingebrigtsen.no/2013/09/crowdsourcing-is-dead.html'>'Concerts In Oslo' or 'Konserter i Oslo'</a>.)</p><div id='selector'></div>")
-      (insert "<table></div>")
+      (insert "<head><title>Crowdsourcing Is Dead</title><meta charset='utf-8'><link href='csid.css' rel='stylesheet' type='text/css'><meta name='viewport' content='width=device-width, initial-scale=1'><body><div id='body-container'><img src='csid.png'><p>(Also known as <a href='http://lars.ingebrigtsen.no/2013/09/crowdsourcing-is-dead.html'>'Concerts In Oslo' or 'Konserter i Oslo'</a>.)</p>")
+      (insert "<table>")
       (setq start (point))
       (loop with prev-date
 	    for (venue date url name id) in data
@@ -797,7 +797,7 @@
 				    name))
 				 venue)))
 	    (setq prev-date date))
-      (insert "</table>")
+      (insert "</table><div id='selector'></div>")
       (write-region start (point) "/tmp/csid-table.html")
       (insert "<script type='text/javascript' src='jquery-1.10.2.min.js'></script><script type='text/javascript' src='jquery.cookie.js'></script><script type='text/javascript' src='csid.js'></script>"))))
 

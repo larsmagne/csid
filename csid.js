@@ -33,6 +33,9 @@ function addNavigation() {
       });
       $("#venue-" + name).bind("click", function(e) {
 	fixPosition();
+	$("table").each(function (key, table) {
+	  table.width = table.offsetWidth + "px";
+	});
 	if (lastVenue != name) {
 	  hideShow(name);
 	  lastVenue = name;

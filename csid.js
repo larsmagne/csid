@@ -79,7 +79,7 @@ function addNavigation() {
   var visible = "invisible";
   if ($("tr.checked").length > 0 || window.location.href.match("shows="))
     visible = "";
-  $("#selector").after("<div id='export' class='export " + visible + 
+  $("#selector").append("<div id='export' class='export " + visible + 
 		       "'><a class='export'>Export your chosen show list</a></div>");
   $("a.export").bind("click", function(e) {
     exportShows();
@@ -201,7 +201,8 @@ function exportShows() {
   var shows = getSettings("shows");
   var visible = [];
   $.map(shows, function(elem) {
-    if ($("#event-" + elem)[0])
+    var id = "#event-" + elem;
+    if ($(id)[0] && $(id).is(":visible") )
       visible.push(elem);
   });
   window.location.href = window.location.href.replace(/[?].*/, "") +

@@ -91,7 +91,8 @@ td.show {
   vertical-align: middle;
 }
 div.export {
-  padding-bottom: 10px;
+  padding-top: 10px;
+  margin-left: 3px;
 }
 div.export a {
   cursor: pointer;

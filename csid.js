@@ -11,6 +11,10 @@ function getSettings(name) {
 var lastVenue = false;
 
 function addNavigation() {
+  // Default to not showing quizes.
+  if (typeof $.cookie("deniedVenues") == 'undefined')
+    $.cookie("deniedVenues", "Quiz");
+
   var deniedVenues = getSettings("deniedVenues");
   var shows = getSettings("shows");
 
@@ -19,32 +23,8 @@ function addNavigation() {
     if (! name)
       return;
 
-    if (! document.getElementById(name)) {
-      var checked = "";
-      if ($.inArray(name, deniedVenues) == -1)
-	checked = "checked";
-      $("#selector").append("<span class='venue'><input type=checkbox " + 
-			    checked + " id='" + name + "'><span id='venue-" +
-			    name + "' class='venue-name'>" +
-			    name.replace("_", " ") + "</span></span>");
-      $("#" + name).bind("click", function(e) {
-	hideShow();
-	setVenueCookie();
-      });
-      $("#venue-" + name).bind("click", function(e) {
-	fixPosition();
-	$("table").each(function (key, table) {
-	  table.width = table.offsetWidth + "px";
-	});
-	if (lastVenue != name) {
-	  hideShow(name);
-	  lastVenue = name;
-	} else {
-	  hideShow();
-	  lastVenue = false;
-	}
-      });
-    }
+    if (! document.getElementById(name))
+      addVenue(name, deniedVenues);
 
     $(node).children("td").each(function(key, td) {
       $(td).bind("click", function() {
@@ -63,6 +43,9 @@ function addNavigation() {
       toggleShow(id, this.checked);
     });
   });
+
+  // Add a virtual "quiz" venue.
+  addVenue("Quiz", deniedVenues);
 
   // Sort all the venues.
   $("#selector")
@@ -91,7 +74,33 @@ function addNavigation() {
       window.location.href = window.location.href.replace(/[?].*/, "");
     });
   }
-  
+}
+
+function addVenue(name, deniedVenues) {
+  var checked = "";
+  if ($.inArray(name, deniedVenues) == -1)
+    checked = "checked";
+  $("#selector").append("<span class='venue'><input type=checkbox " + 
+			checked + " id='" + name + "'><span id='venue-" +
+			name + "' class='venue-name'>" +
+			name.replace("_", " ") + "</span></span>");
+  $("#" + name).bind("click", function(e) {
+    hideShow();
+    setVenueCookie();
+  });
+  $("#venue-" + name).bind("click", function(e) {
+    fixPosition();
+    $("table").each(function (key, table) {
+      table.width = table.offsetWidth + "px";
+    });
+    if (lastVenue != name) {
+      hideShow(name);
+      lastVenue = name;
+    } else {
+      hideShow();
+      lastVenue = false;
+    }
+  });
 }
 
 function hideShow(onlyVenue) {
@@ -130,12 +139,20 @@ function hideShow(onlyVenue) {
     var match = node.id.match("event-(.*)");
     var eventId = match[1];
     
-    if (onlyVenue)
-      visible = name == onlyVenue;
-    else if (onlyShows)
+    if (onlyVenue) {
+      if (onlyVenue == "Quiz")
+	visible = $(node).text().match(/quiz/i);
+      else
+	visible = name == onlyVenue;
+    } else if (onlyShows)
       visible = $.inArray(eventId, onlyShows) != -1;
-    else
+    else {
       visible = $.inArray(name, venues) != -1;
+      if (visible &&
+	  $.inArray("Quiz", venues) == -1 &&
+	  $(node).text().match(/quiz/i))
+	visible = false;
+    }
     
     if (visible) {
       $(node).removeClass("invisible");

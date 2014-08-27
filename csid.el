@@ -793,10 +793,10 @@
 				     "visible")
 				   (csid-add-weekday date))))
 		 (setq prev-date date)
-		 (insert (format "<tr name='%s' id='event-%s' data=%s><td><a href='%s'>%s<td>%s</tr>"
+		 (insert (format "<tr name='%s' id='event-%s' data=%s time='%s'><td><a href='%s'>%s<td>%s</tr>"
 				 (replace-regexp-in-string " " "_" venue)
 				 id
-				 rank
+				 rank fetch-date
 				 url
 				 (url-insert-entities-in-string
 				  (if (> (length name) 1000)

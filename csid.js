@@ -26,10 +26,19 @@ function addNavigation() {
     if (! document.getElementById(name))
       addVenue(name, deniedVenues);
 
-    $(node).children("td").each(function(key, td) {
-      $(td).bind("click", function() {
-	top.location.href = $(node).find("a").attr("href");
-      });
+    $(node).children("td").first().bind("click", function() {
+      top.location.href = $(node).find("a").attr("href");
+    });
+
+    $(node).children("td").last().bind("click", function() {
+      fixPosition();
+      if (lastVenue != name) {
+	hideShow(name);
+	lastVenue = name;
+      } else {
+	hideShow();
+	lastVenue = false;
+      }
     });
     
     var id = node.id.replace("event-", "");
@@ -90,9 +99,6 @@ function addVenue(name, deniedVenues) {
   });
   $("#venue-" + name).bind("click", function(e) {
     fixPosition();
-    $("table").each(function (key, table) {
-      table.width = table.offsetWidth + "px";
-    });
     if (lastVenue != name) {
       hideShow(name);
       lastVenue = name;
@@ -211,6 +217,12 @@ function fixPosition() {
     body.style.position = "absolute";
     body.style.left = pos.left + "px";
     body.style.top = pos.top + "px";
+  });
+  $("table").each(function (key, table) {
+    table.width = table.offsetWidth + "px";
+    $(table).find("colgroup").children("col").each(function(key, col) {
+      col.width = col.offsetWidth + "px";
+    });
   });
 }
 

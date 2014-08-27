@@ -77,6 +77,11 @@ function addNavigation() {
     exportShows();
   });
 
+  $("#selector").append("<div class='export'><a id='sort'>List shows in scan order</a></div>");
+  $("#sort").bind("click", function() {
+    sortByScanOrder();
+  });
+
   if (window.location.href.match("shows=")) {
     $("#export").append(" - <a class='clear'>Clear the show list</a>");
     $("a.clear").bind("click", function(e) {
@@ -236,6 +241,18 @@ function exportShows() {
   });
   window.location.href = window.location.href.replace(/[?].*/, "") +
     "?shows=" + visible.join();
+}
+
+function sortByScanOrder() {
+  $trs = $("table").find("tr:not(.date)");
+  $table = $("table");
+  $("tr").remove();
+
+  $trs
+    .sort(function(a, b) {
+      return parseInt($(a).attr("data")) - parseInt(($(b).attr("data")));
+    })
+    .appendTo($table);
 }
 
 addNavigation();

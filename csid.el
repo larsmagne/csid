@@ -735,14 +735,21 @@
 		       " "))))
 
 (defun csid-parse-neworleans (dom)
-  (loop for title in (dom-by-class dom "views-field-title")
+  (loop with year = (let ((year (dom-text (dom-by-name dom 'title))))
+		      (and (string-match "[0-9][0-9][0-9][0-9]" year)
+			   (match-string 0 year)))
+	for title in (dom-by-class dom "views-field-title")
 	for elem = (dom-parent dom (dom-parent dom title))
 	for month = (dom-by-class elem "views-field-field_dato_1")
 	when (and (eq (car elem) 'div)
-		  month)
-	collect (list (csid-parse-month-date
-		       (format "%s %s" (dom-texts (dom-by-class elem "views-field-field_dato$"))
-			       (dom-texts month)))
+		  month
+		  year)
+	collect (list (csid-parse-month-date-with-year
+		       (format "%s %s %s"
+			       (dom-texts month)
+			       (dom-texts
+				(dom-by-class elem "views-field-field_dato$"))
+			       year))
 		      "http://www.neworleansworkshop.com/program"
 		      (dom-texts title))))
 

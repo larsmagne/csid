@@ -1,5 +1,11 @@
 body {
   background: white;
+  background: -moz-linear-gradient(top, #FFFFFF 0%, #000000 100%);
+  background: -ms-linear-gradient(top, #FFFFFF 0%, #000000 100%);
+  background: -o-linear-gradient(top, #FFFFFF 0%, #000000 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #FFFFFF), color-stop(1, #000000));
+  background: -webkit-linear-gradient(top, #FFFFFF 0%, #000000 100%);
+  background: linear-gradient(to bottom, #FFFFFF 0%, #000000 100%);
   text: black;
   font-family: arial, sans-serif;
   max-width: 1000px;
@@ -15,7 +21,7 @@ table {
 div#selector {
   padding-bottom: 10px;
   margin-left: 10px;
-  width: 100px;
+  width: 140px;
   float: right;
 }
 table tr {
@@ -84,7 +90,7 @@ tr td:nth-child(2) {
 span.venue {
   padding-right: 10px;
   white-space: nowrap;
-  display:inline-block;
+  display: block;
 }
 td.show {
   padding-left: 15px;

@@ -114,11 +114,12 @@ function addVenue(name, deniedVenues) {
   });
 }
 
-function hideShow(onlyVenue) {
+function hideShow(onlyVenue, onlyAfterTimestamp) {
   var venues = [];
   var i = 0;
   var onlyShows = window.location.href.match("shows=([0-9,]+)");
   var prevDate = false, anyVisible = false;
+  var maxTimestamp = "";
 
   // We've gotten an URL with a show list from somebody.
   if (onlyShows)
@@ -147,6 +148,10 @@ function hideShow(onlyVenue) {
       return;
     }
 
+    var timestamp = node.getAttribute("time");
+    if (timestamp > maxTimestamp)
+      maxTimestamp = timestamp;
+
     var match = node.id.match("event-(.*)");
     var eventId = match[1];
     
@@ -155,7 +160,9 @@ function hideShow(onlyVenue) {
 	visible = $(node).text().match(/quiz/i);
       else
 	visible = name == onlyVenue;
-    } else if (onlyShows)
+    } else if (onlyAfterTimestamp)
+      visible = timestamp > onlyAfterTimestamp;
+    else if (onlyShows)
       visible = $.inArray(eventId, onlyShows) != -1;
     else {
       visible = $.inArray(name, venues) != -1;
@@ -177,6 +184,19 @@ function hideShow(onlyVenue) {
       $(prevDate).removeClass("invisible");
     else
       $(prevDate).addClass("invisible");
+  }
+
+  if (! onlyAfterTimestamp) {
+    if (typeof $.cookie("timestamp") == 'undefined')
+      $.cookie("timestamp", maxTimestamp);
+    else if (maxTimestamp > $.cookie("timestamp")) {
+      $("#selector").append("<div class='export'><a id='new'>Display shows arrived since last time</a></div>");
+      $("#new").bind("click", function() {
+	fixPosition();
+	hideShow(false, $.cookie("timestamp"));
+	$.cookie("timestamp", maxTimestamp);
+      });
+    }
   }
 }
 

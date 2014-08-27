@@ -91,6 +91,10 @@ function addNavigation() {
       window.location.href = window.location.href.replace(/[?].*/, "");
     });
   }
+
+  $("img").bind("click", function() {
+    window.location.href = "http://csid.no/";
+  });
 }
 
 function addVenue(name, deniedVenues) {

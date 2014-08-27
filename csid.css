@@ -35,6 +35,7 @@ table td {
 img {
   padding-top: 10px;
   margin-left: -10px;
+  cursor: pointer;
 }
 a {
   color: black;

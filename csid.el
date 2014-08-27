@@ -144,7 +144,8 @@
 		    (equal (nth index elem)
 			   (nth index old)))
 	  do (setq found (nth 4 old)))
-    (append elem (list (or found (incf csid-sequence))))))
+    (append elem (list (or found (incf csid-sequence))
+		       (format-time-string "%FT%T")))))
 
 (defun csid-parse-source (url function data-type)
   (with-current-buffer (url-retrieve-synchronously url)

@@ -80,6 +80,7 @@ function addNavigation() {
   $("#selector").append("<div class='export'><a id='sort'>List shows in scan order</a></div>");
   $("#sort").bind("click", function() {
     sortByScanOrder();
+    addRestoreLink();
   });
 
   if (window.location.href.match("shows=")) {
@@ -195,6 +196,7 @@ function hideShow(onlyVenue, onlyAfterTimestamp) {
 	fixPosition();
 	hideShow(false, $.cookie("timestamp"));
 	$.cookie("timestamp", maxTimestamp);
+	addRestoreLink();
       });
     }
   }
@@ -273,6 +275,10 @@ function sortByScanOrder() {
       return parseInt($(a).attr("data")) - parseInt(($(b).attr("data")));
     })
     .appendTo($table);
+}
+
+function addRestoreLink() {
+  $("#selector").append("<div class='export'><a href='http://csid.no/'>Restore list</a></div>");
 }
 
 addNavigation();

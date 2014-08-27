@@ -384,9 +384,9 @@
 
 (defun csid-parse-mir (dom)
   (loop for elem in (dom-by-id dom "program")
-	for time = (dom-by-class elem "programtid")
 	for link = (dom-by-name (dom-by-class elem "programtittel") 'a)
-	collect (list (csid-parse-month-date (dom-text time))
+	collect (list (csid-parse-month-date
+		       (dom-text (dom-by-class elem "programtid")))
 		      (dom-attr link :href)
 		      (dom-attr link :title))))
 
@@ -773,8 +773,8 @@
 	(now (format-time-string "%Y-%m-%d"))
 	prev-date start)
     (with-temp-file (or file "/tmp/csid.html")
-      (insert "<head><title>Crowdsourcing Is Dead</title><meta charset='utf-8'><link href='csid.css' rel='stylesheet' type='text/css'><meta name='viewport' content='width=device-width, initial-scale=1'><body><div id='body-container'><img src='csid.png'><p>(Also known as <a href='http://lars.ingebrigtsen.no/2013/09/crowdsourcing-is-dead.html'>'Concerts In Oslo' or 'Konserter i Oslo'</a>.)</p>")
-      (insert "<table>")
+      (insert "<head><title>Crowdsourcing Is Dead</title><meta charset='utf-8'><link href='csid.css' rel='stylesheet' type='text/css'><meta name='viewport' content='width=device-width, initial-scale=1'><link rel='icon' href='http://csid.no/favicon.ico'><body><div id='body-container'><img src='csid.png'><p>(Also known as <a href='http://lars.ingebrigtsen.no/2013/09/crowdsourcing-is-dead.html'>'Concerts In Oslo' or 'Konserter i Oslo'</a>.)</p>")
+      (insert "<table><colgroup><col><col><col></colgroup>")
       (setq start (point))
       (loop with prev-date
 	    for (venue date url name id) in data

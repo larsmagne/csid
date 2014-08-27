@@ -762,10 +762,15 @@
   (pp dom (current-buffer))
   (goto-char (point-min)))
 
+(defun csid-number-database ()
+  (loop for elem in (copy-list csid-database)
+	for i from 1
+	collect (append elem (list i))))
+
 (defun csid-generate-html (&optional file)
   (let ((data
 	 ;; Sort by dates, and then names.
-	 (sort (sort (copy-list csid-database)
+	 (sort (sort (csid-number-database)
 		     (lambda (e1 e2)
 		       (string< (car e1) (car e2))))
 	       (lambda (e1 e2)
@@ -778,7 +783,7 @@
       (insert "<table><colgroup><col><col><col></colgroup>")
       (setq start (point))
       (loop with prev-date
-	    for (venue date url name id fetch-date) in data
+	    for (venue date url name id fetch-date rank) in data
 	    unless (string< date now)
 	    do (progn
 		 (unless (equal date prev-date)
@@ -788,9 +793,10 @@
 				     "visible")
 				   (csid-add-weekday date))))
 		 (setq prev-date date)
-		 (insert (format "<tr name='%s' id='event-%s'><td><a href='%s'>%s<td>%s</tr>"
+		 (insert (format "<tr name='%s' id='event-%s' data=%s><td><a href='%s'>%s<td>%s</tr>"
 				 (replace-regexp-in-string " " "_" venue)
 				 id
+				 rank
 				 url
 				 (url-insert-entities-in-string
 				  (if (> (length name) 1000)

@@ -778,7 +778,7 @@
       (insert "<table><colgroup><col><col><col></colgroup>")
       (setq start (point))
       (loop with prev-date
-	    for (venue date url name id) in data
+	    for (venue date url name id fetch-date) in data
 	    unless (string< date now)
 	    do (progn
 		 (unless (equal date prev-date)

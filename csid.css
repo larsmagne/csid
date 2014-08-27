@@ -118,5 +118,6 @@ body {
 span.venue-name {
   cursor: pointer;
 }
-
-
+div.explanation {
+  margin-bottom: 10px;
+}

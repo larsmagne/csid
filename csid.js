@@ -18,6 +18,8 @@ function addNavigation() {
   var deniedVenues = getSettings("deniedVenues");
   var shows = getSettings("shows");
 
+  $("#selector").append("<div class='explanation'>Click venues to toggle</div>");
+
   $("tr").each(function(key, node) {
     var name = node.getAttribute("name");
     if (! name)
@@ -72,19 +74,19 @@ function addNavigation() {
   if ($("tr.checked").length > 0 || window.location.href.match("shows="))
     visible = "";
   $("#selector").append("<div id='export' class='export " + visible + 
-		       "'><a class='export'>Export your chosen show list</a></div>");
+		       "'><a class='export'>Export your chosen event list</a></div>");
   $("a.export").bind("click", function(e) {
     exportShows();
   });
 
-  $("#selector").append("<div class='export'><a id='sort'>List shows in scan order</a></div>");
+  $("#selector").append("<div class='export'><a id='sort'>List event in scan order</a></div>");
   $("#sort").bind("click", function() {
     sortByScanOrder();
     addRestoreLink();
   });
 
   if (window.location.href.match("shows=")) {
-    $("#export").append(" - <a class='clear'>Clear the show list</a>");
+    $("#export").append(" - <a class='clear'>Clear the event list</a>");
     $("a.clear").bind("click", function(e) {
       window.location.href = window.location.href.replace(/[?].*/, "");
     });
@@ -191,7 +193,7 @@ function hideShow(onlyVenue, onlyAfterTimestamp) {
     if (typeof $.cookie("timestamp") == 'undefined')
       $.cookie("timestamp", maxTimestamp);
     else if (maxTimestamp > $.cookie("timestamp")) {
-      $("#selector").append("<div class='export'><a id='new'>Display shows arrived since last time</a></div>");
+      $("#selector").append("<div class='export'><a id='new'>Display events arrived since last time</a></div>");
       $("#new").bind("click", function() {
 	fixPosition();
 	hideShow(false, $.cookie("timestamp"));

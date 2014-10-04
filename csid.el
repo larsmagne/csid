@@ -394,9 +394,10 @@
 (defun csid-parse-crossroads (dom)
   (loop for elem in (dom-by-class dom "post")
 	for link = (dom-by-name elem 'a)
-	for date = (dom-text (dom-by-class elem "entry-date"))
+	for date = (csid-parse-month-date-with-year
+		    (dom-text (dom-by-class elem "entry-date")))
 	when (and link date)
-	collect (list (csid-parse-month-date-with-year date)
+	collect (list date
 		      (dom-attr link :href)
 		      (dom-text link))))
 

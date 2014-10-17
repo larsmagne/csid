@@ -201,7 +201,7 @@ function hideShow(onlyVenue, onlyAfterTimestamp) {
       $("#new").bind("click", function() {
 	fixPosition();
 	hideShow(false, $.cookie("timestamp"));
-	$.cookie("timestamp", maxTimestamp);
+	$.cookie("timestamp", maxTimestamp, { expires: 10000 });
 	addRestoreLink();
       });
     }

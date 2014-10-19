@@ -439,7 +439,9 @@
     "Rockefeller")))
 
 (defun csid-parse-mono (dom)
-  (loop for event in (dom-by-class dom "^event_wrapper$")
+  (loop for event in (dom-by-class
+		      (dom-by-id dom "^prikketabell_program$")
+		      "^event_wrapper$")
 	collect (list (csid-parse-numeric-date
 		       (dom-text (dom-by-class event "event_date")))
 		      (shr-expand-url (dom-attr (dom-by-name event 'a) :href))

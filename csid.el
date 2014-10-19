@@ -113,6 +113,9 @@
     (setq csid-sequence (max (nth 4 elem) csid-sequence))))
 
 (defun csid-parse-sources (&optional type)
+  ;; When calling interactively, clear out the list for easier debugging.
+  (when type
+    (csid-read-database))
   (csid-write-database
    (csid-update-database
     (loop for source in csid-sources
@@ -436,7 +439,7 @@
     "Rockefeller")))
 
 (defun csid-parse-mono (dom)
-  (loop for event in (dom-by-class dom "event_wrapper")
+  (loop for event in (dom-by-class dom "^event_wrapper$")
 	collect (list (csid-parse-numeric-date
 		       (dom-text (dom-by-class event "event_date")))
 		      (shr-expand-url (dom-attr (dom-by-name event 'a) :href))

@@ -436,12 +436,12 @@
     "Rockefeller")))
 
 (defun csid-parse-mono (dom)
-  (loop for elem in (dom-by-class dom "artist")
-	for link = (dom-by-name (dom-by-name elem 'h2) 'a)
-	collect (list (csid-parse-english-month-date
-		       (dom-text (dom-by-name elem 'h3)))
-		      (dom-attr link :href)
-		      (dom-text link))))
+  (loop for event in (dom-by-class dom "event_wrapper")
+	collect (list (csid-parse-numeric-date
+		       (dom-text (dom-by-class event "event_date")))
+		      (shr-expand-url (dom-attr (dom-by-name event 'a) :href))
+		      (csid-clean-string
+		       (dom-text (dom-by-class event "event_title"))))))
 
 (defun csid-parse-parkteateret (dom)
   (loop for elem in (dom-by-class dom "concert-item")

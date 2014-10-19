@@ -721,7 +721,7 @@
 
 (defun csid-parse-buckleys (dom)
   (loop for elem in (dom-by-name dom 'h2)
-	collect (list (csid-parse-short-yearless-month (cdr (assq 'text elem)))
+	collect (list (csid-parse-short-yearless-month (dom-texts elem))
 		      "http://www.buckleys.no/kommende-konserter.html"
 		      (mapconcat
 		       'identity

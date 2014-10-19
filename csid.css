@@ -1,11 +1,11 @@
 body {
   background: white;
-  background: -moz-linear-gradient(top, #FFFFFF 0%, #000000 100%);
-  background: -ms-linear-gradient(top, #FFFFFF 0%, #000000 100%);
-  background: -o-linear-gradient(top, #FFFFFF 0%, #000000 100%);
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #FFFFFF), color-stop(1, #000000));
-  background: -webkit-linear-gradient(top, #FFFFFF 0%, #000000 100%);
-  background: linear-gradient(to bottom, #FFFFFF 0%, #000000 100%);
+  background: -moz-linear-gradient(top, #FFFFFF 0%, #008000 100%);
+  background: -ms-linear-gradient(top, #FFFFFF 0%, #008000 100%);
+  background: -o-linear-gradient(top, #FFFFFF 0%, #008000 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #FFFFFF), color-stop(1, #008000));
+  background: -webkit-linear-gradient(top, #FFFFFF 0%, #008000 100%);
+  background: linear-gradient(to bottom, #FFFFFF 0%, #008000 100%);
   text: black;
   font-family: arial, sans-serif;
   max-width: 1000px;
@@ -36,6 +36,7 @@ img {
   padding-top: 10px;
   margin-left: -10px;
   cursor: pointer;
+  display: block;
 }
 a {
   color: black;

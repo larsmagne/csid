@@ -123,15 +123,25 @@
 	  for function = (intern (format "csid-parse-%s" function) obarray)
 	  when (or (not type)
 		   (string= type name))
-	  append (let ((results 
-			(csid-parse-source
-			 url
-			 (if (fboundp function)
-			     function
-			   'csid-parse-new)
-			 (if (memq :json source)
-			     :json
-			   :html))))
+	  append (let ((results
+			(if type
+			    (csid-parse-source
+			     url
+			     (if (fboundp function)
+				 function
+			       'csid-parse-new)
+			     (if (memq :json source)
+				 :json
+			       :html))
+			  (ignore-errors
+			    (csid-parse-source
+			     url
+			     (if (fboundp function)
+				 function
+			       'csid-parse-new)
+			     (if (memq :json source)
+				 :json
+			       :html))))))
 		   (unless results
 		     (message "No results for type %s" name))
 		   (loop for result in results

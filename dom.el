@@ -63,22 +63,22 @@ A typical attribute is `:href."
 	 collect (dom-texts elem separator))
    (or separator " ")))
 
-(defun dom-by-name (dom name)
+(defun dom-by-tag (dom name)
   "Return elements in DOM that is of type NAME.
 A name is a symbol like `td'."
   ;; Called on a list of nodes.  Use the first.
   (when (consp (car dom))
     (setq dom (car dom)))
   (let ((dom-elements nil))
-    (dom-by-name-1 dom name)
+    (dom-by-tag-1 dom name)
     (nreverse dom-elements)))
 
-(defun dom-by-name-1 (dom name)
+(defun dom-by-tag-1 (dom name)
   (when (eq (car dom) name)
     (push dom dom-elements))
   (dolist (entry (cdr dom))
     (when (consp (cdr entry))
-      (dom-by-name-1 entry name))))
+      (dom-by-tag-1 entry name))))
 
 (defun dom-by-class (dom match)
   ;; Called on a list of nodes.  Use the first.

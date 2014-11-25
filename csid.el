@@ -42,7 +42,7 @@
   '(("Revolver" "http://www.revolveroslo.no/nb/program" revolver)
     ("Blå" "http://www.blaaoslo.no/" blaa)
     ("Mir" "http://www.lufthavna.no/" mir)
-    ("Crossroads" "http://thecrossroadclub.no/program/" crossroads)
+    ("Crossroads" "http://thecrossroadclub.no/" crossroads)
     ("Victoria" "http://nasjonaljazzscene.no/arrangement/" victoria)
     ("Rockefeller" "http://rockefeller.no/index.html" rockefeller :multi)
     ("Mono" "http://www.cafemono.no/program/" mono)
@@ -230,6 +230,18 @@
 			  :test 'equalp))
 	    (string-to-number (match-string 2 string)))))
 
+;; "onsdag 19. november 2014"
+(defun csid-parse-norwegian-month-date-with-year (string)
+  (setq string (downcase string))
+  (when (string-match (format "\\([0-9]+\\).*?\\(%s\\).*?\\([0-9]+\\)"
+			      (mapconcat 'identity csid-months "\\|"))
+		      string)
+    (format "%04d-%02d-%02d"
+	    (string-to-number (match-string 3 string))
+	    (1+ (position (match-string 2 string) csid-months
+			  :test 'equalp))
+	    (string-to-number (match-string 1 string)))))
+
 (defvar csid-english-months
   '("january" "february" "march" "april" "may" "june" "july"
     "august" "september" "october" "november" "december"))
@@ -406,7 +418,7 @@
 (defun csid-parse-crossroads (dom)
   (loop for elem in (dom-by-class dom "post")
 	for link = (dom-by-tag elem 'a)
-	for date = (csid-parse-month-date-with-year
+	for date = (csid-parse-norwegian-month-date-with-year
 		    (dom-text (dom-by-class elem "entry-date")))
 	when (and link date)
 	collect (list date

@@ -40,7 +40,7 @@
 
 (defvar csid-sources
   '(("Revolver" "http://www.revolveroslo.no/nb/program" revolver)
-    ("Blå" "http://www.blaaoslo.no/program/" blaa)
+    ("Blå" "http://www.blaaoslo.no/" blaa)
     ("Mir" "http://www.lufthavna.no/" mir)
     ("Crossroads" "http://thecrossroadclub.no/program/" crossroads)
     ("Victoria" "http://nasjonaljazzscene.no/arrangement/" victoria)
@@ -195,15 +195,14 @@
 		      (dom-text link))))
 
 (defun csid-parse-blaa (dom)
-  (setq dom (car (dom-by-class dom "calendar-content")))
-  (loop for (date contents) on (cddr dom) by #'cddr
-	append (loop for info in (dom-by-class contents "event-info")
-		     for link = (car (dom-by-tag info 'a))
-		     for text = (dom-text link)
-		     when (plusp (length text))
-		     collect (list (csid-parse-month-date (dom-text date))
-				   (shr-expand-url (dom-attr link :href))
-				   text))))
+  (loop for day in (dom-by-class dom "^day$")
+	append (loop for elem in (dom-by-tag day 'article)
+		     for h1 = (dom-by-tag elem 'h1)
+		     when elem
+		     collect (list (csid-parse-iso8601
+				    (dom-attr (dom-by-tag day 'time) :datetime))
+				   (dom-attr (dom-by-tag h1 'a) :href)
+				   (dom-texts h1)))))
 
 (defvar csid-months '("januar" "februar" "mars" "april" "mai" "juni" "juli"
 		      "august" "september" "oktober" "november" "desember"))

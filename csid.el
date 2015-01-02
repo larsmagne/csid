@@ -754,11 +754,16 @@
 		       'identity
 		       (loop with i = 0
 			     for elem in (dom-children elem)
-			     when (stringp elem)
+			     when (or (stringp elem)
+				      (eq (car elem) 'span))
 			     collect (prog1
-					 (if (zerop i)
-					     ""
+					 (cond
+					  ((zerop i)
+					   "")
+					  ((stringp elem)
 					   elem)
+					  (t
+					   (dom-texts elem)))
 				       (incf i)))
 		       " "))))
 

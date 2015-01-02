@@ -67,7 +67,7 @@
     ("Konserthuset" "http://oslokonserthus.no/public/eventschedule.jsp?month=8&year=2014" konserthuset)
     ("Riksscenen" "http://www.riksscenen.no/program.95415.no.html" riksscenen)
     ("Olsen" "http://olsenbar.no/?page_id=3447" olsen)
-    ("Verkstedet" "http://www.verkstedetbar.no/program/" verkstedet :date)
+    ;;("Verkstedet" "http://www.verkstedetbar.no/program/" verkstedet :date)
     ("Gamla" "http://www.gamla.no/" gamla)
     ("Sawol" "http://www.sawol.no/category/program/" sawol)
     ("Buckleys" "http://www.buckleys.no/kommende-konserter.html" buckleys :date)

@@ -193,14 +193,19 @@
 		      (dom-text link))))
 
 (defun csid-parse-blaa (dom)
-  (loop for day in (dom-by-class dom "^day$")
-	append (loop for elem in (dom-by-tag day 'article)
+  (loop for month in (dom-by-class dom "^month$")
+	for month-name = (dom-texts (dom-by-tag month 'h1))
+	append (loop for day in (dom-by-class month "^day$")
+		     append (loop for elem in (dom-by-tag day 'article)
 		     for h1 = (dom-by-tag elem 'h1)
 		     when elem
-		     collect (list (csid-parse-iso8601
-				    (dom-attr (dom-by-tag day 'time) 'datetime))
-				   (dom-attr (dom-by-tag h1 'a) 'href)
-				   (dom-texts h1)))))
+		     collect (list
+			      (csid-parse-month-date
+			       (format "%s %s"
+				       (dom-text (dom-by-class day "^number$"))
+				       month-name))
+			      (dom-attr (dom-by-tag h1 'a) 'href)
+			      (dom-texts h1))))))
 
 (defvar csid-months '("januar" "februar" "mars" "april" "mai" "juni" "juli"
 		      "august" "september" "oktober" "november" "desember"))
@@ -789,7 +794,7 @@
 (defun csid-parse-new (dom)
   (switch-to-buffer (get-buffer-create "*scratch*"))
   (erase-buffer)
-  (dom-pp dom)
+  (dom-pp dom t)
   (goto-char (point-min)))
 
 (defun csid-number-database ()

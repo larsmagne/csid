@@ -482,7 +482,7 @@
   (loop for elem in (dom-by-tag (dom-by-tag dom 'table) 'tr)
 	for tds = (dom-by-tag elem 'td)
 	for link = (dom-by-tag (nth 2 tds) 'a)
-	collect (list (csid-parse-month-date (cdr (car (last (nth 0 tds)))))
+	collect (list (csid-parse-month-date (car (last (nth 0 tds))))
 		      (shr-expand-url (dom-attr link 'href))
 		      (dom-text link))))
 

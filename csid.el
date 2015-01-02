@@ -432,27 +432,26 @@
 		      (dom-text (dom-by-tag elem 'h2)))))
 
 (defun csid-parse-rockefeller (dom)
-  (loop for elem in (dom-by-tag (dom-by-id dom "print") 'table)
-	for tds = (dom-by-tag elem 'td)
-	for link = (assq 'a (nth 2 tds))
+  (loop for elem in (dom-by-class dom "^show bkg")
 	collect (list (csid-parse-rockefeller-stage
-		       (dom-attr (dom-by-tag (nth 0 tds) 'img) 'src)
-		       (dom-texts link))
-		      (csid-parse-full-numeric-date (car (last (nth 1 tds))))
-		      (shr-expand-url (dom-attr link 'href))
-		      (dom-texts link))))
+		       (dom-attr (dom-by-class elem "^sknapp ") 'class))
+		      (csid-parse-full-numeric-date
+		       (dom-texts (dom-by-class elem "datofelt")))
+		      (shr-expand-url (dom-attr (dom-by-tag elem 'a) 'href))
+		      (csid-clean-string
+		       (dom-texts (dom-by-class elem "showtitle"))))))
 
-(defun csid-parse-rockefeller-stage (img text)
+(defun csid-parse-rockefeller-stage (class)
   (cond
-   ((string-match "Bushwick" text)
+   ((string-match "sc_P" class)
     "Bushwick")
-   ((string-match "Leiligheten" text)
+   ((string-match "sc_L" class)
     "Leiligheten")
-   ((string-match "scene_R" img)
+   ((string-match "sc_R" class)
     "Rockefeller")
-   ((string-match "scene_J" img)
+   ((string-match "sc_J" class)
     "John Dee")
-   ((string-match "scene_S" img)
+   ((string-match "sc_S" class)
     "Sentrum")
    (t
     "Rockefeller")))
@@ -790,7 +789,7 @@
 (defun csid-parse-new (dom)
   (switch-to-buffer (get-buffer-create "*scratch*"))
   (erase-buffer)
-  (pp dom (current-buffer))
+  (dom-pp dom)
   (goto-char (point-min)))
 
 (defun csid-number-database ()

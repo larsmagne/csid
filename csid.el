@@ -748,24 +748,12 @@
 
 (defun csid-parse-buckleys (dom)
   (loop for elem in (dom-by-tag dom 'h2)
+	for event = (dom-parent dom (car (dom-by-tag elem 'br)))
+	for name = (cadr (dom-strings event))
+	when name
 	collect (list (csid-parse-short-yearless-month (dom-texts elem))
 		      "http://www.buckleys.no/kommende-konserter.html"
-		      (mapconcat
-		       'identity
-		       (loop with i = 0
-			     for elem in (dom-children elem)
-			     when (or (stringp elem)
-				      (eq (car elem) 'span))
-			     collect (prog1
-					 (cond
-					  ((zerop i)
-					   "")
-					  ((stringp elem)
-					   elem)
-					  (t
-					   (dom-texts elem)))
-				       (incf i)))
-		       " "))))
+		      (csid-clean-string name))))
 
 (defun csid-parse-neworleans (dom)
   (loop with year = (let ((year (dom-text (dom-by-tag dom 'title))))

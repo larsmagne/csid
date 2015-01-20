@@ -28,8 +28,9 @@ function addNavigation() {
     if (! document.getElementById(name))
       addVenue(name, deniedVenues);
 
-    $(node).children("td").first().bind("click", function() {
-      top.location.href = $(node).find("a").attr("href");
+    $(node).children("td").first().bind("click", function(e) {
+      if (! e.ctrlKey)
+	top.location.href = $(node).find("a").attr("href");
     });
 
     $(node).children("td").last().bind("click", function() {

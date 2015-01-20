@@ -73,6 +73,7 @@
     ("Buckleys" "http://www.buckleys.no/kommende-konserter.html" buckleys :date)
     ("New Orleans" "http://www.neworleansworkshop.com/program" neworleans :date)
     ("NB" "http://www.nb.no/Hva-skjer/Arrangementer/Konserter" nasjonalbiblioteket)
+    ("Uhørt" "http://uhortistroget.no/arkiv/category/program/liveprogram" uhort)
     ))
 
 (defvar csid-database nil)
@@ -754,6 +755,16 @@
 	collect (list (csid-parse-short-yearless-month (dom-texts elem))
 		      "http://www.buckleys.no/kommende-konserter.html"
 		      (csid-clean-string name))))
+
+(defun csid-parse-uhort (dom)
+  (loop for elem in (dom-by-class dom "pinbin-copy")
+	for link = (dom-by-tag elem 'a)
+	collect (list (csid-parse-full-numeric-date
+		       (dom-text (dom-by-class elem "pinbin-date")))
+		      (dom-attr link 'href)
+		      (replace-regexp-in-string
+		       "^[^ ]+ +[0-9]+.[0-9]+:? +" ""
+		       (dom-texts link)))))
 
 (defun csid-parse-neworleans (dom)
   (loop with year = (let ((year (dom-text (dom-by-tag dom 'title))))

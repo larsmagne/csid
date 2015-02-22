@@ -42,7 +42,8 @@
   '(("Revolver" "http://www.revolveroslo.no/nb/program" revolver)
     ("Blå" "http://www.blaaoslo.no/" blaa)
     ("Mir" "http://www.lufthavna.no/" mir)
-    ("Crossroads" "http://thecrossroadclub.no/" crossroads)
+    ("Crossroads" "https://www.facebook.com/thecrossroadclub/events?key=events"
+     crossroads)
     ("Victoria" "http://nasjonaljazzscene.no/arrangement/" victoria)
     ("Rockefeller" "http://rockefeller.no/index.html" rockefeller :multi)
     ("Mono" "http://www.cafemono.no/program/" mono)
@@ -116,7 +117,7 @@
 (defun csid-parse-sources (&optional type)
   ;; When calling interactively, clear out the list for easier debugging.
   (when type
-    (csid-read-database))
+    (setq csid-database nil))
   (csid-write-database
    (csid-update-database
     (loop for source in csid-sources
@@ -420,14 +421,19 @@
 		      (dom-attr link 'title))))
 
 (defun csid-parse-crossroads (dom)
-  (loop for elem in (dom-by-class dom "post")
-	for link = (dom-by-tag elem 'a)
-	for date = (csid-parse-norwegian-month-date-with-year
-		    (dom-text (dom-by-class elem "entry-date")))
-	when (and link date)
-	collect (list date
-		      (dom-attr link 'href)
-		      (dom-text link))))
+  (with-temp-buffer
+    (insert (dom-texts (dom-by-id dom "^u_0_g$")))
+    (setq dom (libxml-parse-html-region (point-min) (point-max))))
+  (loop for elem in (dom-by-tag (dom-by-tag dom 'ul) 'li)
+	for event = (dom-non-text-children (dom-by-tag elem 'tr))
+	for date = (car event)
+	for link = (loop for tag in (dom-by-tag (cadr event) 'a)
+			 when (dom-attr tag 'data-hovercard)
+			 return tag)
+	when (dom-attr link 'href)
+	collect (list (csid-parse-short-reverse-yearless-month (dom-texts date))
+		      (shr-expand-url (dom-attr link 'href))
+		      (dom-texts link))))	
 
 (defun csid-parse-victoria (dom)
   (loop for elem in (dom-by-class dom "event-entry")

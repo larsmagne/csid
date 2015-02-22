@@ -78,6 +78,7 @@
     ("Kulturhuset" "https://www.facebook.com/kulturhusetioslo/events?key=events"
      facebook)
     ("Kampenjazz" "http://oysteineide.wix.com/kampenjazz#!konserter/cb30" kampenjazz :date)
+    ("Telenor Arena" "http://telenorarena.no/en/events/" telenor)
     ))
 
 (defvar csid-database nil)
@@ -274,12 +275,15 @@
 			      (parse-time-string string)))))
 
 ;; "06. aug 2013"
-(defun csid-parse-short-month (string)
+(defun csid-parse-short-month (string &optional englishp)
   (if (string-match (format "\\([0-9]+\\).*\\(%s\\) \\([0-9]+\\)"
 			    (mapconcat
 			     (lambda (month)
 			       (substring month 0 3))
-			     csid-months "\\|"))
+			     (if englishp
+				 csid-english-months
+			       csid-months)
+			     "\\|"))
 		    string)
       (format "%s-%02d-%02d"
 	      (match-string 3 string)
@@ -287,7 +291,9 @@
 			    (mapcar
 			     (lambda (month)
 			       (substring month 0 3))
-			     csid-months)
+			     (if englishp
+				 csid-english-months
+			       csid-months))
 			    :test 'equalp))
 	      (string-to-number (match-string 1 string)))
     (csid-parse-month-date string)))
@@ -838,6 +844,17 @@
 	when date
 	return date
 	do (setq node (funcall func dom node))))
+
+(defun csid-parse-telenor (dom)
+  (loop for event in (dom-by-class dom "^module-content$")
+	collect (list (csid-parse-short-month
+		       (dom-texts (dom-by-class event "event-date"))
+		       t)
+		      (dom-attr
+		       (dom-by-tag (dom-parent dom event) 'a)
+		       'href)
+		      (csid-clean-string
+		       (dom-texts (dom-by-class event "event-title"))))))
 
 (defun csid-parse-new (dom)
   (switch-to-buffer (get-buffer-create "*scratch*"))

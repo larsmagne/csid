@@ -197,7 +197,8 @@ function hideShow(onlyVenue, onlyAfterTimestamp) {
   if (! onlyAfterTimestamp) {
     if (typeof $.cookie("timestamp") == 'undefined')
       $.cookie("timestamp", maxTimestamp, { expires: 10000 });
-    else if (maxTimestamp > $.cookie("timestamp")) {
+    else if (maxTimestamp > $.cookie("timestamp") &&
+	     ! document.getElementById("new")) {
       $("#selector").append("<div class='export'><a id='new'>Display events arrived since last time</a></div>");
       $("#new").bind("click", function() {
 	fixPosition();

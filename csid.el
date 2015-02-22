@@ -50,7 +50,7 @@
     ("Parkteateret" "http://parkteatret.no/program/" parkteateret)
     ("Konsertforeninga" "http://www.konsertforeninga.no/konserter"
      konsertforeninga)
-    ;;("Maksitaksi" "http://maksitaksi.no/program-2/" maksitaksi)
+    ("Maksitaksi" "http://maksitaksi.no/" maksitaksi)
     ("Betong" "https://studentersamfundet.no/program/" betong)
     ("Bidrobon" "http://www.bidrobon.no/" bidrobon :date)
     ("Cosmopolite" "http://cosmopolite.no/program/cosmopolite" cosmopolite)
@@ -509,7 +509,7 @@
 	collect (list (csid-parse-month-date
 		       (dom-text (dom-by-class elem "ai1ec-event-time")))
 		      (dom-attr link 'href)
-		      (dom-attr link 'title))))
+		      (csid-clean-string (dom-texts link)))))
 
 (defun csid-parse-betong (dom)
   (loop for elem in (dom-by-tag

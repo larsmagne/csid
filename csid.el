@@ -43,7 +43,7 @@
     ("Blå" "http://www.blaaoslo.no/" blaa)
     ("Mir" "http://www.lufthavna.no/" mir)
     ("Crossroads" "https://www.facebook.com/thecrossroadclub/events?key=events"
-     crossroads)
+     facebook)
     ("Victoria" "http://nasjonaljazzscene.no/arrangement/" victoria)
     ("Rockefeller" "http://rockefeller.no/index.html" rockefeller :multi)
     ("Mono" "http://www.cafemono.no/program/" mono)
@@ -75,6 +75,8 @@
     ("New Orleans" "http://www.neworleansworkshop.com/program" neworleans :date)
     ("NB" "http://www.nb.no/Hva-skjer/Arrangementer/Konserter" nasjonalbiblioteket)
     ("Uhørt" "http://uhortistroget.no/upolert/" uhort)
+    ("Kulturhuset" "https://www.facebook.com/kulturhusetioslo/events?key=events"
+     facebook)
     ))
 
 (defvar csid-database nil)
@@ -427,7 +429,7 @@
 		      (dom-attr link 'href)
 		      (dom-attr link 'title))))
 
-(defun csid-parse-crossroads (dom)
+(defun csid-parse-facebook (dom)
   (with-temp-buffer
     (insert (dom-texts (dom-by-id dom "^u_0_g$")))
     (setq dom (libxml-parse-html-region (point-min) (point-max))))

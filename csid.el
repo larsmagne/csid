@@ -77,7 +77,7 @@
     ("Uhørt" "http://uhortistroget.no/upolert/" uhort)
     ("Kulturhuset" "https://www.facebook.com/kulturhusetioslo/events?key=events"
      facebook)
-    ;;("Kampenjazz" "http://oysteineide.wix.com/kampenjazz#!konserter/cb30" kampenjazz :date)
+    ("Kampenjazz" "http://oysteineide.wix.com/kampenjazz#!konserter/cb30" kampenjazz :date)
     ))
 
 (defvar csid-database nil)
@@ -814,25 +814,30 @@
 				  'csid-parse-kampenjazz-1
 				  'html)))
 
+(defun csid-ensure-date (string)
+  (and (string-match "^[-0-9]+$" string)
+       (string-match "[0-9]" string)
+       string))
+
 (defun csid-parse-kampenjazz-1 (dom)
-  (let ((date nil)
-	clear-date)
-    (loop for line in (dom-by-tag dom 'p)
-	  when date
-	  collect (prog1
-		      (list date
-			    "http://oysteineide.wix.com/kampenjazz#!konserter/cb30"
-			    (dom-texts line))
-		    (setq clear-date t))
-	  do (unless date
-	       (setq date (csid-parse-month-date (dom-texts line)))
-	       (when (and date
-			  (or (not (string-match "^[-0-9]+$" date))
-			      (not (string-match "[0-9]" date))))
-		 (setq date nil)))
-	  do (when clear-date
-	       (setq date nil
-		     clear-date nil)))))
+  (loop for event in (append (dom-by-class dom "backcolor_5")
+			     (dom-by-class dom "backcolor_18"))
+	for date = (or (csid-parent-date dom event 'dom-previous-sibling)
+		       (csid-parent-date dom event 'dom-parent))
+	when date
+	collect (list date
+		      "http://oysteineide.wix.com/kampenjazz#!konserter/cb30"
+		      (dom-texts event))))
+
+(defun csid-parent-date (dom node func)
+  (loop with date
+	while (and node
+		   (not date))
+	do (setq date (csid-ensure-date
+		       (csid-parse-month-date (dom-texts node))))
+	when date
+	return date
+	do (setq node (funcall func dom node))))
 
 (defun csid-parse-new (dom)
   (switch-to-buffer (get-buffer-create "*scratch*"))

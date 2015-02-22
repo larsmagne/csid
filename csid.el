@@ -354,6 +354,13 @@
 			(string-to-number (match-string 1 string)))
     string))
 
+;; 23/09
+(defun csid-parse-slashed-date (string)
+  (if (string-match "\\([0-9]+\\)/\\([0-9]+\\)" string)
+      (csid-expand-date (string-to-number (match-string 2 string))
+			(string-to-number (match-string 1 string)))
+    string))
+
 ;; "22.09.13" or "22.09.2013"
 (defun csid-parse-full-numeric-date (string)
   (if (string-match "\\([0-9]+\\).\\([0-9]+\\).\\([0-9]+\\)" string)
@@ -523,16 +530,13 @@
 				      :html)))))
 
 (defun csid-parse-bidrobon-1 (dom)
-  (loop for elem in (dom-by-tag dom 'tr)
-	for tds = (dom-by-tag elem 'td)
-	for text = (dom-texts (nth 0 tds))
-	when (string-match "#[0-9]+\n.*?\\([0-9]+\\)/\\([0-9]+\\)" text)
-	collect (list (csid-expand-date
-		       (string-to-number (match-string 2 text))
-		       (string-to-number (match-string 1 text))
-		       t)
+  (loop for event in (dom-by-class dom "^row$")
+	for date = (csid-parse-slashed-date
+		    (dom-texts (dom-by-tag event 'span)))
+	when (string-match "^[-0-9]+$" date)
+	collect (list date
 		      (nth 3 shr-base)
-		      (csid-clean-string (dom-texts (nth 1 tds))))))
+		      (dom-texts (cadr (dom-by-tag event 'span))))))
 
 (defun csid-clean-string (string)
   (replace-regexp-in-string "^[\r\n\t ]\\|[\r\n\t ]$" "" 

@@ -75,15 +75,20 @@ function addNavigation() {
   if ($("tr.checked").length > 0 || window.location.href.match("shows="))
     visible = "";
   $("#selector").append("<div id='export' class='export " + visible + 
-		       "'><a class='export'>Export your chosen event list</a></div>");
+		       "'><a class='export'>List only chosen events</a></div>");
   $("a.export").bind("click", function(e) {
     exportShows();
   });
 
-  $("#selector").append("<div class='export'><a id='sort'>List events in scan order</a></div>");
+  $("#selector").append("<div class='export'><a id='sort'>List event in scan order</a></div>");
   $("#sort").bind("click", function() {
     sortByScanOrder();
     addRestoreLink();
+  });
+
+  $("#selector").append("<div class='export'><a id='ical'>Export calendar</a></div>");
+  $("#ical").bind("click", function() {
+    exportCalendar();
   });
 
   if (window.location.href.match("shows=")) {
@@ -288,5 +293,36 @@ function sortByScanOrder() {
 function addRestoreLink() {
   $("#selector").append("<div class='export'><a href='http://csid.no/'>Restore list</a></div>");
 }
+
+function exportCalendar() {
+  var shows = getSettings("shows");
+  var cal = "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//hacksw/handcal//NONSGML v1.0//EN\n";
+  $.map(shows, function(elem) {
+    var id = "#event-" + elem;
+    var $line = $(id);
+    if ($line[0]) {
+      var date = $line.attr("date").replace(/-/g, "");
+      var venue = $line.find("td").eq(1).text();
+      var band = $line.find("td").first().text();
+      var start = date + "T200000";
+      var end = date + "T230000";
+      cal += "BEGIN:VEVENT\nUID:event-" + elem + "@csid.no\n";
+      cal += "DTSTAMP:" + start + "Z\n";
+      cal += "ORGANIZER;CN=" + venue + ":MAILTO:csid@example.com\n";
+      cal += "DTSTART:" + start + "Z\n";
+      cal += "DTEND:" + end + "Z\n";
+      cal += "LOCATION:" + venue + "\n";
+      cal += "SUMMARY:" + band + "\nEND:VEVENT\n";
+    }
+  });
+
+  cal += "END:VCALENDAR\n";
+
+  var blob = new Blob([cal], {
+    type: "text/calendar;charset=utf8;"
+  });
+  saveAs(blob, "csid.ics");
+}
+
 
 addNavigation();

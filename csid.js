@@ -86,7 +86,8 @@ function addNavigation() {
     addRestoreLink();
   });
 
-  $("#selector").append("<div class='export'><a id='ical'>Export calendar</a></div>");
+  $("#selector").append("<div class='export " + visible +
+			"'><a id='ical'>Export calendar</a></div>");
   $("#ical").bind("click", function() {
     exportCalendar();
   });
@@ -232,11 +233,14 @@ function toggleShow(id, checked) {
       shows.push(id);
     $("#event-" + id).addClass("checked");
     $("#export").removeClass("invisible");
+    $("#ical").removeClass("invisible");
   } else {
     shows = removeElement(shows, id);
     $("#event-" + id).removeClass("checked");
-    if ($("tr.checked").length == 0)
+    if ($("tr.checked").length == 0) {
       $("#export").addClass("invisible");
+      $("#ical").addClass("invisible");
+    }
   }
   $.cookie("shows", shows.join(), { expires: 10000 });
 }

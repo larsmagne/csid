@@ -939,13 +939,16 @@
 	  (loop for (venue date url name id scan-time) in csid-database
 		when (and scan-time
 			  (string-match this-date scan-time))
-		collect (format "%s: <a href='%s'>%s</a> at %s"
-				date url name venue))
+		collect (format "%s: <a href=\"%s\">%s</a> at %s"
+				date
+				(replace-regexp-in-string "\"" "" url)
+				name
+				venue))
 	  when events
-	  do (atom-add-xhtml-entry
+	  do (atom-add-html-entry
 	      feed
 	      (format "Concerts Registered on %s" this-date)
-	      "http://csid.no/"
+	      (format "http://csid.no/scan-date=%s" this-date)
 	      (mapconcat 'identity events
 			 "<br />"))
 	  do (setq time (time-subtract time (list 0 (* 25 60 60)))))

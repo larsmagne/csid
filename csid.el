@@ -33,6 +33,7 @@
 (require 'dom)
 (require 'vcalendar)
 (require 'json)
+(require 'atom)
 
 (defvar csid-database-file-name "~/.emacs.d/csid.data")
 
@@ -927,6 +928,30 @@
   (unless inhibit-fetch
     (csid-parse-sources))
   (csid-generate-html file))
+
+(defun csid-write-atom (file)
+  (csid-read-database)
+  (let ((feed (atom-create "Concerts in Oslo" "http://csid.no/"))
+	(time (current-time)))
+    (loop repeat 18
+	  for this-date = (format-time-string "%Y-%m-%d" time)
+	  for events =
+	  (loop for (venue date url name id scan-time) in csid-database
+		when (and scan-time
+			  (string-match this-date scan-time))
+		collect (format "<a href='%s'>%s</a> at %s"
+				url name venue))
+	  when events
+	  do (atom-add-xhtml-entry
+	      feed
+	      (format "Concerts %s" this-date)
+	      "http://csid.no/"
+	      (mapconcat 'identity events
+			 "<br />"))
+	  do (setq time (time-subtract time (list 0 (* 25 60 60)))))
+    (with-temp-buffer
+      (atom-print feed)
+      (write-region (point-min) (point-max) file))))
 
 (provide 'csid)
 

@@ -99,6 +99,8 @@ function addNavigation() {
     });
   }
 
+  $("#selector").append("<div class='export'><a id='rss' href='csid.atom'>Atom/\RSS feed</a></div>");
+
   $("img").bind("click", function() {
     window.location.href = "http://csid.no/";
   });

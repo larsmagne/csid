@@ -939,12 +939,12 @@
 	  (loop for (venue date url name id scan-time) in csid-database
 		when (and scan-time
 			  (string-match this-date scan-time))
-		collect (format "<a href='%s'>%s</a> at %s"
-				url name venue))
+		collect (format "%s: <a href='%s'>%s</a> at %s"
+				date url name venue))
 	  when events
 	  do (atom-add-xhtml-entry
 	      feed
-	      (format "Concerts %s" this-date)
+	      (format "Concerts Registered on %s" this-date)
 	      "http://csid.no/"
 	      (mapconcat 'identity events
 			 "<br />"))

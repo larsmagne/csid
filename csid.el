@@ -932,11 +932,15 @@
 (defun csid-write-atom (file)
   (csid-read-database)
   (let ((feed (atom-create "Concerts in Oslo" "http://csid.no/"))
+	(database (sort (copy-sequence csid-database)
+			(lambda (e1 e2)
+			  (string< (nth 1 e1)
+				   (nth 1 e2)))))
 	(time (current-time)))
     (loop repeat 18
 	  for this-date = (format-time-string "%Y-%m-%d" time)
 	  for events =
-	  (loop for (venue date url name id scan-time) in csid-database
+	  (loop for (venue date url name id scan-time) in database
 		when (and scan-time
 			  (string-match this-date scan-time))
 		collect (format "%s: <a href=\"%s\">%s</a> at %s"

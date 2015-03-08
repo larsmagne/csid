@@ -83,6 +83,7 @@
     ("Postkontoret" "https://www.facebook.com/toyenpostkontor/events?key=events"
      facebook)
     ("Per på hjørnet" "http://www.pph.oslo.no/" pph :date)
+    ("The Villa" "http://www.thevilla.no/program/" villa)
     ))
 
 (defvar csid-database nil)
@@ -280,7 +281,7 @@
 
 ;; "06. aug 2013"
 (defun csid-parse-short-month (string &optional englishp)
-  (if (string-match (format "\\([0-9]+\\).*\\(%s\\) \\([0-9]+\\)"
+  (if (string-match (format "\\([0-9]+\\).*\\(%s\\) +\\([0-9]+\\)"
 			    (mapconcat
 			     (lambda (month)
 			       (substring month 0 3))
@@ -875,6 +876,14 @@
 	collect (list date
 		      "http://www.pph.oslo.no/"
 		      (csid-clean-string (cadr texts)))))
+
+(defun csid-parse-villa (dom)
+  (loop for event in (dom-by-class dom "^group$")
+	for link = (dom-by-tag (dom-by-class event "sub-head") 'a)
+	collect (list (csid-parse-short-month
+		       (dom-texts (dom-by-tag event 'p)) t)
+		      (dom-attr link 'href)
+		      (dom-texts link))))
 
 (defun csid-valid-date-p (date)
   (and (= (length date) 10)

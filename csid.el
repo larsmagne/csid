@@ -80,6 +80,8 @@
      facebook)
     ("Kampenjazz" "http://oysteineide.wix.com/kampenjazz#!konserter/cb30" kampenjazz :date)
     ("Telenor Arena" "http://telenorarena.no/en/events/" telenor)
+    ("Postkontoret" "https://www.facebook.com/toyenpostkontor/events?key=events"
+     facebook)
     ))
 
 (defvar csid-database nil)

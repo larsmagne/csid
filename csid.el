@@ -345,10 +345,26 @@
      (string-to-number (match-string 1 string)))))
 
 ;; "aug 23"
-(defun csid-parse-short-reverse-yearless-month (string)
-  (csid-parse-short-yearless-month (mapconcat 'identity
-					      (reverse (split-string string))
-					      " ")))
+(defun csid-parse-short-reverse-yearless-month (string &optional englishp)
+  (when (string-match (format "\\(%s\\).*?\\([0-9]+\\)"
+			      (mapconcat
+			       (lambda (month)
+				 (substring month 0 3))
+			       (if englishp
+				   csid-english-months
+				 csid-months)
+			       "\\|"))
+		      string)
+    (csid-expand-date
+     (1+ (position (match-string 1 string)
+		   (mapcar
+		    (lambda (month)
+		      (substring month 0 3))
+		    (if englishp
+			csid-english-months
+		      csid-months))
+		   :test 'equalp))
+     (string-to-number (match-string 2 string)))))
 
 
 ;; "2014-03-20T21:00:00+01:00"

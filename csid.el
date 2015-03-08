@@ -346,6 +346,7 @@
 
 ;; "aug 23"
 (defun csid-parse-short-reverse-yearless-month (string &optional englishp)
+  (setq string (replace-regexp-in-string "\n" " " string))
   (when (string-match (format "\\(%s\\).*?\\([0-9]+\\)"
 			      (mapconcat
 			       (lambda (month)
@@ -800,7 +801,8 @@
   (loop for event in (dom-by-class dom "eventlist-event")
 	for link = (dom-by-tag event 'a)
 	for date = (dom-by-class event "^eventlist-datetag$")
-	collect (list (csid-parse-short-reverse-yearless-month (dom-texts date))
+	collect (list (csid-parse-short-reverse-yearless-month
+		       (dom-texts date) t)
 		      (shr-expand-url (dom-attr link 'href))
 		      (dom-texts (dom-by-tag event 'h1)))))
 

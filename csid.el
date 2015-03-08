@@ -84,6 +84,7 @@
      facebook)
     ("Per på hjørnet" "http://www.pph.oslo.no/" pph :date)
     ("The Villa" "http://www.thevilla.no/program/" villa)
+    ("Dattera" "http://www.dattera.no/nb/pages/6-Kalender" dattera)
     ))
 
 (defvar csid-database nil)
@@ -903,6 +904,17 @@
 		       (dom-texts (dom-by-tag event 'p)) t)
 		      (dom-attr link 'href)
 		      (dom-texts link))))
+
+(defun csid-parse-dattera (dom)
+  (loop for day in (dom-by-class dom "^date$")
+	append (loop for event in (dom-by-tag day 'h3)
+		     for text = (dom-texts event)
+		     when (string-match "konsert" text)
+		     collect (list (csid-parse-month-date
+				    (dom-text (dom-by-tag day 'h4)))
+				   (shr-expand-url
+				    (dom-attr (dom-by-tag event 'a) 'href))
+				   text))))
 
 (defun csid-valid-date-p (date)
   (and (= (length date) 10)

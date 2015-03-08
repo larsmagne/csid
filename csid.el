@@ -880,6 +880,7 @@
 (defun csid-parse-villa (dom)
   (loop for event in (dom-by-class dom "^group$")
 	for link = (dom-by-tag (dom-by-class event "sub-head") 'a)
+	when (dom-attr link 'href)
 	collect (list (csid-parse-short-month
 		       (dom-texts (dom-by-tag event 'p)) t)
 		      (dom-attr link 'href)

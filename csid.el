@@ -82,6 +82,7 @@
     ("Telenor Arena" "http://telenorarena.no/en/events/" telenor)
     ("Postkontoret" "https://www.facebook.com/toyenpostkontor/events?key=events"
      facebook)
+    ("Per på hjørnet" "http://www.pph.oslo.no/" pph)
     ))
 
 (defvar csid-database nil)
@@ -858,6 +859,26 @@
 		       'href)
 		      (csid-clean-string
 		       (dom-texts (dom-by-class event "event-title"))))))
+
+(defun csid-parse-pph (dom)
+  (loop with date
+	for event in (dom-by-tag (dom-by-class dom "programbg") 'p)
+	for texts = (loop for child in (dom-children event)
+			  when (stringp child)
+			  collect child
+			  when (and (not (stringp child))
+				    (plusp (length (dom-text child))))
+			  collect (dom-text child))
+	when (and (= (length texts) 3)
+		  (setq date (csid-parse-numeric-date (car texts)))
+		  (csid-valid-date-p date))
+	collect (list date
+		      "http://www.pph.oslo.no/"
+		      (csid-clean-string (cadr texts)))))
+
+(defun csid-valid-date-p (date)
+  (and (= (length date) 10)
+       (string-match "^[-0-9]+$" date)))
 
 (defun csid-parse-new (dom)
   (switch-to-buffer (get-buffer-create "*scratch*"))

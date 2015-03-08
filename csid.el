@@ -82,7 +82,7 @@
     ("Telenor Arena" "http://telenorarena.no/en/events/" telenor)
     ("Postkontoret" "https://www.facebook.com/toyenpostkontor/events?key=events"
      facebook)
-    ("Per på hjørnet" "http://www.pph.oslo.no/" pph)
+    ("Per på hjørnet" "http://www.pph.oslo.no/" pph :date)
     ))
 
 (defvar csid-database nil)

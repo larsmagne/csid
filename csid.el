@@ -919,13 +919,15 @@
 
 (defun csid-parse-internasjonalen (dom)
   (loop for event in (dom-by-class dom "^event$")
-	for date = (loop with prev = event
-			 do (setq prev (dom-previous-sibling dom prev))
-			 while (or (stringp prev)
-				   (not (eq (dom-tag prev) 'h3)))
-			 finally (return prev))
+	for date-node = (loop with prev = event
+			      do (setq prev (dom-previous-sibling dom prev))
+			      while (or (stringp prev)
+					(not (eq (dom-tag prev) 'h3)))
+			      finally (return prev))
 	for link = (dom-by-tag (dom-by-tag event 'h2) 'a)
-	collect (list (csid-parse-month-date (dom-texts date))
+	for date = (csid-parse-month-date (dom-texts date-node))
+	while (string< (format-time-string "%Y-%m-%d") date)
+	collect (list date
 		      (dom-attr link 'href)
 		      (dom-text link))))
 

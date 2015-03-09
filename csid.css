@@ -88,6 +88,7 @@ tr td:first-child {
 tr td:nth-child(2) {
   white-space: nowrap;
   padding-left: 10px;
+  font-weight: bold;
 }
 span.venue {
   padding-right: 10px;
@@ -119,7 +120,13 @@ body {
 }
 span.venue-name {
   cursor: pointer;
+  font-weight: bold;
 }
 div.explanation {
   margin-bottom: 10px;
+}
+.lightbox {
+  background: #a0a0a0;
+  color: black;
+  padding: 10px;
 }

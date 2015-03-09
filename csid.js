@@ -18,7 +18,7 @@ function addNavigation() {
   var deniedVenues = getSettings("deniedVenues");
   var shows = getSettings("shows");
 
-  $("#selector").append("<div class='explanation'>Click venues to toggle</div>");
+  $("#selector").append("<div class='explanation'>Everything in <a id='help' href='help.html?1'><b>bold</b></a> is clickable</div>");
 
   $("tr").each(function(key, node) {
     var name = node.getAttribute("name");
@@ -104,6 +104,12 @@ function addNavigation() {
   $("img").bind("click", function() {
     window.location.href = "http://csid.no/";
   });
+
+  $('a#help').colorbox({width: "400px",
+			initialWidth: "400px",
+			close: "Close",
+			className: "lightbox"
+			});
 }
 
 function addVenue(name, deniedVenues) {

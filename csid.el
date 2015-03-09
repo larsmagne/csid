@@ -85,6 +85,7 @@
     ("Per på hjørnet" "http://www.pph.oslo.no/" pph :date)
     ("The Villa" "http://www.thevilla.no/program/" villa)
     ("Dattera" "http://www.dattera.no/nb/pages/6-Kalender" dattera)
+    ("Internasjonalen" "http://www.internasjonalen.no/program/" internasjonalen)
     ))
 
 (defvar csid-database nil)
@@ -915,6 +916,18 @@
 				   (shr-expand-url
 				    (dom-attr (dom-by-tag event 'a) 'href))
 				   text))))
+
+(defun csid-parse-internasjonalen (dom)
+  (loop for event in (dom-by-class dom "^event$")
+	for date = (loop with prev = event
+			 do (setq prev (dom-previous-sibling dom prev))
+			 while (or (stringp prev)
+				   (not (eq (dom-tag prev) 'h3)))
+			 finally (return prev))
+	for link = (dom-by-tag (dom-by-tag event 'h2) 'a)
+	collect (list (csid-parse-month-date (dom-texts date))
+		      (dom-attr link 'href)
+		      (dom-text link))))
 
 (defun csid-valid-date-p (date)
   (and (= (length date) 10)

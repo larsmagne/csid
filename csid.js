@@ -119,7 +119,7 @@ function addVenue(name, deniedVenues) {
   $("#selector").append("<span class='venue'><input type=checkbox " + 
 			checked + " id='" + name + "'><span id='venue-" +
 			name + "' class='venue-name'>" +
-			name.replace("_", " ") + "</span></span>");
+			name.replace(/_/g, " ") + "</span></span>");
   $("#" + name).bind("click", function(e) {
     hideShow();
     setVenueCookie();

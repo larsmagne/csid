@@ -74,7 +74,7 @@
     ("Sawol" "http://www.sawol.no/category/program/" sawol)
     ("Buckleys" "http://www.buckleys.no/kommende-konserter.html" buckleys :date)
     ("New Orleans" "http://www.neworleansworkshop.com/program" neworleans :date)
-    ;;("NB" "http://www.nb.no/Hva-skjer/Arrangementer/Konserter" nasjonalbiblioteket)
+    ("NB" "http://www.nb.no/Hva-skjer/Arrangementer/Konserter" nasjonalbiblioteket)
     ("Uhørt" "http://uhortistroget.no/upolert/" uhort)
     ("Kulturhuset" "https://www.facebook.com/kulturhusetioslo/events?key=events"
      facebook)

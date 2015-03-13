@@ -87,6 +87,7 @@
     ("Dattera" "http://www.dattera.no/nb/pages/6-Kalender" dattera)
     ("Internasjonalen" "http://www.internasjonalen.no/program/" internasjonalen)
     ("Jæger" "http://jaegeroslo.no/program/" jaeger)
+    ("Union" "http://unionscene.no/program/" union)
     ))
 
 (defvar csid-database nil)
@@ -935,7 +936,25 @@
 (defun csid-parse-jaeger (dom)
   (loop for event in (dom-by-class dom "program_right")
 	for link = (dom-by-tag (dom-by-tag event 'h1) 'a)
-	collect (list (csid-parse-month-date (dom-texts (dom-by-tag event 'h7)))
+	for date = (csid-parse-month-date (dom-texts (dom-by-tag event 'h7)))
+	when (csid-valid-date-p date)
+	collect (list date
+		      (dom-attr link 'href)
+		      (dom-text link))))
+
+(defun csid-parse-union (dom)
+  (append
+   (csid-parse-union-1 dom)
+   (loop for i from 15 upto 100 by 15
+	 append (csid-parse-source
+		 (format "http://unionscene.no/program/P%d" i)
+		 'csid-parse-union-1
+		 'html))))
+
+(defun csid-parse-union-1 (dom)
+  (loop for event in (dom-by-class dom "listitem")
+	for link = (dom-by-tag (dom-by-tag event 'h2) 'a)
+	collect (list (csid-parse-month-date (dom-text (dom-by-tag event 'p)))
 		      (dom-attr link 'href)
 		      (dom-text link))))
 

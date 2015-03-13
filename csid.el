@@ -178,7 +178,7 @@
 (defun csid-parse-source (url function data-type)
   (with-current-buffer (url-retrieve-synchronously url)
     (goto-char (point-min))
-    (when (search-forward "\n\n")
+    (when (search-forward "\n\n" nil t)
       (let* ((headers (eww-parse-headers))
 	     (content-type
 	      (mail-header-parse-content-type

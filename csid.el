@@ -568,7 +568,8 @@
   (loop for event in (dom-by-class dom "^row$")
 	for date = (csid-parse-slashed-date
 		    (dom-texts (dom-by-tag event 'span)))
-	when (string-match "^[-0-9]+$" date)
+	when (and (string-match "^[-0-9]+$" date)
+		  (csid-date-likely-p date))
 	collect (list date
 		      (nth 3 shr-base)
 		      (dom-texts (cadr (dom-by-tag event 'span))))))
@@ -687,14 +688,26 @@
 		     for elem in (dom-non-text-children row)
 		     when (and (eq (car elem) 'p)
 			       (equal (dom-attr elem 'class) "arrdato"))
-		     do (setq date (dom-text elem))
+		     do (setq date
+			      (csid-parse-full-numeric-date (dom-text elem)))
 		     when (and (eq (car elem) 'p)
-			       (equal (dom-attr elem 'class) "arrheading"))
+			       (equal (dom-attr elem 'class) "arrheading")
+			       (csid-date-likely-p date))
 		     collect (list
-			      (csid-parse-full-numeric-date date)
+			      date
 			      (shr-expand-url
 			       (dom-attr (dom-by-tag elem 'a) 'href))
 			      (dom-text (dom-by-tag elem 'a))))))
+
+(defun csid-date-likely-p (date)
+  (time-less-p
+   (apply 'encode-time (mapcar
+			(lambda (elem)
+			  (or elem 0))
+			(parse-time-string date)))
+   ;; Stuff that's more than four months in the future is unlikely
+   ;; for some venues.
+   (time-add (current-time) (* 4 30 24 60 60))))
 
 (defun csid-parse-spektrum (dom)
   (loop for elem in (dom-by-tag dom 'li)
@@ -804,9 +817,11 @@
 (defun csid-parse-uhort (dom)
   (loop for event in (dom-by-class dom "eventlist-event")
 	for link = (dom-by-tag event 'a)
-	for date = (dom-by-class event "^eventlist-datetag$")
-	collect (list (csid-parse-short-reverse-yearless-month
-		       (dom-texts date) t)
+	for date = (csid-parse-short-reverse-yearless-month
+		    (dom-texts (dom-by-class event "^eventlist-datetag$"))
+		    t)
+	when (csid-date-likely-p date)
+	collect (list date
 		      (shr-expand-url (dom-attr link 'href))
 		      (dom-texts (dom-by-tag event 'h1)))))
 
@@ -954,7 +969,9 @@
 (defun csid-parse-union-1 (dom)
   (loop for event in (dom-by-class dom "listitem")
 	for link = (dom-by-tag (dom-by-tag event 'h2) 'a)
-	collect (list (csid-parse-month-date (dom-text (dom-by-tag event 'p)))
+	for date = (csid-parse-month-date (dom-text (dom-by-tag event 'p)))
+	when (csid-date-likely-p date)
+	collect (list date
 		      (dom-attr link 'href)
 		      (dom-text link))))
 

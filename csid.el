@@ -72,10 +72,10 @@
     ("Verkstedet" "http://www.verkstedetbar.no/program/" verkstedet :date)
     ("Gamla" "http://www.gamla.no/" gamla)
     ("Sawol" "http://www.sawol.no/category/program/" sawol)
-    ("Buckleys" "http://www.buckleys.no/kommende-konserter.html" buckleys :date)
+    ("Buckleys" "http://www.buckleys.no/konserter.html" buckleys :date)
     ("New Orleans" "http://www.neworleansworkshop.com/program" neworleans :date)
     ("NB" "http://www.nb.no/Hva-skjer/Arrangementer/Konserter" nasjonalbiblioteket)
-    ("Uhørt" "http://uhortistroget.no/upolert/" uhort)
+    ("Uhørt" "http://uhortistroget.no/blas/" uhort)
     ("Kulturhuset" "https://www.facebook.com/kulturhusetioslo/events?key=events"
      facebook)
     ("Kampenjazz" "http://oysteineide.wix.com/kampenjazz#!konserter/cb30" kampenjazz :date)

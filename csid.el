@@ -539,7 +539,7 @@ no further processing).  URL is either a string or a parsed URL."
 
 (defun csid-parse-facebook (dom)
   (with-temp-buffer
-    (insert (dom-texts (dom-by-id dom "^u_0_g$")))
+    (insert (dom-texts (dom-by-id dom "^u_0_j$")))
     (setq dom (libxml-parse-html-region (point-min) (point-max))))
   (loop for elem in (dom-by-tag (dom-by-tag dom 'ul) 'li)
 	for event = (dom-non-text-children (dom-by-tag elem 'tr))

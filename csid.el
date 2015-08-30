@@ -648,7 +648,7 @@ no further processing).  URL is either a string or a parsed URL."
   (loop for event in (dom-by-tag (dom-by-class dom "wsite-content") 'a)
 	collect (list (csid-parse-short-yearless-month
 		       (dom-texts event))
-		      (dom-attr event 'href)
+		      (shr-expand-url (dom-attr event 'href))
 		      (dom-texts event))))
 
 (defun csid-clean-string (string)

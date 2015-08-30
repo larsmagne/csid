@@ -554,12 +554,14 @@ no further processing).  URL is either a string or a parsed URL."
     (setq dom (libxml-parse-html-region (point-min) (point-max))))
   (loop for elem in (dom-by-id dom "timeline_event_item")
 	for event = (dom-by-tag elem 'tr)
-	for date = (dom-texts (car (dom-by-tag event 'td)))
+	for date-string = (dom-texts (car (dom-by-tag event 'td)))
 	for link = (loop for elem in (dom-by-tag event 'a)
 			 when (plusp (length (dom-texts elem)))
 			 return elem)
-	when (dom-attr link 'href)
-	collect (list (csid-parse-short-reverse-yearless-month date)
+	for date = (csid-parse-short-reverse-yearless-month date)
+	when (and (dom-attr link 'href)
+		  (csid-date-likely-p date))
+	collect (list date
 		      (shr-expand-url (dom-attr link 'href))
 		      (dom-texts link))))	
 

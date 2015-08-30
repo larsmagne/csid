@@ -88,6 +88,7 @@
     ("Internasjonalen" "http://www.internasjonalen.no/program/" internasjonalen)
     ("Jæger" "http://jaegeroslo.no/program/" jaeger)
     ("Union" "http://unionscene.no/program/" union)
+    ("Musikkflekken" "https://www.facebook.com/Musikkflekken/events" facebook)
     ))
 
 (defvar csid-database nil)

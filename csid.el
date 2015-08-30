@@ -92,6 +92,7 @@
     ("Smelteverket" "https://www.facebook.com/Smelteverket/events" facebook)
     ("Skuret" "https://www.facebook.com/skuret/events" facebook)
     ("Pizdets" "https://www.facebook.com/pissjets/events" facebook)
+    ("Fisk & Vilt" "https://www.facebook.com/fiskogviltoslo/events" facebook)
     ))
 
 (defvar csid-database nil)

@@ -100,22 +100,23 @@
 
 (defun csid-update-database (data)
   (dolist (elem data)
-    (let ((old
-	   (cl-member (nth 4 elem) csid-database
-		       :key (lambda (event)
-			      (nth 4 event)))))
-      (if (not old)
-	  (push elem csid-database)
-	;; Don't update anything if we're using the date as the key,
-	;; because then multiple events on the same date will be
-	;; overwritten.
-	(unless (memq :date (assoc (car elem) csid-sources))
-	  ;; Update the title.
-	  (when (plusp (length (nth 3 elem)))
-	    (setcar (nthcdr 3 (car old)) (nth 3 elem)))
-	  ;; Update the date.
-	  (when (plusp (length (nth 1 elem)))
-	    (setcar (nthcdr 1 (car old)) (nth 1 elem)))))))
+    (when (nth 1 data)
+      (let ((old
+	     (cl-member (nth 4 elem) csid-database
+			:key (lambda (event)
+			       (nth 4 event)))))
+	(if (not old)
+	    (push elem csid-database)
+	  ;; Don't update anything if we're using the date as the key,
+	  ;; because then multiple events on the same date will be
+	  ;; overwritten.
+	  (unless (memq :date (assoc (car elem) csid-sources))
+	    ;; Update the title.
+	    (when (plusp (length (nth 3 elem)))
+	      (setcar (nthcdr 3 (car old)) (nth 3 elem)))
+	    ;; Update the date.
+	    (when (plusp (length (nth 1 elem)))
+	      (setcar (nthcdr 1 (car old)) (nth 1 elem))))))))
   csid-database)
 
 (defun csid-read-database ()

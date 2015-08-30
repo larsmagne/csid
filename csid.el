@@ -918,7 +918,8 @@ no further processing).  URL is either a string or a parsed URL."
 			     (dom-by-class dom "backcolor_18"))
 	for date = (or (csid-parent-date dom event 'dom-previous-sibling)
 		       (csid-parent-date dom event 'dom-parent))
-	when date
+	when (and date
+		  (csid-date-likely-p date))
 	collect (list date
 		      "http://oysteineide.wix.com/kampenjazz#!konserter/cb30"
 		      (dom-texts event))))
@@ -991,6 +992,7 @@ no further processing).  URL is either a string or a parsed URL."
 	for link = (dom-by-tag (dom-by-tag event 'h2) 'a)
 	for date = (csid-parse-month-date (dom-texts date-node))
 	while (string< (format-time-string "%Y-%m-%d") date)
+	when (csid-date-likely-p date)
 	collect (list date
 		      (dom-attr link 'href)
 		      (dom-text link))))

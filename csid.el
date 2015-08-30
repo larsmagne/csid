@@ -411,7 +411,7 @@ no further processing).  URL is either a string or a parsed URL."
 
 ;; "Ma. 23. sep. "
 (defun csid-parse-short-yearless-month (string &optional englishp)
-  (when (string-match (format "\\([0-9]+\\).*\\(%s\\)"
+  (when (string-match (format "\\([0-9]+\\)[^0-9]+\\(%s\\)"
 			      (mapconcat
 			       (lambda (month)
 				 (substring month 0 3))
@@ -643,7 +643,7 @@ no further processing).  URL is either a string or a parsed URL."
 
 (defun csid-parse-bidrobon (dom)
   (loop for event in (dom-by-tag (dom-by-class dom "wsite-content") 'a)
-	collect (list (csid-parse-short-reverse-yearless-month
+	collect (list (csid-parse-short-yearless-month
 		       (dom-texts event))
 		      (dom-attr event 'href)
 		      (dom-texts event))))

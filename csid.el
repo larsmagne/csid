@@ -74,9 +74,9 @@
     ("Gamla" "http://www.gamla.no/" gamla)
     ;;("Sawol" "http://www.sawol.no/category/program/" sawol)
     ("Buckleys" "http://www.buckleys.no/konserter.html" buckleys :date)
-    ("New Orleans" "http://www.neworleansworkshop.com/program" neworleans :date)
+    ;;("New Orleans" "http://www.neworleansworkshop.com/program" neworleans :date)
     ("NB" "http://www.nb.no/Hva-skjer/Arrangementer/Konserter" nasjonalbiblioteket)
-    ("Uhørt" "http://uhortistroget.no/blas/" uhort)
+    ("Uhørt" "https://www.facebook.com/uhortistroget/events" facebook)
     ("Kulturhuset" "https://www.facebook.com/kulturhusetioslo/events?key=events"
      facebook)
     ("Kampenjazz" "http://oysteineide.wix.com/kampenjazz#!konserter/cb30" kampenjazz :date)
@@ -863,17 +863,6 @@ no further processing).  URL is either a string or a parsed URL."
 	collect (list (csid-parse-short-yearless-month (dom-texts elem))
 		      "http://www.buckleys.no/kommende-konserter.html"
 		      (csid-clean-string name))))
-
-(defun csid-parse-uhort (dom)
-  (loop for event in (dom-by-class dom "eventlist-event")
-	for link = (dom-by-tag event 'a)
-	for date = (csid-parse-short-reverse-yearless-month
-		    (dom-texts (dom-by-class event "^eventlist-datetag$"))
-		    t)
-	when (csid-date-likely-p date)
-	collect (list date
-		      (shr-expand-url (dom-attr link 'href))
-		      (dom-texts (dom-by-tag event 'h1)))))
 
 (defun csid-parse-neworleans (dom)
   (loop with year = (let ((year (dom-text (dom-by-tag dom 'title))))

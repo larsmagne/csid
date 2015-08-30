@@ -955,7 +955,8 @@ no further processing).  URL is either a string or a parsed URL."
 			  collect (dom-text child))
 	when (and (= (length texts) 3)
 		  (setq date (csid-parse-numeric-date (car texts)))
-		  (csid-valid-date-p date))
+		  (csid-valid-date-p date)
+		  (csid-date-likely-p date))
 	collect (list date
 		      "http://www.pph.oslo.no/"
 		      (csid-clean-string (cadr texts)))))

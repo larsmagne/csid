@@ -782,8 +782,10 @@ no further processing).  URL is either a string or a parsed URL."
 (defun csid-parse-spektrum (dom)
   (loop for elem in (dom-by-tag dom 'li)
 	for a = (dom-by-tag elem 'a)
-	collect (list (csid-parse-full-numeric-date
-		       (dom-text (dom-by-class elem "date")))
+	for date = (csid-parse-full-numeric-date
+		    (dom-text (dom-by-class elem "date")))
+	when (csid-valid-date-p date)
+	collect (list date
 		      (shr-expand-url (dom-attr a 'href))
 		      (dom-text a))))
 

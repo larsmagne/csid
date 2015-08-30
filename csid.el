@@ -1048,7 +1048,8 @@ no further processing).  URL is either a string or a parsed URL."
 (defun csid-parse-union-1 (dom)
   (loop for event in (dom-by-class dom "listitem")
 	for link = (dom-by-tag (dom-by-tag event 'h2) 'a)
-	for date = (csid-parse-month-date (dom-text (dom-by-tag event 'p)))
+	for date = (csid-parse-month-date
+		    (dom-text (dom-by-class event "date")))
 	when (csid-date-likely-p date)
 	collect (list date
 		      (dom-attr link 'href)

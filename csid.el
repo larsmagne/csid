@@ -53,7 +53,7 @@
      konsertforeninga)
     ("Maksitaksi" "http://maksitaksi.no/" maksitaksi :date)
     ("Betong" "https://studentersamfundet.no/program/" betong)
-    ("Bidrobon" "http://www.bidrobon.no/" bidrobon :date)
+    ("Bidrobon" "http://bidrobon.weebly.com/program.html" bidrobon)
     ("Cosmopolite" "http://cosmopolite.no/program/cosmopolite" cosmopolite)
     ("Belleville" "http://cosmopolite.no/program/belleville" cosmopolite)
     ("Vulkan" "http://vulkanarena.no/shows" vulkan)
@@ -638,23 +638,11 @@ no further processing).  URL is either a string or a parsed URL."
 		      (dom-text link))))
 
 (defun csid-parse-bidrobon (dom)
-  (loop for meta in (dom-by-tag dom 'meta)
-	when (equalp (dom-attr meta 'http-equiv) "refresh")
-	return (let ((url (dom-attr meta 'content)))
-		 (when (string-match "URL=\\(.*\\)" url)
-		   (csid-parse-source (shr-expand-url (match-string 1 url))
-				      'csid-parse-bidrobon-1
-				      :html)))))
-
-(defun csid-parse-bidrobon-1 (dom)
-  (loop for event in (dom-by-class dom "^row$")
-	for date = (csid-parse-slashed-date
-		    (dom-texts (dom-by-tag event 'span)))
-	when (and (string-match "^[-0-9]+$" date)
-		  (csid-date-likely-p date))
-	collect (list date
-		      (nth 3 shr-base)
-		      (dom-texts (cadr (dom-by-tag event 'span))))))
+  (loop for event in (dom-by-tag (dom-by-class dom "wsite-content") 'a)
+	collect (list (csid-parse-short-reverse-yearless-month
+		       (dom-texts event))
+		      (dom-attr event 'href)
+		      (dom-texts event))))
 
 (defun csid-clean-string (string)
   (replace-regexp-in-string "^[\r\n\t ]\\|[\r\n\t ]$" "" 

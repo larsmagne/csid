@@ -66,7 +66,8 @@
     ("Herr Nilsen" "http://www.herrnilsen.no/program2009.html" nilsen)
     ("Spektrum" "http://www.oslospektrum.no/" spektrum)
     ("Ny Musikk" "http://nymusikk.no/no/hva-skjer/" nymusikk)
-    ("Konserthuset" "http://oslokonserthus.no/public/eventschedule.jsp?month=8&year=2014" konserthuset)
+    ("Konserthuset" "http://www.oslokonserthus.no/program/json.html?filter=all"
+     konserthuset :json)
     ("Riksscenen" "http://www.riksscenen.no/program.95415.no.html" riksscenen)
     ("Olsen" "http://olsenbar.no/?page_id=3447" olsen)
     ("Verkstedet" "http://www.verkstedetbar.no/program/" verkstedet :date)
@@ -795,33 +796,12 @@ no further processing).  URL is either a string or a parsed URL."
 		      (dom-attr a 'href)
 		      (dom-text a))))
 
-(defun csid-parse-konserthuset (dom)
-  (append
-   (csid-parse-konserthuset-1 dom)
-   (loop with time = (decode-time (current-time))
-	 repeat 10
-	 append (progn
-		  (setcar (nthcdr 4 time) (1+ (nth 4 time)))
-		  (when (> (nth 4 time) 12)
-		    (setcar (nthcdr 4 time) 1)
-		    (setcar (nthcdr 5 time) (1+ (nth 5 time))))
-		  (csid-parse-source
-		   (format-time-string
-		    "http://oslokonserthus.no/public/eventschedule.jsp?month=%m&year=%Y"
-		    (apply 'encode-time time))
-		   'csid-parse-konserthuset-1 :html)))))
-
-(defun csid-parse-konserthuset-1 (dom)
-  (loop for row in (dom-by-tag
-		    (dom-parent
-		     dom (dom-parent
-			  dom (car (dom-by-class dom "scheduleHeadingTD"))))
-		    'tr)
-	for tds = (dom-by-tag row 'td)
-	when (not (string-match "scheduleHeading" (dom-attr (car tds) 'class)))
-	collect (list (csid-parse-numeric-date (dom-text (car tds)))
-		      (shr-expand-url (dom-attr (dom-by-tag row 'a) 'href))
-		      (dom-text (nth 2 tds)))))
+(defun csid-parse-konserthuset (json)
+  (loop for event across json
+	collect (list (csid-parse-iso8601
+		       (cdr (assq 'datetime (assq 'dato event))))
+		      (cdr (assq 'url event))
+		      (cdr (assq 'title event)))))
 
 (defun csid-parse-riksscenen (dom)
   (loop for date in (dom-by-class dom "event-date")

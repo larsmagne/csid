@@ -77,8 +77,7 @@
     ;;("New Orleans" "http://www.neworleansworkshop.com/program" neworleans :date)
     ("NB" "http://www.nb.no/Hva-skjer/Arrangementer/Konserter" nasjonalbiblioteket)
     ("Uhørt" "https://www.facebook.com/uhortistroget/events" facebook)
-    ("Kulturhuset" "https://www.facebook.com/kulturhusetioslo/events?key=events"
-     facebook)
+    ("Kulturhuset" "https://www.facebook.com/kulturhusetioslo/events" facebook)
     ("Kampenjazz" "http://oysteineide.wix.com/kampenjazz#!konserter/cb30" kampenjazz :date)
     ("Telenor Arena" "http://telenorarena.no/en/events/" telenor)
     ("Postkontoret" "https://www.facebook.com/toyenpostkontor/events?key=events"

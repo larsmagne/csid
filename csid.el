@@ -69,7 +69,7 @@
     ("Konserthuset" "http://www.oslokonserthus.no/program/json.html?filter=all"
      konserthuset :json)
     ("Riksscenen" "http://www.riksscenen.no/program.95415.no.html" riksscenen)
-    ("Olsen" "http://olsenbar.no/?page_id=3447" olsen)
+    ("Olsen" "http://shop.olsenbar.no/program/" olsen)
     ("Verkstedet" "http://www.verkstedetbar.no/program/" verkstedet :date)
     ("Gamla" "http://www.gamla.no/" gamla)
     ;;("Sawol" "http://www.sawol.no/category/program/" sawol)
@@ -813,12 +813,12 @@ no further processing).  URL is either a string or a parsed URL."
 		      (dom-text a))))
 
 (defun csid-parse-olsen (dom)
-  (loop for elem in (dom-by-class dom "^ai1ec-event$")
-	collect (list (csid-parse-short-reverse-yearless-month
-		       (dom-texts (dom-by-class elem "ai1ec-event-time")))
-		      (dom-attr (dom-by-tag elem 'a) 'href)
-		      (csid-clean-string
-		       (dom-texts (dom-by-class elem "ai1ec-event-title"))))))
+  (loop for event in (dom-by-class dom "m-calender-event")
+	for link = (dom-by-tag event 'a)
+	collect (list (csid-parse-full-numeric-date
+		       (dom-texts (dom-by-class event "from-date")))
+		      (shr-expand-url (dom-attr link 'href))
+		      (dom-attr link 'title))))
 
 (defun csid-parse-verkstedet (dom)
   (loop for elem in (dom-by-class dom "^event$")

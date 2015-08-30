@@ -558,8 +558,9 @@ no further processing).  URL is either a string or a parsed URL."
 	for link = (loop for elem in (dom-by-tag event 'a)
 			 when (plusp (length (dom-texts elem)))
 			 return elem)
-	for date = (csid-parse-short-reverse-yearless-month date)
+	for date = (csid-parse-short-reverse-yearless-month date-string)
 	when (and (dom-attr link 'href)
+		  date
 		  (csid-date-likely-p date))
 	collect (list date
 		      (shr-expand-url (dom-attr link 'href))

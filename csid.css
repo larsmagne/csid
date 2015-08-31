@@ -124,3 +124,60 @@ div.explanation {
   color: black;
   padding: 10px;
 }
+
+div#small-heading {
+  display: none;
+}
+
+@media only screen and (max-width: 600px) {
+  /* Style adjustments for small screens. */
+  div#large-heading {
+    display: none;
+  }
+  div#small-heading {
+    display: block;
+    width: 100%;
+    font-weight: bold;
+    text-align: center;
+    background: linear-gradient(to bottom, #3030a0 0%, #100150 100%);
+    color: white;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    vertical-align: middle;
+  }
+  div#small-heading a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  tr td:nth-child(3) {
+    display: none;
+  }
+  tr td:nth-child(2) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 70px;
+    padding-right: 10px;
+  }
+  div#selector {
+    display: none;
+  }
+}
+
+.event-lightbox {
+  background: #a0a0a0;
+  color: black;
+  padding-top: 30px;
+  padding-bottom: 30px;
+  text-align: center;
+  background: linear-gradient(to bottom, #a0a0a0 0%, #404040 100%);
+}
+.event-lightbox a {
+  text-align: center;
+  cursor: pointer;
+  background: linear-gradient(to bottom, #40a040 0%, #105010 100%);
+  color: white;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  display: block;
+}

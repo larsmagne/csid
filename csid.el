@@ -279,7 +279,7 @@ no further processing).  URL is either a string or a parsed URL."
 	(funcall function
 		 (cond
 		  ((eq data-type :json)
-		   (json-read))
+		   (ignore-errors (json-read)))
 		  (t
 		   (libxml-parse-html-region (point) (point-max)))))))))
 
@@ -1055,8 +1055,8 @@ no further processing).  URL is either a string or a parsed URL."
 	(now (format-time-string "%Y-%m-%d"))
 	prev-date start)
     (with-temp-file (or file "/tmp/csid.html")
-      (insert "<head><title>Crowdsourcing Is Dead</title><meta charset='utf-8'><link href='csid.css' rel='stylesheet' type='text/css'><meta name='viewport' content='width=device-width, initial-scale=1'><link rel='icon' href='http://csid.no/favicon.ico'><body><div id='body-container'><img src='csid.png'><p>(Also known as <a href='http://lars.ingebrigtsen.no/2013/09/crowdsourcing-is-dead.html'>'Concerts In Oslo' or 'Konserter i Oslo'</a>.)</p>")
-      (insert "<table><colgroup><col><col><col></colgroup>")
+      (insert "<head><title>Crowdsourcing Is Dead</title><meta charset='utf-8'><link href='csid.css' rel='stylesheet' type='text/css'><meta name='viewport' content='width=device-width, initial-scale=1'><link rel='icon' href='http://csid.no/favicon.ico'><body><div id='body-container'><div id='large-heading'><img src='csid.png'><p>(Also known as <a href='http://lars.ingebrigtsen.no/2013/09/crowdsourcing-is-dead.html'>'Concerts In Oslo' or 'Konserter i Oslo'</a>.)</p></div><div id='small-heading'><a href='http://lars.ingebrigtsen.no/2013/09/crowdsourcing-is-dead.html'>Crowdsourcing Is Dead</a></div>")
+      (insert "<table><colgroup><col class='band'><col class='venue'><col class='button'></colgroup>")
       (setq start (point))
       (loop with prev-date
 	    for (venue date url name id fetch-date rank) in data

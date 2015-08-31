@@ -29,8 +29,14 @@ function addNavigation() {
       addVenue(name, deniedVenues);
 
     $(node).children("td").first().bind("click", function(e) {
-      if (! e.ctrlKey)
-	top.location.href = $(node).find("a").attr("href");
+      if (! e.ctrlKey) {
+	if ($("body").width() < 600) {
+	  actionEventMenu(node);
+	  return false;
+	} else
+	  top.location.href = $(node).find("a").attr("href");
+      }
+      return true;
     });
 
     $(node).children("td").last().bind("click", function() {
@@ -336,5 +342,24 @@ function exportCalendar() {
   saveAs(blob, "csid.ics");
 }
 
+function actionEventMenu(node) {
+  var link = $(node).find("a").attr("href");
+  var idString = $(node).find("input").attr("id");
+  var match = idString.match(/([0-9]+)/);
+  var shows = getSettings("shows");
+  var id = match[1];
+  var type = "Mark";
+  if ($.inArray(id, shows) != -1)
+    type = "Unmark";
+  $.colorbox({html: "<a href='" + link + "'>Follow link</a><br><a href='#' id='mark-event'>" + type + " event</a><br><br><br>",
+	      width: "100%",
+	      close: "Close",
+	      className: "event-lightbox"});
+  $("#mark-event").bind("click", function() {
+    toggleShow(id, $.inArray(id, shows) == -1);
+    $.colorbox.close();
+    return false;
+  });
+}
 
 addNavigation();

@@ -401,7 +401,8 @@ function actionVenueMenu(name) {
 
   $("#venue-mark").bind("click", function() {
     var deniedVenues = getSettings("deniedVenues");
-    $("#" + name).attr("checked", $.inArray(name, deniedVenues) != -1);
+    document.getElementById(name).checked =
+      ($.inArray(name, deniedVenues) != -1);
     setVenueCookie();
     hideShow();
     $.colorbox.close();

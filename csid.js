@@ -354,6 +354,7 @@ function actionEventMenu(node) {
   $.colorbox({html: "<a href='" + link + "'>Follow link</a><br><a href='#' id='mark-event'>" + type + " event</a><br><br><br>",
 	      width: "100%",
 	      close: "Close",
+	      transition: "none",
 	      className: "event-lightbox"});
   $("#mark-event").bind("click", function() {
     toggleShow(id, $.inArray(id, shows) == -1);

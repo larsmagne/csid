@@ -41,13 +41,19 @@ function addNavigation() {
 
     $(node).children("td").last().bind("click", function() {
       fixPosition();
-      if (lastVenue != name) {
-	hideShow(name);
-	lastVenue = name;
+      if ($("body").width() < 600) {
+	actionVenueMenu(name);
+	return false;
       } else {
-	hideShow();
-	lastVenue = false;
+	if (lastVenue != name) {
+	  hideShow(name);
+	  lastVenue = name;
+	} else {
+	  hideShow();
+	  lastVenue = false;
+	}
       }
+      return true;
     });
     
     var id = node.id.replace("event-", "");
@@ -270,6 +276,9 @@ function setVenueCookie() {
 }
 
 function fixPosition() {
+  if ($("body").width() < 600)
+    return;
+
   $("#body-container").each(function(key, body) {
     var pos = $(body).offset();
     body.style.position = "absolute";
@@ -358,6 +367,50 @@ function actionEventMenu(node) {
 	      className: "event-lightbox"});
   $("#mark-event").bind("click", function() {
     toggleShow(id, $.inArray(id, shows) == -1);
+    $.colorbox.close();
+    return false;
+  });
+}
+
+function actionVenueMenu(name) {
+  var displayName = name.replace(/_/g, " ");
+  var limit = "Show only events from " + displayName;
+  if (lastVenue == name)
+    limit = "Show all events again";
+  var deniedVenues = getSettings("deniedVenues");
+  var venues = "Don't show events from " + displayName;
+  if ($.inArray(name, deniedVenues) != -1)
+    venues = "Include events from " + displayName;
+
+  $.colorbox({html: "<a href='#' id='venue-limit'>" + limit + "</a><br><a href='#' id='venue-mark'>" + venues + "</a><br><a href='$' id='all-venues'>Show all events from all venues</a><br><br><br>",
+	      width: $("body").width() + "px",
+	      close: "Close",
+	      transition: "none",
+	      className: "event-lightbox"});
+  $("#venue-limit").bind("click", function() {
+    if (lastVenue != name) {
+      hideShow(name);
+      lastVenue = name;
+    } else {
+      hideShow();
+      lastVenue = false;
+    }
+    $.colorbox.close();
+    return false;
+  });
+
+  $("#venue-mark").bind("click", function() {
+    $("#" + name).attr("checked", $.inArray(name, deniedVenues) != -1);
+    setVenueCookie();
+    hideShow();
+    $.colorbox.close();
+    return false;
+  });
+
+  $("#all-venues").bind("click", function() {
+    $("tr.invisible").each(function(key, node) {
+      $(node).removeClass("invisible");
+    });
     $.colorbox.close();
     return false;
   });

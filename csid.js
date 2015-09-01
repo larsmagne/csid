@@ -15,6 +15,7 @@ function addNavigation() {
   if (typeof $.cookie("deniedVenues") == 'undefined')
     $.cookie("deniedVenues", "Quiz");
 
+  var mobilep = $("body").width() < 600;
   var deniedVenues = getSettings("deniedVenues");
   var shows = getSettings("shows");
 
@@ -30,7 +31,7 @@ function addNavigation() {
 
     $(node).children("td").first().bind("click", function(e) {
       if (! e.ctrlKey) {
-	if ($("body").width() < 600) {
+	if (mobilep) {
 	  actionEventMenu(node, name);
 	  return false;
 	} else
@@ -39,7 +40,7 @@ function addNavigation() {
       return true;
     });
 
-    if ($("body").width() < 600) {
+    if (mobilep) {
       $(node).children("td").last().bind("click", function() {
 	actionVenueMenu(name);
 	return false;
@@ -130,7 +131,7 @@ function addNavigation() {
     return false;
   });
 
-  if ($("body").width() < 600)
+  if (mobilep)
     loadLogos();
 }
 

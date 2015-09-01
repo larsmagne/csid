@@ -697,12 +697,21 @@ no further processing).  URL is either a string or a parsed URL."
 		      (dom-texts a))))
 
 (defun csid-parse-ultima (dom)
-  (loop for link in (dom-by-tag dom 'a)
-	for href = (dom-attr link 'href)
-	when (and href
-		  (string-match "\\`webcal:\\(.*\\)" href))
-	return (csid-parse-vcalendar (concat "http:" (match-string 1 href)))))
-
+  (loop with dones = nil
+	for event in (dom-by-class dom "program_list_event_header")
+	for elem = (car (dom-non-text-children event))
+	for link = (dom-attr (dom-by-tag event 'a) 'href)
+	for id = (format "%s %s" (dom-attr elem 'data-day)
+			 (dom-attr elem 'data-title))
+	when (and elem
+		  link
+		  (not (member id dones)))
+	collect (progn
+		  (push id dones)
+		  (list (csid-parse-full-numeric-date (dom-attr elem 'data-day))
+			link
+			(dom-attr elem 'data-title)))))
+   
 (defun csid-parse-vcalendar (url)
   (with-current-buffer (csid-retrieve-synchronously url t t)
     (goto-char (point-min))

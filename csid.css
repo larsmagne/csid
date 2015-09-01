@@ -185,6 +185,9 @@ div#small-heading {
     right: 0;
     bottom: 0;
   }
+  img#small-menu {
+    padding-top: 10px;
+  }
 }
 
 .event-lightbox {

@@ -371,7 +371,7 @@ function actionEventMenu(node, venue) {
   var type = "I'm going";
   if ($.inArray(id, shows) != -1)
     type = "I'm not going after all";
-  $.colorbox({html: "<div class='outer-venue-logo'><img src='logos/larger/" + escape(venue) + ".png'></div><a href='" + link + "'>Go to the event web page</a><a href='#' id='mark-event'>" + type + "</a><a href='#' id='csid-close'>Close</a>",
+  $.colorbox({html: "<div class='outer-venue-logo'><img src='logos/larger/" + escape(venue) + ".png'></div><a href='" + link + "'>Display the event web page</a><a href='#' id='mark-event'>" + type + "</a><a href='#' id='csid-close'>Close</a>",
 	      width: "100%",
 	      closeButton: false,
 	      transition: "none",

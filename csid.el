@@ -59,7 +59,7 @@
     ("Vulkan" "http://vulkanarena.no/shows" vulkan)
     ("Jakob" "http://www.jakob.no/program/" jakob)
     ("Vanguard" "http://www.fanrx.com/facebook/events.php?theme=custom&page=vanguardoslo&bgcolor=ffffff&textcolor=000000&linkcolor=555555&max=15" vanguard)
-    ;;("Ultima" "http://ultima.no/program" ultima)
+    ("Ultima" "http://ultima.no/program" ultima)
     ("Blitz" "http://www.blitz.no/kalender" blitz)
     ("Magneten" "http://magnetenpub.blogspot.no//feeds/pages/default?alt=json&v=2&dynamicviews=1"
      magneten :json)
@@ -698,20 +698,13 @@ no further processing).  URL is either a string or a parsed URL."
 		      (dom-texts a))))
 
 (defun csid-parse-ultima (dom)
-  (loop with dones = nil
-	for event in (dom-by-class dom "program_list_event_header")
-	for elem = (car (dom-non-text-children event))
+  (loop for elem in (dom-by-class dom "program_list_title")
+	for event = (dom-parent dom (dom-parent dom elem))
 	for link = (dom-attr (dom-by-tag event 'a) 'href)
-	for id = (format "%s %s" (dom-attr elem 'data-day)
-			 (dom-attr elem 'data-title))
-	when (and elem
-		  link
-		  (not (member id dones)))
-	collect (progn
-		  (push id dones)
-		  (list (csid-parse-full-numeric-date (dom-attr elem 'data-day))
-			link
-			(dom-attr elem 'data-title)))))
+	when link
+	collect (list (csid-parse-full-numeric-date (dom-attr event 'data-day))
+		      link
+		      (dom-attr event 'data-title))))
    
 (defun csid-parse-vcalendar (url)
   (with-current-buffer (csid-retrieve-synchronously url t t)

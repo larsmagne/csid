@@ -478,7 +478,7 @@ function loadLogos() {
 
 function loadLogo(venues, index) {
   var venue = venues[index];
-  var img = $("<img />").attr("src", "logos/thumb/" + venue + ".png")
+  var img = $("<img />").attr("src", "logos/thumb/" + escape(venue) + ".png")
 	.on("load", function() {
           if (this.complete && typeof this.naturalWidth != "undefined" &&
 	      this.naturalWidth != 0) {

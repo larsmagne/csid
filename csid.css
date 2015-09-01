@@ -92,6 +92,7 @@ span.venue {
 }
 td.show {
   padding-left: 15px;
+  padding-right: 10px;
   vertical-align: middle;
 }
 div.export {

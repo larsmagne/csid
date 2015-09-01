@@ -150,6 +150,11 @@ div#small-heading {
     text-decoration: none;
     font-weight: bold;
   }
+  div#small-heading img {
+    position: absolute;
+    top: -2px;
+    left: 10px;
+  }
   tr td:nth-child(3) {
     display: none;
   }
@@ -189,4 +194,20 @@ div#small-heading {
   color: white;
   font-weight: bold;
   font-family: arial, sans-serif;
+}
+.event-lightbox div.venue {
+  display: block;
+  width: 100%;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  border: 0px;
+  color: white;
+  font-weight: bold;
+  font-family: arial, sans-serif;
+}
+.event-lightbox div.checked {
+  background: linear-gradient(to bottom, #40a040 0%, #105010 100%);
+}
+.event-lightbox div.unchecked {
+  background: linear-gradient(to bottom, #a04040 0%, #501010 100%);
 }

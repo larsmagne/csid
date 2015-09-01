@@ -113,7 +113,7 @@ function addNavigation() {
 
   $("#selector").append("<div class='export'><a id='rss' href='csid.atom'>Atom/\RSS feed</a></div>");
 
-  $("img").bind("click", function() {
+  $("img#logo").bind("click", function() {
     window.location.href = "http://csid.no/";
   });
 
@@ -121,7 +121,12 @@ function addNavigation() {
 			initialWidth: "400px",
 			close: "Close",
 			className: "lightbox"
-			});
+		       });
+
+  $('#small-menu').bind("click", function(e) {
+    showVenueChooser();
+    return false;
+  });
 }
 
 function addVenue(name, deniedVenues) {
@@ -414,6 +419,39 @@ function actionVenueMenu(name) {
       $(node).removeClass("invisible");
     });
     $.colorbox.close();
+    return false;
+  });
+}
+
+function showVenueChooser() {
+  var venues = "<div class='venue'>Choose venues to include or exclude</div>";
+  var deniedVenues = getSettings("deniedVenues");
+  $("#selector").find("span.venue-name").each(function(key, node) {
+    var id = node.id.replace(/venue-/, "");
+    var className = "checked";
+    if ($.inArray(id, deniedVenues) != -1)
+      className = "unchecked";
+    venues += "<div class='venue " + className + "' data='" + id +
+      "'>" + node.innerHTML + "</div>";
+  });
+  $.colorbox({html: venues,
+	      width: $("body").width() + "px",
+	      close: "Close",
+	      transition: "none",
+	      className: "event-lightbox"});
+  $("div.venue").bind("click", function() {
+    var id = $(this).attr("data");
+    var deniedVenues = getSettings("deniedVenues");
+    $(this).removeClass("checked");
+    $(this).removeClass("unchecked");
+    if ($.inArray(id, deniedVenues) == -1)
+      $(this).addClass("unchecked");
+    else
+      $(this).addClass("checked");
+    document.getElementById(id).checked =
+      ($.inArray(id, deniedVenues) != -1);
+    setVenueCookie();
+    hideShow();
     return false;
   });
 }

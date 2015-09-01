@@ -149,6 +149,7 @@
 	  when (or (not type)
 		   (string= type name))
 	  append (let* ((max-specpdl-size 6000)
+			(max-lisp-eval-depth 6000)
 			(results
 			 (if type
 			     (csid-parse-source

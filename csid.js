@@ -360,7 +360,7 @@ function actionEventMenu(node) {
   var type = "Mark";
   if ($.inArray(id, shows) != -1)
     type = "Unmark";
-  $.colorbox({html: "<a href='" + link + "'>Follow link</a><br><a href='#' id='mark-event'>" + type + " event</a><br><br><br>",
+  $.colorbox({html: "<a href='" + link + "'>Go to the event web page</a><a href='#' id='mark-event'>" + type + " event</a>",
 	      width: "100%",
 	      close: "Close",
 	      transition: "none",
@@ -374,7 +374,7 @@ function actionEventMenu(node) {
 
 function actionVenueMenu(name) {
   var displayName = name.replace(/_/g, " ");
-  var limit = "Show only events from " + displayName;
+  var limit = "Just show events from " + displayName;
   if (lastVenue == name)
     limit = "Show all events again";
   var deniedVenues = getSettings("deniedVenues");
@@ -382,7 +382,7 @@ function actionVenueMenu(name) {
   if ($.inArray(name, deniedVenues) != -1)
     venues = "Include events from " + displayName;
 
-  $.colorbox({html: "<a href='#' id='venue-limit'>" + limit + "</a><br><a href='#' id='venue-mark'>" + venues + "</a><br><a href='$' id='all-venues'>Show all events from all venues</a><br><br><br>",
+  $.colorbox({html: "<a href='#' id='venue-limit'>" + limit + "</a><a href='#' id='venue-mark'>" + venues + "</a><a href='$' id='all-venues'>Show all events from all venues</a>",
 	      width: $("body").width() + "px",
 	      close: "Close",
 	      transition: "none",

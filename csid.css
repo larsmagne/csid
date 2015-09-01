@@ -165,10 +165,8 @@ div#small-heading {
 }
 
 .event-lightbox {
-  background: #a0a0a0;
-  color: black;
-  padding-top: 30px;
-  padding-bottom: 30px;
+  padding-top: 0px;
+  padding-bottom: 35px;
   text-align: center;
   background: linear-gradient(to bottom, #a0a0a0 0%, #404040 100%);
 }
@@ -180,4 +178,14 @@ div#small-heading {
   padding-top: 20px;
   padding-bottom: 20px;
   display: block;
+}
+.event-lightbox button {
+  display: block;
+  width: 100%;
+  background: linear-gradient(to bottom, #40a040 0%, #105010 100%);
+  padding-top: 20px;
+  padding-bottom: 20px;
+  border: 0px;
+  color: white;
+  font-weight: bold;
 }

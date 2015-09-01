@@ -128,7 +128,8 @@ function addNavigation() {
     return false;
   });
 
-  loadLogos();
+  if ($("body").width() < 600)
+    loadLogos();
 }
 
 function addVenue(name, deniedVenues) {

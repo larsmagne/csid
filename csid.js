@@ -389,10 +389,11 @@ function actionVenueMenu(name) {
   if ($.inArray(name, deniedVenues) != -1)
     venues = "Include events from " + displayName;
 
-  $.colorbox({html: "<a href='#' id='venue-limit'>" + limit + "</a><a href='#' id='venue-mark'>" + venues + "</a><a href='$' id='all-venues'>Show all events from all venues</a>",
+  $.colorbox({html: "<div class='outer-venue-logo'><span class='venue-logo'><img src='logos/larger/" + name + ".png'></span></div><a href='#' id='venue-limit'>" + limit + "</a><a href='#' id='venue-mark'>" + venues + "</a><a href='#' id='all-venues'>Show all events from all venues</a><a href='#' id='csid-close'>Close</a>",
 	      width: $("body").width() + "px",
-	      close: "Close",
+	      closeButton: false,
 	      transition: "none",
+	      height: "100%",
 	      className: "event-lightbox"});
   $("#venue-limit").bind("click", function() {
     if (lastVenue != name) {
@@ -406,6 +407,11 @@ function actionVenueMenu(name) {
     return false;
   });
 
+  $("#csid-close").bind("click", function() {
+    $.colorbox.close();
+    return false;
+  });
+  
   $("#venue-mark").bind("click", function() {
     var deniedVenues = getSettings("deniedVenues");
     document.getElementById(name).checked =

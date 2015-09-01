@@ -31,7 +31,7 @@ function addNavigation() {
     $(node).children("td").first().bind("click", function(e) {
       if (! e.ctrlKey) {
 	if ($("body").width() < 600) {
-	  actionEventMenu(node);
+	  actionEventMenu(node, name);
 	  return false;
 	} else
 	  top.location.href = $(node).find("a").attr("href");
@@ -361,22 +361,27 @@ function exportCalendar() {
   saveAs(blob, "csid.ics");
 }
 
-function actionEventMenu(node) {
+function actionEventMenu(node, venue) {
   var link = $(node).find("a").attr("href");
   var idString = $(node).find("input").attr("id");
   var match = idString.match(/([0-9]+)/);
   var shows = getSettings("shows");
   var id = match[1];
-  var type = "Mark";
+  var type = "I'm going";
   if ($.inArray(id, shows) != -1)
-    type = "Unmark";
-  $.colorbox({html: "<a href='" + link + "'>Go to the event web page</a><a href='#' id='mark-event'>" + type + " event</a>",
+    type = "I'm not going, anyway";
+  $.colorbox({html: "<div class='outer-venue-logo'><img src='logos/larger/" + escape(venue) + ".png'></div><a href='" + link + "'>Go to the event web page</a><a href='#' id='mark-event'>" + type + "</a><a href='#' id='csid-close'>Close</a>",
 	      width: "100%",
-	      close: "Close",
+	      closeButton: false,
 	      transition: "none",
+	      height: "100%",
 	      className: "event-lightbox"});
   $("#mark-event").bind("click", function() {
     toggleShow(id, $.inArray(id, shows) == -1);
+    $.colorbox.close();
+    return false;
+  });
+  $("#csid-close").bind("click", function() {
     $.colorbox.close();
     return false;
   });

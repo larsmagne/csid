@@ -169,18 +169,21 @@ div#small-heading {
   div#selector {
     display: none;
   }
-  span.venue-logo {
-    width: 100%;
-    height: 200px;
-    vertical-align: middle;
-    display: table-cell;
-    padding-left: 20px;
-  }
   div.outer-venue-logo {
+    position: relative;
+    height: 200px;
     background: white;
     text-align: center;
     display: block;
     width: 100%;
+  }
+  div.outer-venue-logo img {
+    position: absolute;
+    margin: auto;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
   }
 }
 

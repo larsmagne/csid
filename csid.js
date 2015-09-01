@@ -127,6 +127,8 @@ function addNavigation() {
     showVenueChooser();
     return false;
   });
+
+  loadLogos();
 }
 
 function addVenue(name, deniedVenues) {
@@ -454,6 +456,39 @@ function showVenueChooser() {
     hideShow();
     return false;
   });
+}
+
+function loadLogos() {
+  var venues = [];
+  var deniedVenues = getSettings("deniedVenues");
+  $("#selector").find("span.venue-name").each(function(key, node) {
+    var id = node.id.replace(/venue-/, "");
+    if ($.inArray(id, deniedVenues) == -1)
+      venues.push(id);
+  });
+  loadLogo(venues, 0);
+}
+
+function loadLogo(venues, index) {
+  var venue = venues[index];
+  var img = $("<img />").attr("src", "logos/thumb/" + venue + ".png")
+	.on("load", function() {
+          if (this.complete && typeof this.naturalWidth != "undefined" &&
+	      this.naturalWidth != 0) {
+	    var image = this;
+            $("tr[name=" + venue + "]").each(function(key, node) {
+	      var td = node.childNodes[1];
+	      td.innerHTML = "";
+	      td.className = "thumb-logo";
+	      td.appendChild(image.cloneNode());
+	    });
+          }
+	  if (index < (venues.length - 1))
+	    loadLogo(venues, index + 1);
+	}).error(function() {
+	  if (index < (venues.length - 1))
+	    loadLogo(venues, index + 1);
+	});
 }
 
 addNavigation();

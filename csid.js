@@ -39,12 +39,14 @@ function addNavigation() {
       return true;
     });
 
-    $(node).children("td").last().bind("click", function() {
-      fixPosition();
-      if ($("body").width() < 600) {
+    if ($("body").width() < 600) {
+      $(node).children("td").last().bind("click", function() {
 	actionVenueMenu(name);
 	return false;
-      } else {
+      });
+    } else {
+      $(node).children("td").last().bind("click", function() {
+	fixPosition();
 	if (lastVenue != name) {
 	  hideShow(name);
 	  lastVenue = name;
@@ -52,9 +54,9 @@ function addNavigation() {
 	  hideShow();
 	  lastVenue = false;
 	}
-      }
       return true;
-    });
+      });
+    }
     
     var id = node.id.replace("event-", "");
     $(node).append("<td class=show><input type=checkbox id='show-" + id + 

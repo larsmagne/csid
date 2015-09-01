@@ -480,24 +480,22 @@ function loadLogos() {
 
 function loadLogo(venues, index) {
   var venue = venues[index];
-  var img = $("<img />").attr("src", "logos/thumb/" + escape(venue) + ".png")
-	.on("load", function() {
-          if (this.complete && typeof this.naturalWidth != "undefined" &&
-	      this.naturalWidth != 0) {
-	    var image = this;
-            $("tr[name=" + venue + "]").each(function(key, node) {
-	      var td = node.childNodes[1];
-	      td.innerHTML = "";
-	      td.className = "thumb-logo";
-	      td.appendChild(image.cloneNode());
-	    });
-          }
-	  if (index < (venues.length - 1))
-	    loadLogo(venues, index + 1);
-	}).error(function() {
-	  if (index < (venues.length - 1))
-	    loadLogo(venues, index + 1);
-	});
+  var image = new Image();
+  image.onload = function() {
+    $("tr[name=" + venue + "]").each(function(key, node) {
+      var td = node.childNodes[1];
+      td.innerHTML = "";
+      td.className = "thumb-logo";
+      td.appendChild(image.cloneNode());
+    });
+    if (index < (venues.length - 1))
+      loadLogo(venues, index + 1);
+  };
+  image.onerror = function() {
+    if (index < (venues.length - 1))
+      loadLogo(venues, index + 1);
+  };
+  image.src = "logos/thumb/" + escape(venue) + ".png";
 }
 
 addNavigation();

@@ -228,6 +228,16 @@ div#small-heading {
   font-family: arial, sans-serif;
   font-size: inherit;
 }
+.event-lightbox div.venue-top {
+  display: block;
+  width: 100%;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  border: 0px;
+  color: white;
+  font-weight: bold;
+  background: linear-gradient(to bottom, #808080 0%, #404040 100%);
+}
 .event-lightbox div.checked {
   background: linear-gradient(to bottom, #40a040 0%, #105010 100%);
 }

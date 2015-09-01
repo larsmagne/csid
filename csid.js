@@ -435,7 +435,7 @@ function actionVenueMenu(name) {
 }
 
 function showVenueChooser() {
-  var venues = "<div class='venue'>Choose venues to include or exclude</div>";
+  var venues = "<div class='venue-top'>Tap venues to include or exclude</div>";
   var deniedVenues = getSettings("deniedVenues");
   $("#selector").find("span.venue-name").each(function(key, node) {
     var id = node.id.replace(/venue-/, "");
@@ -463,6 +463,10 @@ function showVenueChooser() {
       ($.inArray(id, deniedVenues) != -1);
     setVenueCookie();
     hideShow();
+    return false;
+  });
+  $("div.venue-top").bind("click", function() {
+    $.colorbox.close();
     return false;
   });
 }

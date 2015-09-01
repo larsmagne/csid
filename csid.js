@@ -390,7 +390,7 @@ function actionVenueMenu(name) {
   if ($.inArray(name, deniedVenues) != -1)
     venues = "Include events from " + displayName;
 
-  $.colorbox({html: "<div class='outer-venue-logo'><img src='logos/larger/" + name + ".png'></div><a href='#' id='venue-limit'>" + limit + "</a><a href='#' id='venue-mark'>" + venues + "</a><a href='#' id='all-venues'>Show all events from all venues</a><a href='#' id='csid-close'>Close</a>",
+  $.colorbox({html: "<div class='outer-venue-logo'><img src='logos/larger/" + escape(name) + ".png'></div><a href='#' id='venue-limit'>" + limit + "</a><a href='#' id='venue-mark'>" + venues + "</a><a href='#' id='all-venues'>Show all events from all venues</a><a href='#' id='csid-close'>Close</a>",
 	      width: $("body").width() + "px",
 	      closeButton: false,
 	      transition: "none",

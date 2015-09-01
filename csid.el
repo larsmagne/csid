@@ -59,7 +59,7 @@
     ("Vulkan" "http://vulkanarena.no/shows" vulkan)
     ("Jakob" "http://www.jakob.no/program/" jakob)
     ("Vanguard" "http://www.fanrx.com/facebook/events.php?theme=custom&page=vanguardoslo&bgcolor=ffffff&textcolor=000000&linkcolor=555555&max=15" vanguard)
-    ("Ultima" "http://ultima.no/program" ultima)
+    ;;("Ultima" "http://ultima.no/program" ultima)
     ("Blitz" "http://www.blitz.no/kalender" blitz)
     ("Magneten" "http://magnetenpub.blogspot.no//feeds/pages/default?alt=json&v=2&dynamicviews=1"
      magneten :json)

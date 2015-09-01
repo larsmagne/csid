@@ -204,6 +204,7 @@ div#small-heading {
   color: white;
   font-weight: bold;
   font-family: arial, sans-serif;
+  font-size: medium;
 }
 .event-lightbox div.checked {
   background: linear-gradient(to bottom, #40a040 0%, #105010 100%);

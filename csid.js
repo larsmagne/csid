@@ -386,6 +386,10 @@ function actionEventMenu(node, venue) {
     $.colorbox.close();
     return false;
   });
+  $("#cboxLoadedContent").bind("click", function() {
+    $.colorbox.close();
+    return false;
+  });
 }
 
 function actionVenueMenu(name) {
@@ -417,6 +421,11 @@ function actionVenueMenu(name) {
   });
 
   $("#csid-close").bind("click", function() {
+    $.colorbox.close();
+    return false;
+  });
+  
+  $("#cboxLoadedContent").bind("click", function() {
     $.colorbox.close();
     return false;
   });

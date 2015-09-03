@@ -22,12 +22,14 @@ var lastVenue = false;
 
 function addNavigation() {
   // Default to not showing quizes.
+  //var defaultDenied = "Quiz,Buckleys,Herr Nilsen,Konserthuset,NB,Olsen,Per på hjørnet,Riksscenen,UiO";
+  var defaultDenied = "Quiz";
   if (phoneGap) {
     if (getSettings("deniedVenues") == "")
-      setSettings("deniedVenues", "Quiz");
+      setSettings("deniedVenues", defaultDenied);
   } else {
     if (typeof $.cookie("deniedVenues") == 'undefined')
-      setSettings("deniedVenues", "Quiz");
+      setSettings("deniedVenues", defaultDenied);
   }
 
   var mobilep = phoneGap || $("body").width() < 600;

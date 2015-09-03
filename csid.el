@@ -94,6 +94,8 @@
     ("Skuret" "https://www.facebook.com/skuret/events" facebook)
     ("Pizdets" "https://www.facebook.com/pissjets/events" facebook)
     ("Fisk og Vilt" "https://www.facebook.com/fiskogviltoslo/events" facebook)
+    ("Hvaskjer" "https://www.facebook.com/hvaskjertorshov/events" facebook)
+    ("UiO" "http://www.uio.no/om/aktuelt/arrangementer/konserter/" uio)
     ))
 
 (defvar csid-database nil)
@@ -1043,6 +1045,14 @@ no further processing).  URL is either a string or a parsed URL."
 	collect (list date
 		      (dom-attr link 'href)
 		      (dom-text link))))
+
+(defun csid-parse-uio (dom)
+  (loop for event in (dom-by-class dom "vevent")
+	for title = (dom-by-class event "vrtx-title summary")
+	collect (list (csid-parse-iso8601
+		       (dom-attr (dom-by-class event "dtstart") 'title))
+		      (dom-attr title 'href)
+		      (dom-texts title))))
 
 (defun csid-valid-date-p (date)
   (and (= (length date) 10)

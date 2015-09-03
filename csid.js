@@ -146,7 +146,8 @@ function addNavigation() {
     return false;
   });
 
-  loadLogos(mobilep);
+  if (mobilep)
+    loadLogos(mobilep);
 }
 
 function addVenue(name, deniedVenues) {

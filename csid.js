@@ -1,5 +1,5 @@
 var reveal = false;
-var phoneGap = true;
+var phoneGap = false;
 
 function getSettings(name) {
   var settings = $.cookie(name);

@@ -245,6 +245,8 @@ function hideShow(onlyVenue, onlyAfterTimestamp) {
       });
     }
   }
+
+  hideDuplicates();
 }
 
 function removeElement(arr, val) {
@@ -515,6 +517,26 @@ function loadLogo(venues, index) {
       loadLogo(venues, index + 1);
   };
   image.src = "logos/thumb/" + escape(venue) + ".png";
+}
+
+function hideDuplicates() {
+  var seen = [];
+  var shows = getSettings("shows");
+  $("tr").each(function(key, node) {
+    var id = node.id.replace(/event-/, "");
+    if (! id)
+      return;
+    var text = node.childNodes[0].childNodes[0].innerHTML;
+    if (! text)
+      return;
+    // Get rid of whitespace differences.
+    text = text.replace(/ +/g, "");
+    var eventKey = node.getAttribute("name") + "." + node.getAttribute("date") +
+	  "." + text;
+    if (seen[eventKey] && $.inArray(id, shows) == -1)
+      $(node).addClass("invisible");
+    seen[eventKey] = true;
+  });
 }
 
 addNavigation();

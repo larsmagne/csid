@@ -504,6 +504,7 @@ function loadLogo(mobilep, venues, index) {
   image.onload = function() {
     $("tr[name=" + venue + "]").each(function(key, node) {
       var td = node.childNodes[1];
+      td.title = td.innerHTML;
       td.innerHTML = "";
       td.className = "thumb-logo";
       td.appendChild(image.cloneNode());

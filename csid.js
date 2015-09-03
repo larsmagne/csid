@@ -1,21 +1,36 @@
 var reveal = false;
+var phoneGap = true;
 
 function getSettings(name) {
   var settings = $.cookie(name);
+  if (phoneGap)
+    settings = getCookie(name);
   var data = [];
   if (settings)
     data = settings.split(",");
   return data;
 }
 
+function setSettings(name, value) {
+  if (phoneGap)
+    setCookie(name, value, 10000);
+  else
+    $.cookie(name, value);
+}
+
 var lastVenue = false;
 
 function addNavigation() {
   // Default to not showing quizes.
-  if (typeof $.cookie("deniedVenues") == 'undefined')
-    $.cookie("deniedVenues", "Quiz");
+  if (phoneGap) {
+    if (getSettings("deniedVenues") == "")
+      setSettings("deniedVenues", "Quiz");
+  } else {
+    if (typeof $.cookie("deniedVenues") == 'undefined')
+      setSettings("deniedVenues", "Quiz");
+  }
 
-  var mobilep = $("body").width() < 600;
+  var mobilep = phoneGap || $("body").width() < 600;
   var deniedVenues = getSettings("deniedVenues");
   var shows = getSettings("shows");
 
@@ -274,7 +289,7 @@ function toggleShow(id, checked) {
       $("#ical").addClass("invisible");
     }
   }
-  $.cookie("shows", shows.join(), { expires: 10000 });
+  setSettings("shows", shows.join());
 }
 
 function setVenueCookie() {
@@ -284,11 +299,11 @@ function setVenueCookie() {
     if (! node.id.match(/show/) && ! node.checked)
       venues[i++] = node.id;
   });
-  $.cookie("deniedVenues", venues.join(), { expires: 10000 });
+  setSettings("deniedVenues", venues.join());
 }
 
 function fixPosition() {
-  if ($("body").width() < 600)
+  if (phoneGap || $("body").width() < 600)
     return;
 
   $("#body-container").each(function(key, body) {
@@ -372,7 +387,7 @@ function actionEventMenu(node, venue) {
   var type = "I'm going";
   if ($.inArray(id, shows) != -1)
     type = "I'm not going after all";
-  $.colorbox({html: "<div class='outer-venue-logo'><img src='logos/larger/" + escape(venue) + ".png'></div><a id='event-link' href='" + link + "'>Display the event web page</a><a href='#' id='mark-event'>" + type + "</a><a href='#' id='csid-close'>Close</a>",
+  $.colorbox({html: "<div class='outer-venue-logo'><img src='logos/larger/" + fixName(venue) + ".png'></div><a id='event-link' href='" + link + "'>Display the event web page</a><a href='#' id='mark-event'>" + type + "</a><a href='#' id='csid-close'>Close</a>",
 	      width: "100%",
 	      closeButton: false,
 	      transition: "none",
@@ -408,7 +423,7 @@ function actionVenueMenu(name) {
   if ($.inArray(name, deniedVenues) != -1)
     venues = "Include events from " + displayName;
 
-  $.colorbox({html: "<div class='outer-venue-logo'><img src='logos/larger/" + escape(name) + ".png'></div><a href='#' id='venue-limit'>" + limit + "</a><a href='#' id='venue-mark'>" + venues + "</a><a href='#' id='all-venues'>Show all events from all venues</a><a href='#' id='csid-close'>Close</a>",
+  $.colorbox({html: "<div class='outer-venue-logo'><img src='logos/larger/" + fixName(name) + ".png'></div><a href='#' id='venue-limit'>" + limit + "</a><a href='#' id='venue-mark'>" + venues + "</a><a href='#' id='all-venues'>Show all events from all venues</a><a href='#' id='csid-close'>Close</a>",
 	      width: $("body").width() + "px",
 	      closeButton: false,
 	      transition: "none",
@@ -497,7 +512,7 @@ function loadLogos(mobilep) {
   var deniedVenues = getSettings("deniedVenues");
   $("#selector").find("span.venue-name").each(function(key, node) {
     var id = node.id.replace(/venue-/, "");
-    if ($.inArray(id, deniedVenues) == -1)
+    if (phoneGap || $.inArray(id, deniedVenues) == -1)
       venues.push(id);
   });
   loadLogo(mobilep, venues, 0);
@@ -521,7 +536,7 @@ function loadLogo(mobilep, venues, index) {
     if (index < (venues.length - 1))
       loadLogo(mobilep, venues, index + 1);
   };
-  image.src = "logos/thumb/" + escape(venue) + ".png";
+  image.src = "logos/thumb/" + fixName(venue) + ".png";
 }
 
 function hideDuplicates() {
@@ -544,4 +559,14 @@ function hideDuplicates() {
   });
 }
 
-addNavigation();
+function fixName(name) {
+  return name.replace(/[^A-Za-z0-9_]/g, "x");
+}
+
+function getCookie(c_name) {
+    return localStorage.getItem(c_name);
+}
+
+function setCookie(c_name, value, expiredays) {
+    return localStorage.setItem(c_name, value);
+}

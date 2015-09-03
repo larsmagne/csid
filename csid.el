@@ -1098,7 +1098,7 @@ no further processing).  URL is either a string or a parsed URL."
 	    (setq prev-date date))
       (insert "</table><div id='selector'></div>")
       (write-region start (point) "/tmp/csid-table.html")
-      (insert "<script type='text/javascript' src='jquery-1.10.2.min.js'></script><script type='text/javascript' src='jquery.cookie.js'></script><script type='text/javascript' src='jquery.colorbox-min.js'></script><script type='text/javascript' src='FileSaver.min.js'></script><script type='text/javascript' src='csid.js'></script>"))))
+      (insert "<script type='text/javascript' src='jquery-1.10.2.min.js'></script><script type='text/javascript' src='jquery.cookie.js'></script><script type='text/javascript' src='jquery.colorbox-min.js'></script><script type='text/javascript' src='FileSaver.min.js'></script><script type='text/javascript' src='csid.js'></script><script type='text/javascript'>addNavigation();</script>"))))
 
 (defun csid-add-weekday (date)
   (let* ((day (string-to-number (substring date 8)))

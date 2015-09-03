@@ -96,6 +96,7 @@
     ("Fisk og Vilt" "https://www.facebook.com/fiskogviltoslo/events" facebook)
     ("Hvaskjer" "https://www.facebook.com/hvaskjertorshov/events" facebook)
     ("UiO" "http://www.uio.no/om/aktuelt/arrangementer/konserter/" uio)
+    ("Mr Pizza" "http://www.mrpizza.no/" pizza :date)
     ))
 
 (defvar csid-database nil)
@@ -1053,6 +1054,22 @@ no further processing).  URL is either a string or a parsed URL."
 		       (dom-attr (dom-by-class event "dtstart") 'title))
 		      (dom-attr title 'href)
 		      (dom-texts title))))
+
+(defun csid-parse-pizza (dom)
+  (loop with date
+	for event in (dom-by-tag dom 'p)
+	for text = (dom-text event)
+	when (and text
+		  (string-match
+		   (concat "^\\(" (mapconcat 'identity csid-weekdays "\\|")
+			   "\\)")
+		   text)
+		  (setq date (csid-parse-month-date text))
+		  (csid-valid-date-p date)
+		  (csid-date-likely-p date))
+	collect (list date
+		      "http://www.mrpizza.no/"
+		      (replace-regexp-in-string " " " " text))))
 
 (defun csid-valid-date-p (date)
   (and (= (length date) 10)

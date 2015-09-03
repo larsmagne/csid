@@ -55,7 +55,7 @@ function addNavigation() {
 	  hideShow();
 	  lastVenue = false;
 	}
-      return true;
+	return true;
       });
     }
     
@@ -131,8 +131,7 @@ function addNavigation() {
     return false;
   });
 
-  if (mobilep)
-    loadLogos();
+  loadLogos(mobilep);
 }
 
 function addVenue(name, deniedVenues) {
@@ -488,7 +487,7 @@ function showVenueChooser() {
   });
 }
 
-function loadLogos() {
+function loadLogos(mobilep) {
   var venues = [];
   var deniedVenues = getSettings("deniedVenues");
   $("#selector").find("span.venue-name").each(function(key, node) {
@@ -496,10 +495,10 @@ function loadLogos() {
     if ($.inArray(id, deniedVenues) == -1)
       venues.push(id);
   });
-  loadLogo(venues, 0);
+  loadLogo(mobilep, venues, 0);
 }
 
-function loadLogo(venues, index) {
+function loadLogo(mobilep, venues, index) {
   var venue = venues[index];
   var image = new Image();
   image.onload = function() {
@@ -510,11 +509,11 @@ function loadLogo(venues, index) {
       td.appendChild(image.cloneNode());
     });
     if (index < (venues.length - 1))
-      loadLogo(venues, index + 1);
+      loadLogo(mobilep, venues, index + 1);
   };
   image.onerror = function() {
     if (index < (venues.length - 1))
-      loadLogo(venues, index + 1);
+      loadLogo(mobilep, venues, index + 1);
   };
   image.src = "logos/thumb/" + escape(venue) + ".png";
 }

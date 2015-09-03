@@ -79,6 +79,7 @@
     ("Uhørt" "https://www.facebook.com/uhortistroget/events" facebook)
     ("Kulturhuset" "https://www.facebook.com/kulturhusetioslo/events" facebook)
     ("Kampenjazz" "http://oysteineide.wix.com/kampenjazz#!konserter/cb30" kampenjazz :date)
+    ("Cafeteatret" "http://nordicblacktheatre.no/wp-admin/admin-ajax.php?action=wpcal-getevents&end=1444600800&start=1440972000" cafeteatret :json)
     ("Telenor Arena" "http://telenorarena.no/en/events/" telenor)
     ("Postkontoret" "https://www.facebook.com/toyenpostkontor/events?key=events"
      facebook)
@@ -939,6 +940,17 @@ no further processing).  URL is either a string or a parsed URL."
 	when date
 	return date
 	do (setq node (funcall func dom node))))
+
+(defun csid-parse-cafeteatret (json)
+  (loop for event across json
+	for title = (cdr (assq 'title event))
+	for url = (cdr (assq 'post_url event))
+	when (and (string-match "Kampenjazz" title)
+		  (> (length url) 0))
+	collect (list (csid-parse-iso8601 (cdr (assq 'start event)))
+		      url
+		      (replace-regexp-in-string
+		       "Kampenjazz presenterer:? +" "" title))))
 
 (defun csid-parse-telenor (dom)
   (loop for event in (dom-by-class dom "^module-content$")

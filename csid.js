@@ -567,9 +567,9 @@ function fixName(name) {
 }
 
 function getCookie(c_name) {
-    return localStorage.getItem(c_name);
+  return localStorage.getItem(c_name);
 }
 
 function setCookie(c_name, value, expiredays) {
-    return localStorage.setItem(c_name, value);
+  return localStorage.setItem(c_name, value);
 }

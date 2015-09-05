@@ -158,6 +158,10 @@ function addNavigation() {
       $.colorbox.close();
       return true;
     });
+    $(window).on("orientationchange", function() {
+      $.colorbox.close();
+      return true;
+    });
   }
 }
 

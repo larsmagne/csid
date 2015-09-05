@@ -148,8 +148,17 @@ function addNavigation() {
     return false;
   });
 
-  if (mobilep)
+  if (mobilep) {
     loadLogos(mobilep);
+    document.addEventListener("touchmove", function() {
+      $.colorbox.close();
+      return true;
+    });
+    document.addEventListener("scroll", function() {
+      $.colorbox.close();
+      return true;
+    });
+  }
 }
 
 function addVenue(name, deniedVenues) {

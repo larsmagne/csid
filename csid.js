@@ -150,14 +150,6 @@ function addNavigation() {
 
   if (mobilep) {
     loadLogos(mobilep);
-    document.addEventListener("touchmove", function() {
-      $.colorbox.close();
-      return true;
-    });
-    document.addEventListener("scroll", function() {
-      $.colorbox.close();
-      return true;
-    });
     $(window).on("orientationchange", function() {
       $.colorbox.close();
       return true;
@@ -427,6 +419,7 @@ function actionEventMenu(node, venue) {
     $.colorbox.close();
     return false;
   });
+  addScrollActions();
 }
 
 function actionVenueMenu(name) {
@@ -484,6 +477,7 @@ function actionVenueMenu(name) {
     $.colorbox.close();
     return false;
   });
+  addScrollActions();
 }
 
 function showVenueChooser() {
@@ -521,6 +515,7 @@ function showVenueChooser() {
     $.colorbox.close();
     return false;
   });
+  removeScrollActions();
 }
 
 function loadLogos(mobilep) {
@@ -585,4 +580,21 @@ function getCookie(c_name) {
 
 function setCookie(c_name, value, expiredays) {
   return localStorage.setItem(c_name, value);
+}
+
+function addScrollActions() {
+  removeScrollActions();
+  $(window).on("touchmove", function() {
+    $.colorbox.close();
+    return true;
+  });
+  $(window).on("scroll", function() {
+    $.colorbox.close();
+    return true;
+  });
+}
+
+function removeScrollActions() {
+  $(window).off("touchmove");
+  $(window).off("scroll");
 }

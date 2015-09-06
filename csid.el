@@ -1117,7 +1117,7 @@ no further processing).  URL is either a string or a parsed URL."
 				 id
 				 rank date fetch-date
 				 url
-				 (url-insert-entities-in-string
+				 (csid-make-text-breakable
 				  (if (> (length name) 1000)
 				      (substring name 0 1000)
 				    name))
@@ -1126,6 +1126,23 @@ no further processing).  URL is either a string or a parsed URL."
       (insert "</table><div id='selector'></div>")
       (write-region start (point) "/tmp/csid-table.html")
       (insert "<script type='text/javascript' src='jquery-1.10.2.min.js'></script><script type='text/javascript' src='jquery.cookie.js'></script><script type='text/javascript' src='jquery.colorbox-min.js'></script><script type='text/javascript' src='FileSaver.min.js'></script><script type='text/javascript' src='csid.js'></script><script type='text/javascript'>addNavigation();</script>"))))
+
+(defun csid-make-text-breakable (string)
+  (mapconcat
+   'identity
+   (loop for word in (split-string string)
+	 collect (if (> (length word) 30)
+		     (mapconcat
+		      'identity
+		      (loop for i from 0 upto (/ (length string) 30)
+			    collect
+			    (url-insert-entities-in-string
+			     (substring word (* i 30)
+					(min (* (1+ i) 30)
+					     (length word)))))
+		      "<wbr>")
+		   (url-insert-entities-in-string word)))
+   " "))
 
 (defun csid-add-weekday (date)
   (let* ((day (string-to-number (substring date 8)))

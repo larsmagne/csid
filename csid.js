@@ -367,7 +367,7 @@ function exportCalendar() {
       var venue = $line.find("td").eq(1).text();
       var band = $line.find("td").first().text();
       var start = date + "T200000";
-      var end = date + "T230000";
+      var end = date + "T210000";
       cal += "BEGIN:VEVENT\nUID:event-" + elem + "@csid.no\n";
       cal += "DTSTAMP:" + start + "Z\n";
       cal += "ORGANIZER;CN=" + venue + ":MAILTO:csid@example.com\n";

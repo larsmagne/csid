@@ -583,6 +583,8 @@ function setCookie(c_name, value, expiredays) {
 }
 
 function addScrollActions() {
+  if (! phoneGap)
+    return;
   removeScrollActions();
   $(window).on("touchmove", function() {
     $.colorbox.close();

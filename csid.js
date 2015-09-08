@@ -149,7 +149,10 @@ function addNavigation() {
   });
 
   if (mobilep) {
-    loadLogos(mobilep);
+    if (phoneGap)
+      addLogos();
+    else
+      loadLogos(mobilep);
     $(window).on("orientationchange", function() {
       $.colorbox.close();
       if (phoneGap)
@@ -530,6 +533,18 @@ function showVenueChooser() {
   });
   removeScrollActions();
 }
+
+function addLogos() {
+  $("tr").each(function(key, node) {
+    var venue = node.getAttribute("name");
+    if (! venue)
+      return;
+    var td = node.childNodes[1];
+    td.title = td.innerHTML;
+    td.className = "thumb-logo";
+    td.innerHTML = "<img src='" + "logos/thumb/" + fixName(venue) + ".png'>";
+  });
+ }
 
 function loadLogos(mobilep) {
   var venues = [];

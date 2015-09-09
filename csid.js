@@ -507,11 +507,13 @@ function showVenueChooser() {
     venues += "<div class='venue " + className + "' data='" + id +
       "'>" + node.innerHTML + "</div>";
   });
+  venues += "<a href='#' id='csid-close'>Close</a>";
   $.colorbox({html: venues,
 	      width: $("body").width() + "px",
-	      close: "Close",
+	      closeButton: false,
 	      transition: "none",
 	      className: "event-lightbox"});
+  $("table").hide();
   $("div.venue").bind("click", function() {
     var id = $(this).attr("data");
     var deniedVenues = getSettings("deniedVenues");
@@ -527,10 +529,13 @@ function showVenueChooser() {
     hideShow();
     return false;
   });
-  $("div.venue-top").bind("click", function() {
+  var func = function() {
+    $("table").show();
     $.colorbox.close();
     return false;
-  });
+  };
+  $("div.venue-top").bind("click", func);
+  $("#csid-close").bind("click", func);
   removeScrollActions();
 }
 

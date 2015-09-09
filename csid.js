@@ -630,6 +630,8 @@ function removeScrollActions() {
 }
 
 function setHardWidths() {
+  if (device.platform != "iOS")
+    return;
   var width = $(window).width() - 100;
   $("tr").each(function(key, node) {
     $(node).children("td").first().css({

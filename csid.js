@@ -144,17 +144,9 @@ function addNavigation() {
 		       });
 
   $('#small-menu').bind("click", function(e) {
-    showVenueChooser();
+    miscMenu();
     return false;
   });
-
-  $("#small-heading").append("<img id='misc-menu' src='menu.png'></img>");
-  $("#misc-menu").css({
-    position: "absolute",
-    top: "8px",
-    left: $(window).width() - 20 + "px"
-  });
-  $("#misc-menu").click(miscMenu);
 
   if (mobilep) {
     if (phoneGap)
@@ -653,7 +645,7 @@ function setHardWidths() {
 }
 
 function miscMenu() {
-  $.colorbox({html: "<a href='#' id='export-calendar'>Export Calendar</a><a href='#' id='about'>About</a><a href='#' id='csid-close'>Close</a>",
+  $.colorbox({html: "<a href='#' id='show-venues'>Choose Venues to Exclude</a><a href='#' id='export-calendar'>Export Calendar</a><a href='#' id='about'>About</a><a href='#' id='csid-close'>Close</a>",
 	      width: $(window).width() + "px",
 	      closeButton: false,
 	      transition: "none",
@@ -667,6 +659,10 @@ function miscMenu() {
     $.colorbox.close();
     return false;
   });
+  $("#show-venues").bind("click", function() {
+    showVenueChooser();
+    return false;
+  });
   $("#about").bind("click", function() {
     $.colorbox.close();
     var url = "http://lars.ingebrigtsen.no/2013/09/22/crowdsourcing-is-dead/";
@@ -676,6 +672,7 @@ function miscMenu() {
       document.location.href = url;
     return false;
   });
+  $("#export-calendar").hide();
   $("#export-calendar").bind("click", function() {
     $.colorbox.close();
     var shows = getSettings("shows");

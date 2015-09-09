@@ -156,7 +156,7 @@ div#small-heading {
     text-decoration: none;
     font-weight: bold;
   }
-  div#small-heading img {
+  div#small-heading img#small-menu {
     position: absolute;
     top: -2px;
     left: 10px;

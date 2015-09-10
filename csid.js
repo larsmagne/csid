@@ -197,6 +197,7 @@ function hideShow(onlyVenue, onlyAfterTimestamp, onlyEvent) {
   var onlyShows = window.location.href.match("shows=([0-9,]+)");
   var prevDate = false, anyVisible = false;
   var maxTimestamp = "";
+  var blankTable = true;
 
   // We've gotten an URL with a show list from somebody.
   if (onlyShows)
@@ -254,6 +255,7 @@ function hideShow(onlyVenue, onlyAfterTimestamp, onlyEvent) {
     if (visible) {
       $(node).removeClass("invisible");
       anyVisible = true;
+      blankTable = false;
     } else
       $(node).addClass("invisible");
   });
@@ -281,6 +283,7 @@ function hideShow(onlyVenue, onlyAfterTimestamp, onlyEvent) {
   }
 
   hideDuplicates();
+  return blankTable;
 }
 
 function removeElement(arr, val) {
@@ -694,10 +697,16 @@ function searchEvents() {
   });
   $("#search-input").focus();
   var func = function() {
-    $.colorbox.close();
     var match = $("#search-input").val();
-    hideShow(false, false, match);
-    limitedDisplay = true;
+    var blankTable = hideShow(false, false, match);
+    if (blankTable) {
+      // Restore table.
+      hideShow();
+      colorbox("<a href='#' id='csid-close'>No events matched the search string</a>");
+    } else {
+      $.colorbox.close();
+      limitedDisplay = true;
+    }
     return false;
   };
   $("#search-form").bind("submit", func);

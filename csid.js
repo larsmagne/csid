@@ -644,8 +644,13 @@ function setHardWidths() {
   });
 }
 
+var savedTable = false;
+
 function miscMenu() {
-  $.colorbox({html: "<a href='#' id='show-venues'>Choose Venues to Exclude</a><a href='#' id='export-calendar'>Export Calendar</a><a href='#' id='about'>About</a><a href='#' id='csid-close'>Close</a>",
+  var sortString = "Sort By Scan Time";
+  if (savedTable)
+    sortString = "Sort By Date";
+  $.colorbox({html: "<a href='#' id='show-venues'>Choose Venues to Exclude</a><a href='#' id='export-calendar'>Export Calendar</a><a href='#' id='sort-method'>" + sortString + "</a><a href='#' id='choose-date'>Choose Date</a><a href='#' id='search'>Search</a><a href='#' id='about'>About</a><a href='#' id='csid-close'>Close</a>",
 	      width: $(window).width() + "px",
 	      closeButton: false,
 	      transition: "none",
@@ -680,6 +685,20 @@ function miscMenu() {
       alert("No events to export");
     else 
       exportCalendar();
+    return false;
+  });
+  $("#sort-method").bind("click", function() {
+    $.colorbox.close();
+    if (! savedTable) {
+      savedTable = $("table")[0].cloneNode(true);
+      sortByScanOrder();
+    } else {
+      var parent = $("table")[0].parentNode;
+      console.log(parent);
+      $("table").remove();
+      parent.appendChild(savedTable);
+      savedTable = false;
+    }
     return false;
   });
   addScrollActions();

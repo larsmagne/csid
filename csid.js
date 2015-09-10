@@ -644,7 +644,7 @@ function miscMenu() {
     if ($("#event-" + id).length)
       goingString = "<a href='#' id='going'>Display Events I'm Going To</a>";
   });
-  colorbox("<a href='#' id='show-venues'>Choose Venues to Exclude</a><a href='#' id='export-calendar'>Export Calendar</a><a href='#' id='sort-method'>" +
+  colorbox("<a href='#' id='show-venues'>Choose Venues to Exclude</a><a href='#' id='list-new'>List New Events</a><a href='#' id='export-calendar'>Export Calendar</a><a href='#' id='sort-method'>" +
 	   sortString +
 	   "</a><a href='#' id='choose-date'>Choose Date</a><a href='#' id='search'>Search</a>" +
 	   restoreString +
@@ -699,6 +699,20 @@ function miscMenu() {
     $.colorbox.close();
     limitedDisplay = true;
     hideShow(false, false, false, getSettings("shows"));
+    return false;
+  });
+  $("#list-new").bind("click", function() {
+    $.colorbox.close();
+    limitedDisplay = true;
+    hideShow(false, getSettings("timestamp"));
+    console.log(getSettings("timestamp"));
+    var maxTimestamp = "";
+    $("tr").each(function(key, node) {
+      var timestamp = node.getAttribute("time");
+      if (timestamp > maxTimestamp)
+	maxTimestamp = timestamp;
+    });
+    setSettings("timestamp", maxTimestamp);
     return false;
   });
   $("#restore").bind("click", function() {

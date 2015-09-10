@@ -413,15 +413,24 @@ function actionEventMenu(node, venue) {
   var type = "I'm going";
   if ($.inArray(id, shows) != -1)
     type = "I'm not going after all";
+  var exportString = "";
+  if (phoneGap)
+    exportString = "<a href='#' id='export-event'>Export Event to Calendar</a>";
   colorbox("<div class='outer-venue-logo'><img src='logos/larger/" +
 	   fixName(venue) + ".png'></div><div class='event-text'><div>" +
 	   $(node).find("a")[0].innerHTML +
 	   "</div></div><a id='event-link' href='" + link +
 	   "'>Display the event web page</a><a href='#' id='mark-event'>" +
-	   type + "</a><a href='#' id='csid-close'>Close</a>");
+	   type + "</a>" + exportString +
+	   "<a href='#' id='csid-close'>Close</a>");
   $("#mark-event").bind("click", function() {
     toggleShow(id, $.inArray(id, shows) == -1);
     $.colorbox.close();
+    return false;
+  });
+  $("#export-event").bind("click", function() {
+    $.colorbox.close();
+    exportEvent(id);
     return false;
   });
   $("#event-link").bind("click", function() {
@@ -800,4 +809,29 @@ function chooseDate() {
   });
   document.body.appendChild(picker.el);
   return false;
+}
+
+function exportEvent(id) {
+  var node = document.getElementById("event-" + id);
+  var date = node.getAttribute("date").split("-");
+  var venue = node.getAttribute("name");
+  var url = $(node).find("a").attr("href");
+  var title = $(node).find("a")[0].innerHTML;
+
+  var startDate = new Date(date[0], date[1] - 1, date[2], 19, 00, 0, 0, 0);
+  var endDate = new Date(date[0], date[1] - 1, date[2], 20, 00, 0, 0, 0);
+
+  var success = function(message) {
+    alert("Success: " + JSON.stringify(message));
+  };
+  var error = function(message) {
+    alert("Error: " + message);
+  };
+
+  // create a calendar (iOS only for now)
+  //window.plugins.calendar.createCalendar(calendarName,success,error);
+
+  // create an event silently (on Android < 4 an interactive dialog is shown)
+  window.plugins.calendar.createEvent(title, venue, "",
+				      startDate, endDate, success, error);
 }

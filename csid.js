@@ -847,4 +847,6 @@ function restoreTable() {
   var parent = $("table")[0].parentNode;
   $("table").remove();
   parent.appendChild(savedTable.cloneNode(true));
+  if (! phoneGap)
+    loadLogos(true);
 }

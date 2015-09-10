@@ -413,7 +413,12 @@ function actionEventMenu(node, venue) {
   var type = "I'm going";
   if ($.inArray(id, shows) != -1)
     type = "I'm not going after all";
-  colorbox("<div class='outer-venue-logo'><img src='logos/larger/" + fixName(venue) + ".png'></div><a id='event-link' href='" + link + "'>Display the event web page</a><a href='#' id='mark-event'>" + type + "</a><a href='#' id='csid-close'>Close</a>");
+  colorbox("<div class='outer-venue-logo'><img src='logos/larger/" +
+	   fixName(venue) + ".png'></div><div class='event-text'>" +
+	   $(node).find("a")[0].innerHTML +
+	   "</div><a id='event-link' href='" + link +
+	   "'>Display the event web page</a><a href='#' id='mark-event'>" +
+	   type + "</a><a href='#' id='csid-close'>Close</a>");
   $("#mark-event").bind("click", function() {
     toggleShow(id, $.inArray(id, shows) == -1);
     $.colorbox.close();

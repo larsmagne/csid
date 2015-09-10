@@ -674,7 +674,7 @@ function miscMenu() {
     return false;
   });
   $("#choose-date").bind("click", function() {
-    $.colorbox.close();
+    chooseDate();
     return false;
   });
   $("#search").bind("click", function() {
@@ -687,6 +687,14 @@ function miscMenu() {
     hideShow();
     return false;
   });
+  var func = function() {
+    $("table").show();
+    $.colorbox.close();
+    $(".pika-single").remove();
+    return false;
+  };
+  $("#csid-close").bind("click", func);
+  $("#cboxLoadedContent").bind("click", func);
   addScrollActions();
 }
 
@@ -728,4 +736,34 @@ function colorbox(html) {
     $.colorbox.close();
     return false;
   });
+}
+
+function chooseDate() {
+  $("table").hide();
+  var picker = new Pikaday({
+    format: 'YYYY-MM-DD',
+    onSelect: function(date) {
+      picker._d.setHours(5);
+      var iso = picker._d.toISOString().substring(0, 10);
+      $("table").show();
+      $(".pika-single").remove();
+      var first = false;
+      //var tr = $("tr[date=" + iso + "]")[0];
+      $("tr").each(function(key, node) {
+	var dat = node.getAttribute("date");
+	if (dat && dat == iso && ! first)
+	  first = node;
+      });
+      if (! first)
+	colorbox("<a href='#' id='csid-close'>No events on this date</a>");
+      else {
+	$.colorbox.close();
+	$('html, body').animate({
+          scrollTop: $(first).prev().offset().top
+	}, 2000);
+      }
+    }
+  });
+  document.body.appendChild(picker.el);
+  return false;
 }

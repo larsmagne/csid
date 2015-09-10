@@ -7,7 +7,7 @@ body {
 div#body-container {
   overflow: hidden;
 }
-table {
+table.events {
   border-collapse: collapse;
   max-width: 800px;
   float: left;
@@ -18,12 +18,12 @@ div#selector {
   width: 140px;
   float: right;
 }
-table tr {
+table.events tr {
   vertical-align: top;
 }
 p {
 }
-table td {
+table.events td {
   padding: 0px;
   vertical-align: middle;
 }
@@ -38,7 +38,7 @@ a {
   text-decoration: none;
   font-weight: bold;
 }
-table tr {
+table.events tr {
   cursor: pointer;
   background: -ms-linear-gradient(top, #F0F0F0 0%, #E0E0E0 100%);
   background: -moz-linear-gradient(top, #F0F0F0 0%, #E0E0E0 100%);
@@ -48,7 +48,7 @@ table tr {
   background: linear-gradient(to bottom, #F0F0F0 0%, #E0E0E0 100%);
   height: 45px;
 }
-table tr.checked {
+table.events tr.checked {
   vertical-align: middle;
   cursor: pointer;
   background: -ms-linear-gradient(top, #80F080 0%, #80E080 100%);
@@ -58,29 +58,29 @@ table tr.checked {
   background: -webkit-linear-gradient(top, #80F080 0%, #80E080 100%);
   background: linear-gradient(to bottom, #80F080 0%, #80E080 100%);
 }
-td > a {
+table.events td > a {
   width: 100%;
   display: inline-block;
   padding: 3px;
   padding-left: 10px;
   margin: 0px;
 }
-tr.date {
+table.events tr.date {
   background: #800000;
   color: white;
   height: 30px;
 }
-tr.date td {
+table.events tr.date td {
   text-align: right;
   padding-right: 8px;
 }
 .invisible {
   display: none;
 }
-tr td:first-child {
+table.events tr td:first-child {
   padding-right: 10px;
 }
-tr td:nth-child(2) {
+table.events tr td:nth-child(2) {
   white-space: nowrap;
   padding-left: 10px;
   font-weight: bold;
@@ -94,7 +94,7 @@ span.venue {
   white-space: nowrap;
   display: block;
 }
-td.show {
+table.events td.show {
   padding-left: 15px;
   padding-right: 10px;
   vertical-align: middle;
@@ -161,10 +161,10 @@ div#small-heading {
     top: -2px;
     left: 10px;
   }
-  tr td:nth-child(3) {
+  table.events tr td:nth-child(3) {
     display: none;
   }
-  tr td:nth-child(2) {
+  table.events tr td:nth-child(2) {
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 70px;
@@ -255,7 +255,7 @@ div#small-heading {
 .event-lightbox div.unchecked {
   background: linear-gradient(to bottom, #a04040 0%, #501010 100%);
 }
-td.thumb-logo {
+table.events td.thumb-logo {
   text-align: center;
   vertical-align: middle;
 }

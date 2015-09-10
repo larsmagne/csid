@@ -77,7 +77,7 @@ function addNavigation() {
 	return true;
       });
     }
-    
+
     var id = node.id.replace("event-", "");
     $(node).append("<td class=show><input type=checkbox id='show-" + id + 
 		   "' " + 
@@ -167,7 +167,7 @@ function addNavigation() {
     }
   }
   if (! savedTable)
-    savedTable = $("table")[0].cloneNode(true);
+    savedTable = $("table").clone({withDataAndEvents: true});
 }
 
 function addVenue(name, deniedVenues) {
@@ -846,6 +846,5 @@ function exportEvent(id) {
 function restoreTable() {
   var parent = $("table")[0].parentNode;
   $("table").remove();
-  parent.appendChild(savedTable.cloneNode(true));
-  addNavigation();
+  parent.appendChild(savedTable.clone({withDataAndEvents: true})[0]);
 }

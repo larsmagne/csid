@@ -418,7 +418,7 @@ function actionEventMenu(node, venue) {
     type = "I'm not going after all";
   var exportString = "";
   if (phoneGap)
-    exportString = "<a href='#' id='export-event'>Export Event to Calendar</a>";
+    exportString = "<a href='#' id='export-event'>Export Event to Calendar</a><a href='#' id='share-event'>Share Event</a>";
   colorbox("<div class='outer-venue-logo'><img src='logos/larger/" +
 	   fixName(venue) + ".png'></div><div class='event-text'><div>" +
 	   $(node).find("a")[0].innerHTML +
@@ -434,6 +434,11 @@ function actionEventMenu(node, venue) {
   $("#export-event").bind("click", function() {
     $.colorbox.close();
     exportEvent(id);
+    return false;
+  });
+  $("#share-event").bind("click", function() {
+    $.colorbox.close();
+    shareEvent(id);
     return false;
   });
   $("#event-link").bind("click", function() {
@@ -849,4 +854,21 @@ function restoreTable() {
   parent.appendChild(savedTable.clone({withDataAndEvents: true})[0]);
   if (! phoneGap)
     loadLogos(true);
+}
+
+function shareEvent(id) {
+  var node = document.getElementById("event-" + id);
+  var date = node.getAttribute("date").split("-");
+  var venue = node.getAttribute("name");
+  var url = $(node).find("a").attr("href");
+  var title = $(node).find("a")[0].innerHTML;
+
+  window.plugins.socialsharing.share
+  ("I'm going to " + title + " at " + venue + " on " +
+   new Date(date[0], date[1] - 1, date[2], 19, 00, 0, 0, 0).toDateString() +
+   ".",
+   title,
+   //"http://csid.no/logos/larger/" + fixName(venue) + ".png",
+   null,
+   url);
 }

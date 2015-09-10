@@ -822,10 +822,9 @@ function exportEvent(id) {
   var endDate = new Date(date[0], date[1] - 1, date[2], 20, 00, 0, 0, 0);
 
   var success = function(message) {
-    alert("Success: " + JSON.stringify(message));
   };
   var error = function(message) {
-    alert("Error: " + message);
+    alert("Unable to export event: " + message);
   };
 
   // create a calendar (iOS only for now)

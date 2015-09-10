@@ -1,6 +1,7 @@
 var reveal = false;
 var phoneGap = false;
 var sortOrder = "date";
+var savedTable = false;
 
 function getSettings(name) {
   var settings = $.cookie(name);
@@ -165,6 +166,8 @@ function addNavigation() {
       StatusBar.overlaysWebView(false);
     }
   }
+  if (! savedTable)
+    savedTable = $("table")[0].cloneNode(true);
 }
 
 function addVenue(name, deniedVenues) {
@@ -638,7 +641,6 @@ function setHardWidths() {
   });
 }
 
-var savedTable = false;
 var limitedDisplay = false;
 
 function miscMenu() {
@@ -685,22 +687,21 @@ function miscMenu() {
   $("#sort-method").bind("click", function() {
     $.colorbox.close();
     if (sortOrder == "date") {
-      savedTable = $("table")[0].cloneNode(true);
       sortOrder = "scan";
       sortByScanOrder();
     } else {
       sortOrder = "date";
-      var parent = $("table")[0].parentNode;
-      $("table").remove();
-      parent.appendChild(savedTable);
+      restoreTable();
     }
     return false;
   });
   $("#choose-date").bind("click", function() {
+    restoreTable();
     chooseDate();
     return false;
   });
   $("#search").bind("click", function() {
+    restoreTable();
     searchEvents();
     return false;
   });
@@ -711,23 +712,30 @@ function miscMenu() {
     return false;
   });
   $("#list-new").bind("click", function() {
-    $.colorbox.close();
+    restoreTable();
     limitedDisplay = true;
-    hideShow(false, getSettings("timestamp"));
-    console.log(getSettings("timestamp"));
-    var maxTimestamp = "";
-    $("tr").each(function(key, node) {
-      var timestamp = node.getAttribute("time");
-      if (timestamp > maxTimestamp)
-	maxTimestamp = timestamp;
-    });
-    setSettings("timestamp", maxTimestamp);
+    var blankTable = hideShow(false, getSettings("timestamp"));
+    if (blankTable) {
+      // Restore table.
+      hideShow();
+      colorbox("<a href='#' id='csid-close'>No new events have arrived since " +
+	       getSettings("timestamp") + "</a>");
+    } else {
+      $.colorbox.close();
+      var maxTimestamp = "";
+      $("tr").each(function(key, node) {
+	var timestamp = node.getAttribute("time");
+	if (timestamp > maxTimestamp)
+	  maxTimestamp = timestamp;
+      });
+      setSettings("timestamp", maxTimestamp);
+    }
     return false;
   });
   $("#restore").bind("click", function() {
+    restoreTable();
     $.colorbox.close();
     limitedDisplay = false;
-    hideShow();
     return false;
   });
   var func = function() {
@@ -833,4 +841,10 @@ function exportEvent(id) {
   // create an event silently (on Android < 4 an interactive dialog is shown)
   window.plugins.calendar.createEvent(title, venue, "",
 				      startDate, endDate, success, error);
+}
+
+function restoreTable() {
+  var parent = $("table")[0].parentNode;
+  $("table").remove();
+  parent.appendChild(savedTable.cloneNode(true));
 }

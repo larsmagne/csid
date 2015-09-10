@@ -137,6 +137,19 @@ div#small-heading {
 
 @media only screen and (max-width: 600px) {
   /* Style adjustments for small screens. */
+  html {
+    display: block;
+    margin: none;
+  }
+  body {
+    width: 100%;
+    display: block;
+    margin: 0px;
+  }
+  table.events {
+    width: 100%;
+    float: none;
+  }
   div#large-heading {
     display: none;
   }

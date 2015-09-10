@@ -414,9 +414,9 @@ function actionEventMenu(node, venue) {
   if ($.inArray(id, shows) != -1)
     type = "I'm not going after all";
   colorbox("<div class='outer-venue-logo'><img src='logos/larger/" +
-	   fixName(venue) + ".png'></div><div class='event-text'>" +
+	   fixName(venue) + ".png'></div><div class='event-text'><div>" +
 	   $(node).find("a")[0].innerHTML +
-	   "</div><a id='event-link' href='" + link +
+	   "</div></div><a id='event-link' href='" + link +
 	   "'>Display the event web page</a><a href='#' id='mark-event'>" +
 	   type + "</a><a href='#' id='csid-close'>Close</a>");
   $("#mark-event").bind("click", function() {

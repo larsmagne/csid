@@ -213,8 +213,9 @@ div#small-heading {
     display: block;
     font-weight: bold;
     width: 100%;
-    padding-top: 20px;
-    padding-bottom: 20px;
+  }
+  div.event-text div {
+    padding: 20px;
   }
 }
 

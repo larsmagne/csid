@@ -1,5 +1,6 @@
 var reveal = false;
 var phoneGap = false;
+var sortOrder = "date";
 
 function getSettings(name) {
   var settings = $.cookie(name);
@@ -648,7 +649,7 @@ var savedTable = false;
 
 function miscMenu() {
   var sortString = "Sort By Scan Time";
-  if (savedTable)
+  if (sortOrder == "scan")
     sortString = "Sort By Date";
   $.colorbox({html: "<a href='#' id='show-venues'>Choose Venues to Exclude</a><a href='#' id='export-calendar'>Export Calendar</a><a href='#' id='sort-method'>" + sortString + "</a><a href='#' id='choose-date'>Choose Date</a><a href='#' id='search'>Search</a><a href='#' id='about'>About</a><a href='#' id='csid-close'>Close</a>",
 	      width: $(window).width() + "px",
@@ -689,16 +690,24 @@ function miscMenu() {
   });
   $("#sort-method").bind("click", function() {
     $.colorbox.close();
-    if (! savedTable) {
+    if (sortOrder == "date") {
       savedTable = $("table")[0].cloneNode(true);
+      sortOrder = "scan";
       sortByScanOrder();
     } else {
+      sortOrder = "date";
       var parent = $("table")[0].parentNode;
-      console.log(parent);
       $("table").remove();
       parent.appendChild(savedTable);
-      savedTable = false;
     }
+    return false;
+  });
+  $("#choose-date").bind("click", function() {
+    $.colorbox.close();
+    return false;
+  });
+  $("#search").bind("click", function() {
+    $.colorbox.close();
     return false;
   });
   addScrollActions();

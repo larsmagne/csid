@@ -222,6 +222,12 @@ div#small-heading {
   font-weight: bold;
   font-family: arial, sans-serif;
 }
+.event-lightbox div.search {
+  display: block;
+  padding-top: 100px;
+  padding-bottom: 100px;
+  background: linear-gradient(to bottom, #40a040 0%, #105010 100%);
+}
 .event-lightbox div.venue {
   display: block;
   width: 100%;

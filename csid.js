@@ -191,7 +191,7 @@ function addVenue(name, deniedVenues) {
   });
 }
 
-function hideShow(onlyVenue, onlyAfterTimestamp) {
+function hideShow(onlyVenue, onlyAfterTimestamp, onlyEvent) {
   var venues = [];
   var i = 0;
   var onlyShows = window.location.href.match("shows=([0-9,]+)");
@@ -237,6 +237,8 @@ function hideShow(onlyVenue, onlyAfterTimestamp) {
 	visible = $(node).text().match(/quiz/i);
       else
 	visible = name == onlyVenue;
+    } else if (onlyEvent) {
+      visible = $(node).text().match(new RegExp(onlyEvent, "i"));
     } else if (onlyAfterTimestamp)
       visible = timestamp > onlyAfterTimestamp;
     else if (onlyShows)
@@ -405,18 +407,9 @@ function actionEventMenu(node, venue) {
   var type = "I'm going";
   if ($.inArray(id, shows) != -1)
     type = "I'm not going after all";
-  $.colorbox({html: "<div class='outer-venue-logo'><img src='logos/larger/" + fixName(venue) + ".png'></div><a id='event-link' href='" + link + "'>Display the event web page</a><a href='#' id='mark-event'>" + type + "</a><a href='#' id='csid-close'>Close</a>",
-	      width: "100%",
-	      closeButton: false,
-	      transition: "none",
-	      height: "100%",
-	      className: "event-lightbox"});
+  colorbox("<div class='outer-venue-logo'><img src='logos/larger/" + fixName(venue) + ".png'></div><a id='event-link' href='" + link + "'>Display the event web page</a><a href='#' id='mark-event'>" + type + "</a><a href='#' id='csid-close'>Close</a>");
   $("#mark-event").bind("click", function() {
     toggleShow(id, $.inArray(id, shows) == -1);
-    $.colorbox.close();
-    return false;
-  });
-  $("#csid-close").bind("click", function() {
     $.colorbox.close();
     return false;
   });
@@ -426,10 +419,6 @@ function actionEventMenu(node, venue) {
       window.open(this.href, "_system", "location=no");
     else
       document.location.href = this.href;
-    return false;
-  });
-  $("#cboxLoadedContent").bind("click", function() {
-    $.colorbox.close();
     return false;
   });
   addScrollActions();
@@ -445,12 +434,10 @@ function actionVenueMenu(name) {
   if ($.inArray(name, deniedVenues) != -1)
     venues = "Include events from " + displayName;
 
-  $.colorbox({html: "<div class='outer-venue-logo'><img src='logos/larger/" + fixName(name) + ".png'></div><a href='#' id='venue-limit'>" + limit + "</a><a href='#' id='venue-mark'>" + venues + "</a><a href='#' id='all-venues'>Show all events from all venues</a><a href='#' id='csid-close'>Close</a>",
-	      width: $("body").width() + "px",
-	      closeButton: false,
-	      transition: "none",
-	      height: "100%",
-	      className: "event-lightbox"});
+  colorbox("<div class='outer-venue-logo'><img src='logos/larger/" +
+	   fixName(name) + ".png'></div><a href='#' id='venue-limit'>" +
+	   limit + "</a><a href='#' id='venue-mark'>" + venues +
+	   "</a><a href='#' id='all-venues'>Show all events from all venues</a><a href='#' id='csid-close'>Close</a>");
   $("#venue-limit").bind("click", function() {
     if (lastVenue != name) {
       hideShow(name);
@@ -463,16 +450,6 @@ function actionVenueMenu(name) {
     return false;
   });
 
-  $("#csid-close").bind("click", function() {
-    $.colorbox.close();
-    return false;
-  });
-  
-  $("#cboxLoadedContent").bind("click", function() {
-    $.colorbox.close();
-    return false;
-  });
-  
   $("#venue-mark").bind("click", function() {
     var deniedVenues = getSettings("deniedVenues");
     document.getElementById(name).checked =
@@ -505,11 +482,7 @@ function showVenueChooser() {
       "'>" + node.innerHTML + "</div>";
   });
   venues += "<a href='#' id='csid-close'>Close</a>";
-  $.colorbox({html: venues,
-	      width: $("body").width() + "px",
-	      closeButton: false,
-	      transition: "none",
-	      className: "event-lightbox"});
+  colorbox(venues);
   $("table").hide();
   $("div.venue").bind("click", function() {
     var id = $(this).attr("data");
@@ -646,25 +619,20 @@ function setHardWidths() {
 }
 
 var savedTable = false;
+var limitedDisplay = false;
 
 function miscMenu() {
   var sortString = "Sort By Scan Time";
   if (sortOrder == "scan")
     sortString = "Sort By Date";
-  $.colorbox({html: "<a href='#' id='show-venues'>Choose Venues to Exclude</a><a href='#' id='export-calendar'>Export Calendar</a><a href='#' id='sort-method'>" + sortString + "</a><a href='#' id='choose-date'>Choose Date</a><a href='#' id='search'>Search</a><a href='#' id='about'>About</a><a href='#' id='csid-close'>Close</a>",
-	      width: $(window).width() + "px",
-	      closeButton: false,
-	      transition: "none",
-	      height: "100%",
-	      className: "event-lightbox"});
-  $("#csid-close").bind("click", function() {
-    $.colorbox.close();
-    return false;
-  });
-  $("#cboxLoadedContent").bind("click", function() {
-    $.colorbox.close();
-    return false;
-  });
+  var restoreString = "";
+  if (limitedDisplay)
+    restoreString = "<a href='#' id='restore'>Restore Events</a>";
+  colorbox("<a href='#' id='show-venues'>Choose Venues to Exclude</a><a href='#' id='export-calendar'>Export Calendar</a><a href='#' id='sort-method'>" +
+	   sortString +
+	   "</a><a href='#' id='choose-date'>Choose Date</a><a href='#' id='search'>Search</a>" +
+	   restoreString +
+	   "<a href='#' id='about'>About</a><a href='#' id='csid-close'>Close</a>");
   $("#show-venues").bind("click", function() {
     showVenueChooser();
     return false;
@@ -707,8 +675,48 @@ function miscMenu() {
     return false;
   });
   $("#search").bind("click", function() {
+    searchEvents();
+    return false;
+  });
+  $("#restore").bind("click", function() {
     $.colorbox.close();
+    limitedDisplay = false;
+    hideShow();
     return false;
   });
   addScrollActions();
+}
+
+function searchEvents() {
+  colorbox("<div class='search' id='search-wrap'><form id='search-form'><input type='string' size=30 id='search-input'></form></div><a href='#' id='do-search'>Search</a><a href='#' id='csid-close'>Close</a>");
+  $("#search-wrap").bind("click", function() {
+    return false;
+  });
+  $("#search-input").focus();
+  var func = function() {
+    $.colorbox.close();
+    var match = $("#search-input").val();
+    hideShow(false, false, match);
+    limitedDisplay = true;
+    return false;
+  };
+  $("#search-form").bind("submit", func);
+  $("#do-search").bind("click", func);
+}
+
+function colorbox(html) {
+  $.colorbox({html: html,
+	      width: $(window).width() + "px",
+	      closeButton: false,
+	      transition: "none",
+	      height: "100%",
+	      className: "event-lightbox"});
+  $("#csid-close").bind("click", function() {
+    $.colorbox.close();
+    return false;
+  });
+  $("#cboxLoadedContent").bind("click", function() {
+    $.colorbox.close();
+    return false;
+  });
 }

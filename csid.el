@@ -97,6 +97,7 @@
     ("Hvaskjer" "https://www.facebook.com/hvaskjertorshov/events" facebook)
     ("UiO" "http://www.uio.no/om/aktuelt/arrangementer/konserter/" uio)
     ("Mr Pizza" "http://www.mrpizza.no/" pizza :date)
+    ("Sub Scene" "http://www.subscene.no/" subscene)
     ))
 
 (defvar csid-database nil)
@@ -1073,6 +1074,17 @@ no further processing).  URL is either a string or a parsed URL."
 	collect (list date
 		      "http://www.mrpizza.no/"
 		      (replace-regexp-in-string " " " " text))))
+
+(defun csid-parse-subscene (dom)
+  (loop for event in (dom-by-class dom "^post-")
+	for title = (dom-by-tag (dom-by-tag event 'h1) 'a)
+	for date = (dom-by-tag event 'h3)
+	for class = (dom-texts (dom-by-class event "cat-links"))
+	when (and class
+		  (string-match "Arrangementer" class))
+	collect (list (csid-parse-month-date (dom-texts date))
+		      (dom-attr title 'href)
+		      (dom-texts title))))
 
 (defun csid-valid-date-p (date)
   (and (= (length date) 10)

@@ -657,8 +657,9 @@ no further processing).  URL is either a string or a parsed URL."
 
 (defun csid-parse-bidrobon (dom)
   (loop for event in (dom-by-tag (dom-by-class dom "wsite-content") 'a)
-	collect (list (csid-parse-short-yearless-month
-		       (dom-texts event))
+	for date = (csid-parse-short-yearless-month (dom-texts event))
+	when (csid-date-likely-p date)
+	collect (list date
 		      (shr-expand-url (dom-attr event 'href))
 		      (dom-texts event))))
 

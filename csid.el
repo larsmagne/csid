@@ -1078,11 +1078,12 @@ no further processing).  URL is either a string or a parsed URL."
 (defun csid-parse-subscene (dom)
   (loop for event in (dom-by-class dom "^post-")
 	for title = (dom-by-tag (dom-by-tag event 'h1) 'a)
-	for date = (dom-by-tag event 'h3)
+	for date = (csid-parse-month-date (dom-texts (dom-by-tag event 'h3)))
 	for class = (dom-texts (dom-by-class event "cat-links"))
 	when (and class
-		  (string-match "Arrangementer" class))
-	collect (list (csid-parse-month-date (dom-texts date))
+		  (string-match "Arrangementer" class)
+		  (csid-valid-date-p date))
+	collect (list date
 		      (dom-attr title 'href)
 		      (dom-texts title))))
 

@@ -300,6 +300,7 @@ function hideShow(onlyVenue, onlyAfterTimestamp, onlyEvent,
     var elem = $("#event-" + id);
     var shows = getSettings("shows");
     toggleShow(id, true);
+    $("#show-" + id).attr('checked', true);
     $('body').animate({
       scrollTop: elem.position().top + "px"
     }, 2000);

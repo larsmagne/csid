@@ -1197,7 +1197,7 @@ no further processing).  URL is either a string or a parsed URL."
 			  (string-match this-date scan-time))
 		collect (format "%s: <a href=\"%s\">%s</a> at %s"
 				date
-				(replace-regexp-in-string "\"" "" url)
+				(format "http://csid.no/?goto=%s" id)
 				name
 				venue))
 	  when events

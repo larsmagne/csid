@@ -159,6 +159,8 @@ div#small-heading {
     font-weight: bold;
     text-align: center;
     background: linear-gradient(to bottom, #3030a0 0%, #100150 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #3030a0), color-stop(1, #100150));
+    background: -webkit-linear-gradient(top, #3030a0 0%, #100150 100%);
     color: white;
     padding-top: 10px;
     padding-bottom: 10px;
@@ -229,6 +231,8 @@ div#small-heading {
   text-align: center;
   cursor: pointer;
   background: linear-gradient(to bottom, #40a040 0%, #105010 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #40a040), color-stop(1, #105010));
+  background: -webkit-linear-gradient(top, #40a040 0%, #105010 100%);
   color: white;
   padding-top: 20px;
   padding-bottom: 20px;
@@ -238,6 +242,8 @@ div#small-heading {
   display: block;
   width: 100%;
   background: linear-gradient(to bottom, #40a040 0%, #105010 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #40a040), color-stop(1, #105010));
+  background: -webkit-linear-gradient(top, #40a040 0%, #105010 100%);
   padding-top: 20px;
   padding-bottom: 20px;
   border: 0px;
@@ -251,6 +257,8 @@ div#small-heading {
   padding-top: 100px;
   padding-bottom: 100px;
   background: linear-gradient(to bottom, #40a040 0%, #105010 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #40a040), color-stop(1, #105010));
+  background: -webkit-linear-gradient(top, #40a040 0%, #105010 100%);
 }
 .event-lightbox div.venue {
   display: block;
@@ -272,12 +280,18 @@ div#small-heading {
   color: white;
   font-weight: bold;
   background: linear-gradient(to bottom, #808080 0%, #404040 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #808080), color-stop(1, #404040));
+  background: -webkit-linear-gradient(top, #808080 0%, #404040 100%);
 }
 .event-lightbox div.checked {
   background: linear-gradient(to bottom, #40a040 0%, #105010 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #40a040), color-stop(1, #105010));
+  background: -webkit-linear-gradient(top, #40a040 0%, #105010 100%);
 }
 .event-lightbox div.unchecked {
   background: linear-gradient(to bottom, #a04040 0%, #501010 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #a04040), color-stop(1, #501010));
+  background: -webkit-linear-gradient(top, #a04040 0%, #501010 100%);
 }
 table.events td.thumb-logo {
   text-align: center;

@@ -196,6 +196,8 @@ function addVenue(name, deniedVenues) {
   });
 }
 
+var doneGotoShow = false;
+
 function hideShow(onlyVenue, onlyAfterTimestamp, onlyEvent,
 		  onlyShowsArray) {
   var venues = [];
@@ -290,6 +292,18 @@ function hideShow(onlyVenue, onlyAfterTimestamp, onlyEvent,
     }
   }
 
+  var gotoShow = window.location.href.match("goto=([0-9]+)");
+  if (! doneGotoShow && gotoShow) {
+    var id = gotoShow[1];
+    var elem = $("#event-" + id);
+    var shows = getSettings("shows");
+    toggleShow(id, true);
+    $('html, body').animate({
+      scrollTop: elem.offset().top
+    }, 2000);
+    doneGotoShow = true;
+  }
+  
   hideDuplicates();
   return blankTable;
 }

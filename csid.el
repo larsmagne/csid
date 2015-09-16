@@ -269,26 +269,28 @@ no further processing).  URL is either a string or a parsed URL."
 (defun csid-parse-source (url function data-type)
   (with-current-buffer (csid-retrieve-synchronously url t t)
     (goto-char (point-min))
-    (when (search-forward "\n\n" nil t)
-      (let* ((headers (eww-parse-headers))
-	     (content-type
-	      (mail-header-parse-content-type
-	       (or (cdr (assoc "content-type" headers))
-		   "text/plain")))
-	     (charset
-	      (intern
-	       (downcase
-		(or (cdr (assq 'charset (cdr content-type)))
-		    (eww-detect-charset t)
-		    "utf-8"))))
-	     (shr-base (shr-parse-base url)))
-	(decode-coding-region (point) (point-max) charset)
-	(funcall function
-		 (cond
-		  ((eq data-type :json)
-		   (ignore-errors (json-read)))
-		  (t
-		   (libxml-parse-html-region (point) (point-max)))))))))
+    (prog1
+	(when (search-forward "\n\n" nil t)
+	  (let* ((headers (eww-parse-headers))
+		 (content-type
+		  (mail-header-parse-content-type
+		   (or (cdr (assoc "content-type" headers))
+		       "text/plain")))
+		 (charset
+		  (intern
+		   (downcase
+		    (or (cdr (assq 'charset (cdr content-type)))
+			(eww-detect-charset t)
+			"utf-8"))))
+		 (shr-base (shr-parse-base url)))
+	    (decode-coding-region (point) (point-max) charset)
+	    (funcall function
+		     (cond
+		      ((eq data-type :json)
+		       (ignore-errors (json-read)))
+		      (t
+		       (libxml-parse-html-region (point) (point-max)))))))
+      (kill-buffer (current-buffer)))))
 
 (defun csid-parse-revolver (dom)
   (loop for elem in (dom-by-class dom "views-table")

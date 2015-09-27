@@ -1033,7 +1033,8 @@ no further processing).  URL is either a string or a parsed URL."
   (loop for event in (dom-by-class dom "program_right")
 	for link = (dom-by-tag (dom-by-tag event 'h1) 'a)
 	for date = (csid-parse-month-date (dom-texts (dom-by-tag event 'h7)))
-	when (csid-valid-date-p date)
+	when (and (csid-valid-date-p date)
+		  (csid-date-likely-p date))
 	collect (list date
 		      (dom-attr link 'href)
 		      (dom-text link))))

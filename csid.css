@@ -298,3 +298,8 @@ table.events td.thumb-logo {
   text-align: center;
   vertical-align: middle;
 }
+div.apps {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  background: #808080;
+}

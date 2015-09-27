@@ -679,15 +679,20 @@ function miscMenu() {
       goingString = "<a href='#' id='going'>Display Events I'm Going To</a>";
   });
   var pgString = "";
-  if (phoneGap)
+  var appString = "<div class='apps'><img src='assets/apple.png' id='apple'><img src='assets/google.png' id='google'></div>";
+  if (phoneGap) {
     pgString = "<a href='#' id='reload'>Reload Data</a>";
+    appString = "";
+  }
   colorbox("<a href='#' id='show-venues'>Choose Venues to Exclude</a><a href='#' id='list-new'>List New Events</a><a href='#' id='export-calendar'>Export Calendar</a><a href='#' id='sort-method'>" +
 	   sortString +
 	   "</a><a href='#' id='choose-date'>Choose Date</a><a href='#' id='search'>Search</a>" +
 	   restoreString +
 	   goingString +
 	   pgString +
-	   "<a href='#' id='add-venue'>Add Venue</a><a href='#' id='about'>About</a><a href='#' id='csid-close'>Close</a>");
+	   "<a href='#' id='add-venue'>Add Venue</a><a href='#' id='about'>About</a>" +
+	   appString +
+	   "<a href='#' id='csid-close'>Close</a>");
   $("#show-venues").bind("click", function() {
     showVenueChooser();
     return false;
@@ -706,6 +711,14 @@ function miscMenu() {
     colorbox("<a href='#' id='add'>To request a new venue, click here and leave a comment on the blog page.</a>");
     $("#add").bind("click", aboutPage);
     return false;
+  });
+  $("#apple").bind("click", function() {
+    $.colorbox.close();
+    document.location.href = "https://geo.itunes.apple.com/us/app/csid-concerts-on-oslo/id1037896784?mt=8";
+  });
+  $("#google").bind("click", function() {
+    $.colorbox.close();
+    document.location.href = "https://play.google.com/store/apps/details?id=no.ingebrigtsen.csid";
   });
   $("#export-calendar").hide();
   $("#export-calendar").bind("click", function() {

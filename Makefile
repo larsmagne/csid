@@ -1,5 +1,5 @@
 deploy:
-	rsync -av logos csid.css csid.js www@quimby:html/circus/csid/
+	rsync -av logos assets csid.css csid.js www@quimby:html/circus/csid/
 
 images:
 	if [ ! -d logos/thumb ]; then mkdir logos/thumb; fi;\

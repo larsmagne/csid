@@ -119,7 +119,11 @@
 			:key (lambda (event)
 			       (nth 4 event)))))
 	(if (not old)
-	    (push elem csid-database)
+	    ;; Facebook sometimes seem to return the wrong data?
+	    ;; Don't add a new show if we already have the URL.
+	    (unless (cl-member #'caddr csid-database
+			       :key #'caddr)
+	      (push elem csid-database))
 	  ;; Don't update anything if we're using the date as the key,
 	  ;; because then multiple events on the same date will be
 	  ;; overwritten.

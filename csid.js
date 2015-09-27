@@ -687,18 +687,24 @@ function miscMenu() {
 	   restoreString +
 	   goingString +
 	   pgString +
-	   "<a href='#' id='about'>About</a><a href='#' id='csid-close'>Close</a>");
+	   "<a href='#' id='add-venue'>Add Venue</a><a href='#' id='about'>About</a><a href='#' id='csid-close'>Close</a>");
   $("#show-venues").bind("click", function() {
     showVenueChooser();
     return false;
   });
-  $("#about").bind("click", function() {
+  var aboutPage = function() {
     $.colorbox.close();
     var url = "http://lars.ingebrigtsen.no/2013/09/22/crowdsourcing-is-dead/";
     if (phoneGap && device.platform == "iOS")
       window.open(url, "_system", "location=no");
     else
       document.location.href = url;
+    return false;
+  };
+  $("#about").bind("click", aboutPage);
+  $("#add-venue").bind("click", function() {
+    colorbox("<a href='#' id='add'>To request a new venue, click here and leave a comment on the blog page.</a>");
+    $("#add").bind("click", aboutPage);
     return false;
   });
   $("#export-calendar").hide();

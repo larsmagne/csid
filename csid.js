@@ -438,7 +438,8 @@ function actionEventMenu(node, venue) {
   if (phoneGap)
     exportString = "<a href='#' id='export-event'>Export Event to Calendar</a><a href='#' id='share-event'>Share Event</a>";
   colorbox("<div class='outer-venue-logo'><img src='logos/larger/" +
-	   fixName(venue) + ".png'></div><div class='event-text'><div>" +
+	   fixName(venue) + ".png' srcset='logos/larger/" +
+	   fixName(venue) + "x2.png 2x'></div><div class='event-text'><div>" +
 	   $(node).find("a")[0].innerHTML +
 	   "</div></div><a id='event-link' href='" + link +
 	   "'>Display the event web page</a><a href='#' id='mark-event'>" +
@@ -481,7 +482,8 @@ function actionVenueMenu(name) {
     venues = "Include events from " + displayName;
 
   colorbox("<div class='outer-venue-logo'><img src='logos/larger/" +
-	   fixName(name) + ".png'></div><a href='#' id='venue-limit'>" +
+	   fixName(name) + ".png' srcset='logos/larger/" +
+	   fixName(name) + "x2.png 2x'></div><a href='#' id='venue-limit'>" +
 	   limit + "</a><a href='#' id='venue-mark'>" + venues +
 	   "</a><a href='#' id='all-venues'>Show all events from all venues</a><a href='#' id='csid-close'>Close</a>");
   $("#venue-limit").bind("click", function() {

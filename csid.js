@@ -563,7 +563,8 @@ function addLogos() {
     var td = node.childNodes[1];
     td.title = td.innerHTML;
     td.className = "thumb-logo";
-    td.innerHTML = "<img src='" + "logos/thumb/" + fixName(venue) + ".png'>";
+    td.innerHTML = "<img src='logos/thumb/" + fixName(venue) +
+      ".png' srcset='logos/thumb/" + fixName(venue) + "2x.png x2'>";
   });
  }
 
@@ -596,6 +597,8 @@ function loadLogo(mobilep, venues, index) {
     if (index < (venues.length - 1))
       loadLogo(mobilep, venues, index + 1);
   };
+  if (window.devicePixelRatio == 2)
+    image.srcset = "logos/thumb/" + fixName(venue) + "x2.png 2x";
   image.src = "logos/thumb/" + fixName(venue) + ".png";
 }
 

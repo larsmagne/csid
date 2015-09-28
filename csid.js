@@ -485,9 +485,14 @@ function actionVenueMenu(name) {
   if ($.inArray(name, deniedVenues) != -1)
     venues = "Include events from " + displayName;
 
-  colorbox("<div class='outer-venue-logo'><img src='logos/larger/" +
-	   fixName(name) + ".png' srcset='logos/larger/" +
-	   fixName(name) + "x2.png 2x'></div><a href='#' id='venue-limit'>" +
+  var logo = "logos/larger/" + fixName(venue);
+  if (phoneGap) {
+    if (! existingLogos[fixName(venue)])
+      logo = "http://csid.no/logos/larger/" + fixName(venue);
+  }
+  colorbox("<div class='outer-venue-logo'><img src='" + logo +
+	   ".png' srcset='" + logo +
+	   "x2.png 2x'></div><a href='#' id='venue-limit'>" +
 	   limit + "</a><a href='#' id='venue-mark'>" + venues +
 	   "</a><a href='#' id='all-venues'>Show all events from all venues</a><a href='#' id='csid-close'>Close</a>");
   $("#venue-limit").bind("click", function() {

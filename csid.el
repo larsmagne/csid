@@ -887,8 +887,11 @@ no further processing).  URL is either a string or a parsed URL."
   (loop for elem in (dom-by-tag dom 'h2)
 	for event = (dom-parent dom (car (dom-by-tag elem 'br)))
 	for name = (cadr (dom-strings event))
-	when name
-	collect (list (csid-parse-short-yearless-month (dom-texts elem))
+	for date = (csid-parse-short-yearless-month (dom-texts elem))
+	when (and name
+		  (csid-valid-date-p date)
+		  (csid-date-likely-p date))
+	collect (list date
 		      "http://www.buckleys.no/kommende-konserter.html"
 		      (csid-clean-string name))))
 

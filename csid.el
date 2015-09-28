@@ -98,6 +98,7 @@
     ("UiO" "http://www.uio.no/om/aktuelt/arrangementer/konserter/" uio)
     ("Mr Pizza" "http://www.mrpizza.no/" pizza :date)
     ("Sub Scene" "http://www.subscene.no/" subscene)
+    ("Vigeland" "https://www.facebook.com/emanuelvigeland/events" facebook)
     ))
 
 (defvar csid-database nil)

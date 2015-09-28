@@ -566,7 +566,7 @@ function addLogos() {
     td.title = td.innerHTML;
     td.className = "thumb-logo";
     td.innerHTML = "<img src='logos/thumb/" + fixName(venue) +
-      ".png' srcset='logos/thumb/" + fixName(venue) + "2x.png x2'>";
+      ".png' srcset='logos/thumb/" + fixName(venue) + "x2.png 2x'>";
   });
  }
 
@@ -600,7 +600,7 @@ function loadLogo(mobilep, venues, index) {
       loadLogo(mobilep, venues, index + 1);
   };
   if (window.devicePixelRatio == 2)
-    image.srcset = "logos/thumb/" + fixName(venue) + "x2.png 2x";
+    image.srcSet = "logos/thumb/" + fixName(venue) + "x2.png 2x";
   image.src = "logos/thumb/" + fixName(venue) + ".png";
 }
 

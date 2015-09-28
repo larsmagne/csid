@@ -435,11 +435,15 @@ function actionEventMenu(node, venue) {
   if ($.inArray(id, shows) != -1)
     type = "I'm not going after all";
   var exportString = "";
-  if (phoneGap)
+  var logo = "logos/larger/" + fixName(venue);
+  if (phoneGap) {
     exportString = "<a href='#' id='export-event'>Export Event to Calendar</a><a href='#' id='share-event'>Share Event</a>";
-  colorbox("<div class='outer-venue-logo'><img src='logos/larger/" +
-	   fixName(venue) + ".png' srcset='logos/larger/" +
-	   fixName(venue) + "x2.png 2x'></div><div class='event-text'><div>" +
+    if (! existingLogos[fixName(venue)])
+      logo = "http://csid.no/logos/larger/" + fixName(venue);
+  }
+  colorbox("<div class='outer-venue-logo'><img src='" + logo +
+	   ".png' srcset='" + logo +
+	   "x2.png 2x'></div><div class='event-text'><div>" +
 	   $(node).find("a")[0].innerHTML +
 	   "</div></div><a id='event-link' href='" + link +
 	   "'>Display the event web page</a><a href='#' id='mark-event'>" +
@@ -565,8 +569,15 @@ function addLogos() {
     var td = node.childNodes[1];
     td.title = td.innerHTML;
     td.className = "thumb-logo";
-    td.innerHTML = "<img src='logos/thumb/" + fixName(venue) +
-      ".png' srcset='logos/thumb/" + fixName(venue) + "x2.png 2x'>";
+
+    if (phoneGap && ! existingLogos[fixName(venue)]) {
+      td.innerHTML = "<img src='http://csid.no/logos/thumb/" +
+	fixName(venue) + ".png' srcset='http://csid.no/logos/thumb/" +
+	fixName(venue) + "x2.png 2x'>";
+    } else {
+      td.innerHTML = "<img src='logos/thumb/" + fixName(venue) +
+	".png' srcset='logos/thumb/" + fixName(venue) + "x2.png 2x'>";
+    }
   });
  }
 
@@ -928,4 +939,14 @@ function shareEvent(id) {
    //"http://csid.no/logos/larger/" + fixName(venue) + ".png",
    null,
    url);
+}
+
+function allVenues() {
+  var venues = [];
+  var i = 0;
+  $("input[type=checkbox]").each(function(key, node) {
+    if (! node.id.match(/show/))
+      venues[i++] = node.id;
+  });
+  return venues;
 }

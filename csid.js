@@ -611,7 +611,7 @@ function loadLogo(mobilep, venues, index) {
       loadLogo(mobilep, venues, index + 1);
   };
   if (window.devicePixelRatio == 2)
-    image.srcSet = "logos/thumb/" + fixName(venue) + "x2.png 2x";
+    image.setAttribute("srcset", "logos/thumb/" + fixName(venue) + "x2.png 2x");
   image.src = "logos/thumb/" + fixName(venue) + ".png";
 }
 

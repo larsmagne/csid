@@ -1107,7 +1107,8 @@ no further processing).  URL is either a string or a parsed URL."
   (switch-to-buffer (get-buffer-create "*scratch*"))
   (erase-buffer)
   (dom-pp dom t)
-  (goto-char (point-min)))
+  (goto-char (point-min))
+  (error "Parsed"))
 
 (defun csid-number-database ()
   (loop for elem in (copy-list csid-database)

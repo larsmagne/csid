@@ -477,11 +477,11 @@ function actionEventMenu(node, venue) {
 
 function actionVenueMenu(name) {
   var displayName = name.replace(/_/g, " ");
-  var limit = "Just show events from " + displayName;
+  var limit = "Show events from " + displayName;
   if (lastVenue == name)
     limit = "Show all events again";
   var deniedVenues = getSettings("deniedVenues");
-  var venues = "Don't show events from " + displayName;
+  var venues = "Exclude events from " + displayName;
   if ($.inArray(name, deniedVenues) != -1)
     venues = "Include events from " + displayName;
 

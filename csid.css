@@ -19,7 +19,7 @@ div#selector {
   float: right;
 }
 table.events tr {
-  vertical-align: top;
+  vertical-align: middle;
 }
 p {
 }

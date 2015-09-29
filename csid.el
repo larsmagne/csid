@@ -99,6 +99,7 @@
     ("Mr Pizza" "http://www.mrpizza.no/" pizza :date)
     ("Sub Scene" "http://www.subscene.no/" subscene)
     ("Vigeland" "https://www.facebook.com/emanuelvigeland/events" facebook)
+    ("Josefine" "http://josefinevise.no/" josefine)
     ))
 
 (defvar csid-database nil)
@@ -1098,6 +1099,15 @@ no further processing).  URL is either a string or a parsed URL."
 	collect (list date
 		      (dom-attr title 'href)
 		      (dom-texts title))))
+
+(defun csid-parse-josefine (dom)
+  (loop for event in (dom-by-tag (dom-by-id dom "^northsidebar$") 'a)
+	for text = (dom-texts event)
+	for date = (csid-parse-month-date text)
+	when (csid-valid-date-p date)
+	collect (list date
+		      (dom-attr event 'href)
+		      (replace-regexp-in-string "^[^:]+: +" "" text))))
 
 (defun csid-valid-date-p (date)
   (and (= (length date) 10)

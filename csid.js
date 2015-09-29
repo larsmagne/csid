@@ -485,10 +485,10 @@ function actionVenueMenu(name) {
   if ($.inArray(name, deniedVenues) != -1)
     venues = "Include events from " + displayName;
 
-  var logo = "logos/larger/" + fixName(venue);
+  var logo = "logos/larger/" + fixName(name);
   if (phoneGap) {
-    if (! existingLogos[fixName(venue)])
-      logo = "http://csid.no/logos/larger/" + fixName(venue);
+    if (! existingLogos[fixName(name)])
+      logo = "http://csid.no/logos/larger/" + fixName(name);
   }
   colorbox("<div class='outer-venue-logo'><img src='" + logo +
 	   ".png' srcset='" + logo +

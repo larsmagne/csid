@@ -734,7 +734,7 @@ function miscMenu() {
   });
   $("#apple").bind("click", function() {
     $.colorbox.close();
-    document.location.href = "https://geo.itunes.apple.com/us/app/csid-concerts-on-oslo/id1037896784?mt=8";
+    document.location.href = "https://itunes.apple.com/us/app/csid-concerts-in-oslo/id1037896784?mt=8&ign-mpt=uo%3D4";
   });
   $("#google").bind("click", function() {
     $.colorbox.close();

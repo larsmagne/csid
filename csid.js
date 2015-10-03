@@ -133,7 +133,7 @@ function addNavigation() {
     });
   }
 
-  $("#selector").append("<div class='export'><a id='rss' href='csid.atom'>Atom/\RSS feed</a></div>");
+  $("#selector").append("<div class='export'><a id='rss' href='csid.atom'>Atom/\RSS feed</a><p><a href='https://itunes.apple.com/us/app/csid-concerts-in-oslo/id1037896784?mt=8&ign-mpt=uo%3D4'><img src='assets/apple.png'></a><p><a href='https://play.google.com/store/apps/details?id=no.ingebrigtsen.csid'><img src='assets/google.png'></a></div></div>");
 
   $("img#logo").bind("click", function() {
     window.location.href = "http://csid.no/";

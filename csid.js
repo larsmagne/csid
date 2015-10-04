@@ -606,10 +606,12 @@ function addDesktopLogos() {
       return;
     var td = node.childNodes[1];
     var title = td.innerHTML;
+    var focus = false;
     $(td).mouseenter(function() {
       var image = new Image();
+      focus = true;
       image.onload = function() {
-	if (document.activeElement && (td.type || td.href)) {
+	if (focus) {
 	  td.innerHTML = "";
 	  td.appendChild(image);
 	}
@@ -618,6 +620,7 @@ function addDesktopLogos() {
       image.src = "logos/thumb/" + fixName(venue) + ".png";
     });
     $(td).mouseleave(function() {
+      focus = false;
       td.innerHTML = title;
     });
   });

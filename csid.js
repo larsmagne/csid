@@ -602,18 +602,20 @@ function loadLogos(mobilep) {
 function addDesktopLogos() {
   $("tr").each(function(key, node) {
     var venue = node.getAttribute("name");
-    if (! venue) {
-      node.childNodes[0].colSpan = "4";
+    if (! venue)
       return;
-    }
-    var image = new Image();
-    image.className = "desktop-logo";
-    image.setAttribute("srcset", "logos/thumb/" + fixName(venue) + "x2.png 2x");
-    image.src = "logos/thumb/" + fixName(venue) + ".png";
-    var td = document.createElement("td");
-    td.className = "desktop-logo";
-    td.appendChild(image);
-    node.appendChild(td);
+    var td = node.childNodes[1];
+    var title = td.innerHTML;
+    $(td).mouseenter(function() {
+      var image = new Image();
+      image.setAttribute("srcset", "logos/thumb/" + fixName(venue) + "x2.png 2x");
+      image.src = "logos/thumb/" + fixName(venue) + ".png";
+      td.innerHTML = "";
+      td.appendChild(image);
+    });
+    $(td).mouseleave(function() {
+      td.innerHTML = title;
+    });
   });
 }
 

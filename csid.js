@@ -608,10 +608,14 @@ function addDesktopLogos() {
     var title = td.innerHTML;
     $(td).mouseenter(function() {
       var image = new Image();
+      image.onload = function() {
+	if (document.activeElement && (td.type || td.href)) {
+	  td.innerHTML = "";
+	  td.appendChild(image);
+	}
+      };
       image.setAttribute("srcset", "logos/thumb/" + fixName(venue) + "x2.png 2x");
       image.src = "logos/thumb/" + fixName(venue) + ".png";
-      td.innerHTML = "";
-      td.appendChild(image);
     });
     $(td).mouseleave(function() {
       td.innerHTML = title;

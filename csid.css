@@ -18,7 +18,7 @@ div#selector {
   width: 140px;
   float: right;
 }
-table.events tr {
+table.events tr td {
   vertical-align: middle;
 }
 p {
@@ -302,4 +302,13 @@ div.apps {
   padding-top: 10px;
   padding-bottom: 10px;
   background: #808080;
+}
+
+td.desktop-logo {
+  text-align: center;
+}
+
+img.desktop-logo {
+  padding-left: 10px;
+  padding-right: 10px;
 }

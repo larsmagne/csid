@@ -165,6 +165,8 @@ function addNavigation() {
       setHardWidths();
       StatusBar.overlaysWebView(false);
     }
+  } else {
+    addDesktopLogos();
   }
   /*
   if (! savedTable)
@@ -584,7 +586,7 @@ function addLogos() {
 	".png' srcset='logos/thumb/" + fixName(venue) + "x2.png 2x'>";
     }
   });
- }
+}
 
 function loadLogos(mobilep) {
   var venues = [];
@@ -595,6 +597,24 @@ function loadLogos(mobilep) {
       venues.push(id);
   });
   loadLogo(mobilep, venues, 0);
+}
+
+function addDesktopLogos() {
+  $("tr").each(function(key, node) {
+    var venue = node.getAttribute("name");
+    if (! venue) {
+      node.childNodes[0].colSpan = "4";
+      return;
+    }
+    var image = new Image();
+    image.className = "desktop-logo";
+    image.setAttribute("srcset", "logos/thumb/" + fixName(venue) + "x2.png 2x");
+    image.src = "logos/thumb/" + fixName(venue) + ".png";
+    var td = document.createElement("td");
+    td.className = "desktop-logo";
+    td.appendChild(image);
+    node.appendChild(td);
+  });
 }
 
 function loadLogo(mobilep, venues, index) {

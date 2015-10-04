@@ -253,7 +253,8 @@ function hideShow(onlyVenue, onlyAfterTimestamp, onlyEvent,
     } else if (onlyEvent) {
       visible = $(node).text().match(new RegExp(onlyEvent, "i"));
     } else if (onlyAfterTimestamp)
-      visible = timestamp > onlyAfterTimestamp;
+      visible = (timestamp > onlyAfterTimestamp &&
+		 $.inArray(name, venues) != -1);
     else if (onlyShows)
       visible = $.inArray(eventId, onlyShows) != -1;
     else {

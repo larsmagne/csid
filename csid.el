@@ -991,7 +991,7 @@ no further processing).  URL is either a string or a parsed URL."
 			  when (and (not (stringp child))
 				    (plusp (length (dom-text child))))
 			  collect (dom-text child))
-	when (and (= (length texts) 3)
+	when (and (= (length texts) 2)
 		  (setq date (csid-parse-numeric-date (car texts)))
 		  (csid-valid-date-p date)
 		  (csid-date-likely-p date))

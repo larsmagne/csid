@@ -133,7 +133,7 @@ function addNavigation() {
     });
   }
 
-  $("#selector").append("<div class='export'><a id='rss' href='csid.atom'>Atom/\RSS feed</a><p><a href='https://itunes.apple.com/us/app/csid-concerts-in-oslo/id1037896784?mt=8&ign-mpt=uo%3D4'><img src='assets/apple.png'></a><p><a href='https://play.google.com/store/apps/details?id=no.ingebrigtsen.csid'><img src='assets/google.png'></a></div></div>");
+  $("#selector").append("<div class='export'><a id='rss' href='csid.atom'>Atom/\RSS feed</a><p><a href='https://itunes.apple.com/us/app/csid-concerts-in-oslo/id1037896784?mt=8&ign-mpt=uo%3D4'><img src='assets/apple.png'></a><p><a href='https://play.google.com/store/apps/details?id=no.ingebrigtsen.csid'><img src='assets/google.png'></a><p><a href='https://www.microsoft.com/en-us/store/apps/concerts-in-oslo/9nblggh6c4lv'><img src='assets/windows.png'></a></div></div>");
 
   $("img#logo").bind("click", function() {
     window.location.href = "http://csid.no/";
@@ -737,7 +737,7 @@ function miscMenu() {
       goingString = "<a href='#' id='going'>Display Events I'm Going To</a>";
   });
   var pgString = "";
-  var appString = "<div class='apps'><img src='assets/apple.png' id='apple'><img src='assets/google.png' id='google'></div>";
+  var appString = "<div class='apps'><img src='assets/apple.png' id='apple'><img src='assets/google.png' id='google'><img src='assets/windows.png' id='windows'></div>";
   if (phoneGap) {
     pgString = "<a href='#' id='reload'>Reload Data</a>";
     appString = "";
@@ -777,6 +777,10 @@ function miscMenu() {
   $("#google").bind("click", function() {
     closeColorbox();
     document.location.href = "https://play.google.com/store/apps/details?id=no.ingebrigtsen.csid";
+  });
+  $("#windows").bind("click", function() {
+    closeColorbox();
+    document.location.href = "https://www.microsoft.com/en-us/store/apps/concerts-in-oslo/9nblggh6c4lv";
   });
   $("#export-calendar").hide();
   $("#export-calendar").bind("click", function() {

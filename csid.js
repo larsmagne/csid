@@ -157,7 +157,7 @@ function addNavigation() {
   });
 
   if (mobilep) {
-    if (phoneGap)
+    if (phoneGap && device.platform != "Win32NT")
       addLogos();
     else
       loadLogos(mobilep);

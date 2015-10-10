@@ -99,6 +99,7 @@ div.help a {
   text-decoration: none;
   font-weight: bold;
   background: white;
+  padding: 0px;
 }
 
 div.help {

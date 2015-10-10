@@ -213,7 +213,7 @@ div#small-heading {
   div.outer-venue-logo {
     position: relative;
     height: 200px;
-    background: white;
+    background: white !important;
     text-align: center;
     display: block;
     width: 100%;

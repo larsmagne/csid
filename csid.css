@@ -89,6 +89,30 @@ table.events tr td:nth-child(2) {
   max-width: 100px;
   min-width: 100px;
 }
+div.help {
+  max-width: 500px;
+  background: white;
+}
+div.help a {
+  display: inline;
+  color: black;
+  text-decoration: none;
+  font-weight: bold;
+  background: white;
+}
+
+div.help {
+  max-width: 500px;
+  background: white;
+}
+div.help a {
+  display: inline;
+  color: black;
+  text-decoration: none;
+  font-weight: bold;
+  background: white;
+}
+
 span.venue {
   padding-right: 10px;
   white-space: nowrap;
@@ -124,11 +148,6 @@ span.venue-name {
 }
 div.explanation {
   margin-bottom: 10px;
-}
-.lightbox {
-  background: #a0a0a0;
-  color: black;
-  padding: 10px;
 }
 
 div#small-heading {

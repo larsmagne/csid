@@ -66,7 +66,7 @@
     ("Herr Nilsen" "http://www.herrnilsen.no/program2009.html" nilsen)
     ("Spektrum" "http://www.oslospektrum.no/" spektrum)
     ("Ny Musikk" "http://nymusikk.no/no/hva-skjer/" nymusikk)
-    ("Konserthuset" "http://www.oslokonserthus.no/program/json.html?filter=all"
+    ("Konserthuset" "http://www.oslokonserthus.no/program/json/all"
      konserthuset :json)
     ("Riksscenen" "http://www.riksscenen.no/program.95415.no.html" riksscenen)
     ("Olsen" "http://shop.olsenbar.no/program/" olsen)

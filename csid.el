@@ -75,7 +75,7 @@
     ;;("Sawol" "http://www.sawol.no/category/program/" sawol)
     ("Buckleys" "http://www.buckleys.no/konserter.html" buckleys :date)
     ;;("New Orleans" "http://www.neworleansworkshop.com/program" neworleans :date)
-    ("NB" "http://www.nb.no/Hva-skjer/Arrangementer/Konserter" nasjonalbiblioteket)
+    ;;("NB" "http://www.nb.no/Hva-skjer/Arrangementer/Konserter" nasjonalbiblioteket)
     ("Uhørt" "https://www.facebook.com/uhortistroget/events" facebook)
     ("Kulturhuset" "https://www.facebook.com/kulturhusetioslo/events" facebook)
     ("Kampenjazz" "http://oysteineide.wix.com/kampenjazz#!konserter/cb30" kampenjazz :date)
@@ -1013,7 +1013,6 @@ no further processing).  URL is either a string or a parsed URL."
   (loop for day in (dom-by-class dom "^date$")
 	append (loop for event in (dom-by-tag day 'h3)
 		     for text = (dom-texts event)
-		     when (string-match "konsert" text)
 		     collect (list (csid-parse-month-date
 				    (dom-text (dom-by-tag day 'h4)))
 				   (shr-expand-url

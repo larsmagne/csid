@@ -100,6 +100,7 @@
     ("Sub Scene" "http://www.subscene.no/" subscene)
     ("Vigeland" "https://www.facebook.com/emanuelvigeland/events" facebook)
     ("Josefine" "http://josefinevise.no/" josefine)
+    ("Izakaya" "https://www.facebook.com/Izakaya-343430575679537/events?ref=page_internal" facebook)
     ))
 
 (defvar csid-database nil)

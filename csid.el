@@ -569,20 +569,21 @@ no further processing).  URL is either a string or a parsed URL."
 			    (string-match "fb.*/\\([0-9]+\\)$" content))
 		  return (match-string 1 content))))
     (when id
-      (let ((data (csid-facebook id)))
-	(loop for entry in (cadr (assq 'response (car data)))
-	      when (and (consp entry)
-			(consp (cdr entry))
-			(consp (cadr entry))
-			(eq (caadr entry) 'edges))
-	      return (loop for e across (cdadr entry)
-			   for event = (cdr (assq 'node e))
-			   collect
-			   (list
-			    (csid-parse-iso8601
-			     (cdr (car (cdr (assq 'time_range event)))))
-			    (cdr (assq 'url event))
-			    (cdr (assq 'name event)))))))))
+      (csid-parse-facebook-1 (csid-facebook id)))))
+
+(defun csid-parse-facebook-1 (json)
+  (loop with edges
+	for entry in (cadr (assq 'response (car json)))
+	when (and (consp entry)
+		  (setq edges (assq 'edges entry)))
+	return (loop for e across (cdr edges)
+		     for event = (cdr (assq 'node e))
+		     collect
+		     (list
+		      (csid-parse-iso8601
+		       (cdr (car (cdr (assq 'time_range event)))))
+		      (cdr (assq 'url event))
+		      (cdr (assq 'name event))))))
 
 (defun csid-parse-victoria (dom)
   (loop for elem in (dom-by-class dom "event-entry")

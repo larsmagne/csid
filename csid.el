@@ -53,7 +53,7 @@
      konsertforeninga)
     ("Maksitaksi" "http://maksitaksi.no/" maksitaksi :date)
     ("Betong" "https://studentersamfundet.no/program/" betong)
-    ("Bidrobon" "http://bidrobon.weebly.com/program.html" bidrobon)
+    ("Bidrobon" "http://bidrobon.weebly.com/program-varingren-2016.html" bidrobon)
     ("Cosmopolite" "http://cosmopolite.no/program/cosmopolite" cosmopolite)
     ("Belleville" "http://cosmopolite.no/program/belleville" cosmopolite)
     ("Vulkan" "http://vulkanarena.no/shows" vulkan)

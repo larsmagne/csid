@@ -336,6 +336,18 @@ no further processing).  URL is either a string or a parsed URL."
 			(string-to-number (match-string 1 string)))
     string))
 
+;; "Fredag 27. september" but in a six month window
+(defun csid-parse-month-date-window (string)
+  (setq string (downcase string))
+  (if (string-match (format "\\([0-9]+\\).*\\(%s\\)"
+			    (mapconcat 'identity csid-months "\\|"))
+		    string)
+      (csid-expand-date-window
+       (1+ (position (match-string 2 string) csid-months
+		     :test 'equalp))
+       (string-to-number (match-string 1 string)))
+    string))
+
 ;; "fredag, august 8, 2014"
 (defun csid-parse-month-date-with-year (string)
   (setq string (downcase string))
@@ -553,6 +565,24 @@ no further processing).  URL is either a string or a parsed URL."
 	       (< month this-month))
       (incf this-year))
     (format "%s-%02d-%02d" this-year month day)))
+
+(defun csid-expand-date-window (month day &optional this-year-only)
+  (let* ((this-year (nth 5 (decode-time)))
+	 (year
+	  (cadar
+	   (sort
+	    (loop for year in (list (1- this-year) this-year (1+ this-year))
+		  collect (list (abs (- (float-time
+					 (parse-iso8601-time-string
+					  (format "%s-%02d-%02dT05:05:05"
+						  year month day)))
+					(float-time)))
+				year))
+	    (lambda (a1 a2)
+	      (< (car a1) (car a2)))))))
+    (if this-year-only
+	(format "%s-%02d-%02d" this-year month day)
+      (format "%s-%02d-%02d" year month day))))
 
 (defun csid-parse-mir (dom)
   (loop for elem in (dom-by-id dom "program")
@@ -1027,7 +1057,7 @@ no further processing).  URL is either a string or a parsed URL."
 					(not (eq (dom-tag prev) 'h3)))
 			      finally (return prev))
 	for link = (dom-by-tag (dom-by-tag event 'h2) 'a)
-	for date = (csid-parse-month-date (dom-texts date-node))
+	for date = (csid-parse-month-date-window (dom-texts date-node))
 	while (string> date (format-time-string "%Y-%m-%d"))
 	when (csid-date-likely-p date)
 	collect (list date

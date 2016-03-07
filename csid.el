@@ -1028,7 +1028,7 @@ no further processing).  URL is either a string or a parsed URL."
 			      finally (return prev))
 	for link = (dom-by-tag (dom-by-tag event 'h2) 'a)
 	for date = (csid-parse-month-date (dom-texts date-node))
-	while (string< (format-time-string "%Y-%m-%d") date)
+	while (string> date (format-time-string "%Y-%m-%d"))
 	when (csid-date-likely-p date)
 	collect (list date
 		      (dom-attr link 'href)

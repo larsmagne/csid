@@ -1166,7 +1166,7 @@ no further processing).  URL is either a string or a parsed URL."
 (defun csid-parse-sentralen-1 (dom)
   (loop for event in (dom-by-class dom "^event-item$")
 	for date = (csid-parse-numeric-date
-		    (dom-texts (dom-by-class dom "^event-item__date$")))
+		    (dom-texts (dom-by-class event "^event-item__date$")))
 	for url = (dom-attr (dom-by-tag event 'a) 'href)
 	when (and (csid-valid-date-p date)
 		  (csid-sentralen-wanted-p url))

@@ -1155,6 +1155,15 @@ no further processing).  URL is either a string or a parsed URL."
 		      (dom-texts elem))))
 
 (defun csid-parse-sentralen (dom)
+  (append
+   (csid-parse-sentralen-1 dom)
+   (let ((next (dom-by-class dom "^event-list__more-wrapper$")))
+     (when next
+       (csid-parse-source (dom-attr (dom-by-tag next 'a) 'href)
+			  'csid-parse-sentralen
+			  'html)))))
+
+(defun csid-parse-sentralen-1 (dom)
   (loop for event in (dom-by-class dom "^event-item$")
 	for date = (csid-parse-numeric-date
 		    (dom-texts (dom-by-class dom "^event-item__date$")))

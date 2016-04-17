@@ -611,7 +611,7 @@ no further processing).  URL is either a string or a parsed URL."
 	when (and (consp entry)
 		  (consp (cdr entry))
 		  (setq edges (assq 'edges entry)))
-	return (loop for e across (cdr edges)
+	append (loop for e across (cdr edges)
 		     for event = (cdr (assq 'node e))
 		     collect
 		     (list

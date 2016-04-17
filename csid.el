@@ -101,7 +101,7 @@
     ("Vigeland" "https://www.facebook.com/emanuelvigeland/events" facebook)
     ("Josefine" "http://josefinevise.no/" josefine)
     ("Izakaya" "https://www.facebook.com/Izakaya-343430575679537/events?ref=page_internal" facebook)
-    ;;("Sentralen" "http://www.sentralen.no/arrangementer" sentralen)
+    ("Sentralen" "http://www.sentralen.no/arrangementer" sentralen)
     ("Ingensteds" "https://ingensteds.ticketco.no/" ingensteds)
     ))
 
@@ -1153,6 +1153,48 @@ no further processing).  URL is either a string or a parsed URL."
 	collect (list date
 		      (dom-attr elem 'href)
 		      (dom-texts elem))))
+
+(defun csid-parse-sentralen (dom)
+  (loop for event in (dom-by-class dom "^event-item$")
+	for date = (csid-parse-numeric-date
+		    (dom-texts (dom-by-class dom "^event-item__date$")))
+	for url = (dom-attr (dom-by-tag event 'a) 'href)
+	when (and (csid-valid-date-p date)
+		  (csid-sentralen-wanted-p url))
+	collect (list date url
+		      (dom-texts (dom-by-tag event 'h3)))))
+
+(defun csid-sentralen-wanted-p (url)
+  (let* ((file "~/.emacs.d/sentralen.data")
+	 (data (and (file-exists-p file)
+		    (with-temp-buffer
+		      (insert-file-contents file)
+		      (read (current-buffer)))))
+	 (elem (assoc url data)))
+    (if elem
+	(cdr elem)
+      (let ((wantedp (csid-sentralen-wanted-p-1 url)))
+	(push (cons url wantedp) data)
+	(with-temp-buffer
+	  (pp data (current-buffer))
+	  (write-region (point-min) (point-max) file nil 'silent))
+	wantedp))))
+
+(defun csid-sentralen-wanted-p-1 (url)
+  (with-current-buffer (csid-retrieve-synchronously url)
+    (let* ((dom (libxml-parse-html-region (point-min) (point-max)))
+	   (time (dom-texts (dom-by-class
+			     dom "^article--event__details__time$"))))
+      (kill-buffer (current-buffer))
+      (and time
+	   (>= (csid-clock-to-seconds time)
+	       (csid-clock-to-seconds "19.00"))))))
+
+(defun csid-clock-to-seconds (string)
+  (if (string-match "\\([0-9][0-9]\\)[^0-9]\\([0-9][0-9]\\)" string)
+      (+ (* (string-to-number (match-string 1 string)) 60 60)
+	 (* (string-to-number (match-string 1 string)) 60))
+    0))
 
 (defun csid-valid-date-p (date)
   (and (= (length date) 10)

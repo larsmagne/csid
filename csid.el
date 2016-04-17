@@ -790,10 +790,10 @@ no further processing).  URL is either a string or a parsed URL."
 
 (defun csid-parse-magneten (data)
   (let ((html
-	 (cdr (cadr
-	       (assq 'content (aref (cdr
-				     (assq 'entry (cdr (assq 'feed data))))
-				    0))))))
+	 (cdr (assq '$t
+		    (cdr
+		     (assq 'content (aref (cdr (assq 'entry (cdr (assq 'feed data))))
+					  0)))))))
     (with-temp-buffer
       (insert html)
       (csid-parse-magneten-html

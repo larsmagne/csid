@@ -795,7 +795,10 @@ no further processing).  URL is either a string or a parsed URL."
 		     (assq 'content (aref (cdr (assq 'entry (cdr (assq 'feed data))))
 					  0)))))))
     (with-temp-buffer
+      (set-buffer-multibyte nil)
       (insert html)
+      (decode-coding-region (point-min) (point-max) 'utf-8)
+      (set-buffer-multibyte t)
       (csid-parse-magneten-html
        (libxml-parse-html-region (point-min) (point-max))))))
 

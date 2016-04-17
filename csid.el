@@ -101,6 +101,8 @@
     ("Vigeland" "https://www.facebook.com/emanuelvigeland/events" facebook)
     ("Josefine" "http://josefinevise.no/" josefine)
     ("Izakaya" "https://www.facebook.com/Izakaya-343430575679537/events?ref=page_internal" facebook)
+    ;;("Sentralen" "http://www.sentralen.no/arrangementer" sentralen)
+    ("Ingensteds" "https://ingensteds.ticketco.no/" ingensteds)
     ))
 
 (defvar csid-database nil)
@@ -321,6 +323,8 @@ no further processing).  URL is either a string or a parsed URL."
 				       month-name))
 			      (dom-attr (dom-by-tag h1 'a) 'href)
 			      (dom-texts h1))))))
+
+;; Date parsers.
 
 (defvar csid-months '("januar" "februar" "mars" "april" "mai" "juni" "juli"
 		      "august" "september" "oktober" "november" "desember"))
@@ -1138,6 +1142,17 @@ no further processing).  URL is either a string or a parsed URL."
 	collect (list date
 		      (dom-attr event 'href)
 		      (replace-regexp-in-string "^[^:]+: +" "" text))))
+
+(defun csid-parse-ingensteds (dom)
+  (loop for event in (dom-by-class dom "^tc-events-list--item$")
+	for elem = (dom-by-tag (dom-by-tag event 'h3) 'a)
+	for date = (csid-parse-full-numeric-date
+		    (dom-texts (dom-by-class
+				event "^tc-events-list--place-time$")))
+	when (csid-valid-date-p date)
+	collect (list date
+		      (dom-attr elem 'href)
+		      (dom-texts elem))))
 
 (defun csid-valid-date-p (date)
   (and (= (length date) 10)

@@ -103,6 +103,7 @@
     ("Izakaya" "https://www.facebook.com/Izakaya-343430575679537/events?ref=page_internal" facebook)
     ("Sentralen" "http://www.sentralen.no/arrangementer" sentralen)
     ("Ingensteds" "https://ingensteds.ticketco.no/" ingensteds)
+    ("Enga" "https://www.facebook.com/Enga-419256284860268/events?ref=page_internal" facebook)
     ))
 
 (defvar csid-database nil)

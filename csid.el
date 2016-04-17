@@ -62,7 +62,7 @@
     ("Ultima" "http://ultima.no/program" ultima)
     ("Blitz" "http://www.blitz.no/kalender" blitz)
     ("Magneten" "http://magnetenpub.blogspot.no//feeds/pages/default?alt=json&v=2&dynamicviews=1"
-     magneten :json)
+     magneten :json :date)
     ("Herr Nilsen" "http://www.herrnilsen.no/program2009.html" nilsen)
     ("Spektrum" "http://www.oslospektrum.no/" spektrum)
     ("Ny Musikk" "http://nymusikk.no/no/hva-skjer/" nymusikk)

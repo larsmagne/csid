@@ -609,6 +609,7 @@ no further processing).  URL is either a string or a parsed URL."
   (loop with edges
 	for entry in (cadr (assq 'response (car json)))
 	when (and (consp entry)
+		  (consp (cdr entry))
 		  (setq edges (assq 'edges entry)))
 	return (loop for e across (cdr edges)
 		     for event = (cdr (assq 'node e))

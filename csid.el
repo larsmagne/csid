@@ -43,8 +43,7 @@
   '(("Revolver" "http://www.revolveroslo.no/nb/program" revolver)
     ("Blå" "http://www.blaaoslo.no/" blaa)
     ("Mir" "http://www.lufthavna.no/" mir)
-    ("Crossroads" "https://www.facebook.com/thecrossroadclub/events?key=events"
-     facebook)
+    ;;("Crossroads" "https://www.facebook.com/thecrossroadclub/events?key=events" facebook)
     ("Victoria" "http://nasjonaljazzscene.no/arrangement/" victoria)
     ("Rockefeller" "http://rockefeller.no/index.html" rockefeller :multi)
     ("Mono" "http://www.cafemono.no/program/" mono)
@@ -70,7 +69,7 @@
      konserthuset :json)
     ("Riksscenen" "http://www.riksscenen.no/program.95415.no.html" riksscenen)
     ("Olsen" "http://shop.olsenbar.no/program/" olsen)
-    ("Verkstedet" "http://www.verkstedetbar.no/program/" verkstedet :date)
+    ;;("Verkstedet" "http://www.verkstedetbar.no/program/" verkstedet :date)
     ("Gamla" "http://www.gamla.no/" gamla)
     ;;("Sawol" "http://www.sawol.no/category/program/" sawol)
     ("Buckleys" "http://www.buckleys.no/konserter.html" buckleys :date)

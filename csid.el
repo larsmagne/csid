@@ -1273,7 +1273,7 @@ no further processing).  URL is either a string or a parsed URL."
 	 collect (if (> (length word) 30)
 		     (mapconcat
 		      'identity
-		      (loop for i from 0 upto (/ (length string) 30)
+		      (loop for i from 0 upto (/ (length word) 30)
 			    collect
 			    (url-insert-entities-in-string
 			     (substring word (* i 30)

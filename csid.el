@@ -103,6 +103,7 @@
     ("Sentralen" "http://www.sentralen.no/arrangementer" sentralen)
     ("Ingensteds" "https://ingensteds.ticketco.no/" ingensteds)
     ("Enga" "https://www.facebook.com/Enga-419256284860268/events?ref=page_internal" facebook)
+    ("Big Dipper" "https://www.facebook.com/Platebutikken-Big-Dipper-428305525645/events?ref=page_internal" facebook)
     ))
 
 (defvar csid-database nil)

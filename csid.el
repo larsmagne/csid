@@ -56,7 +56,7 @@
     ("Cosmopolite" "http://cosmopolite.no/program/cosmopolite" cosmopolite)
     ("Belleville" "http://cosmopolite.no/program/belleville" cosmopolite)
     ("Vulkan" "http://vulkanarena.no/shows" vulkan)
-    ("Jakob" "http://www.jakob.no/program/" jakob)
+    ("Jakob" "http://jakob.no/program/" jakob)
     ("Vanguard" "http://www.fanrx.com/facebook/events.php?theme=custom&page=vanguardoslo&bgcolor=ffffff&textcolor=000000&linkcolor=555555&max=15" vanguard)
     ("Ultima" "http://ultima.no/program" ultima)
     ("Blitz" "http://www.blitz.no/kalender" blitz)
@@ -729,18 +729,12 @@ no further processing).  URL is either a string or a parsed URL."
 		      (dom-attr elem 'data-title))))
 
 (defun csid-parse-jakob (dom)
-  (loop for elem in (dom-by-class dom "eventItem")
-	for day = (csid-clean-string
-		   (dom-texts (dom-by-class elem "day")))
-	for month = (csid-clean-string
-		     (dom-texts (dom-by-class elem "month")))
-	collect (list (csid-parse-short-yearless-month
-		       (format "%s %s" day month))
-		      (shr-expand-url
-		       (dom-attr (dom-by-class elem "more") 'href))
-		      (csid-clean-string
-		       (dom-texts (dom-by-tag elem 'h2))))))
-
+  (loop for event in (dom-by-tag dom 'article)
+	collect (list (csid-parse-norwegian-month-date-with-year
+		       (dom-texts (dom-by-class event "^tease-meta$")))
+		      (dom-attr (dom-by-tag event 'a) 'href)
+		      (dom-texts (dom-by-tag event 'h2)))))
+  
 (defun csid-parse-vanguard (dom)
   (loop for elem in (dom-by-style dom "clear:both")
 	for a = (dom-by-tag elem 'a)

@@ -50,7 +50,7 @@
     ("Parkteateret" "http://parkteatret.no/program/" parkteateret)
     ("Konsertforeninga" "http://www.konsertforeninga.no/konserter"
      konsertforeninga)
-    ("Maksitaksi" "http://maksitaksi.no/" maksitaksi :date)
+    ("Maksitaksi" "https://www.facebook.com/maksitaksii/events?ref=page_internal" facebook)
     ("Betong" "https://www.facebook.com/betongoslo/events" facebook)
     ("Bidrobon" "http://bidrobon.weebly.com/program-varingren-2016.html" bidrobon)
     ("Cosmopolite" "http://cosmopolite.no/program/cosmopolite" cosmopolite)
@@ -679,14 +679,6 @@ no further processing).  URL is either a string or a parsed URL."
 	collect (list (csid-parse-month-date (car (last (nth 0 tds))))
 		      (shr-expand-url (dom-attr link 'href))
 		      (dom-text link))))
-
-(defun csid-parse-maksitaksi (dom)
-  (loop for elem in (dom-by-class dom "ai1ec-event-title-wrap")
-	for link = (dom-by-class elem "ai1ec-load-event")
-	collect (list (csid-parse-month-date
-		       (dom-text (dom-by-class elem "ai1ec-event-time")))
-		      (dom-attr link 'href)
-		      (csid-clean-string (dom-texts link)))))
 
 (defun csid-parse-betong (dom)
   (loop for elem in (dom-by-tag

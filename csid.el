@@ -52,7 +52,7 @@
      konsertforeninga)
     ("Maksitaksi" "https://www.facebook.com/maksitaksii/events?ref=page_internal" facebook)
     ("Betong" "https://www.facebook.com/betongoslo/events" facebook)
-    ("Bidrobon" "http://bidrobon.weebly.com/program-varingren-2016.html" bidrobon)
+    ("Bidrobon" "http://bidrobon.weebly.com/" bidrobon)
     ("Cosmopolite" "http://cosmopolite.no/program/cosmopolite" cosmopolite)
     ("Belleville" "http://cosmopolite.no/program/belleville" cosmopolite)
     ("Vulkan" "http://vulkanarena.no/shows" vulkan)
@@ -693,13 +693,19 @@ no further processing).  URL is either a string or a parsed URL."
 		      (dom-text link))))
 
 (defun csid-parse-bidrobon (dom)
-  (loop for event in (dom-by-tag (dom-by-class dom "wsite-content") 'a)
-	for date = (csid-parse-short-yearless-month (dom-texts event))
+  (loop for event in (dom-by-class dom "^wsite-multicol$")
+	for link = (shr-expand-url
+		    (dom-attr
+		     (dom-by-tag (dom-by-class event "paragraph") 'a)
+		     'href))
+	for image = (shr-expand-url (dom-attr (dom-by-tag event 'img) 'src))
+	for date = (csid-parse-slashed-date
+		    (dom-texts (dom-by-class event "paragraph")))
 	when (and date
 		  (csid-date-likely-p date))
 	collect (list date
-		      (shr-expand-url (dom-attr event 'href))
-		      (dom-texts event))))
+		      (or link image)
+		      (dom-texts (dom-by-class event "paragraph")))))
 
 (defun csid-clean-string (string)
   (replace-regexp-in-string "^[\r\n\t ]\\|[\r\n\t ]$" "" 

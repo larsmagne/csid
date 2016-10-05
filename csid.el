@@ -90,7 +90,7 @@
     ("Union" "http://unionscene.no/program/" union)
     ("Musikkflekken" "https://www.facebook.com/Musikkflekken/events" facebook)
     ("Smelteverket" "https://www.facebook.com/Smelteverket/events" facebook)
-    ("Skuret" "https://www.facebook.com/skuret/events" facebook)
+    ;;("Skuret" "https://www.facebook.com/skuret/events" facebook)
     ("Pizdets" "https://www.facebook.com/pissjets/events" facebook)
     ("Fisk og Vilt" "https://www.facebook.com/fiskogviltoslo/events" facebook)
     ("Hvaskjer" "https://www.facebook.com/hvaskjertorshov/events" facebook)

@@ -40,7 +40,7 @@
 (defvar csid-sequence 0)
 
 (defvar csid-sources
-  '(("Revolver" "http://www.revolveroslo.no/nb/program" revolver)
+  '(("Revolver" "https://revolveroslo.ticketco.no/" ticketco)
     ("Blå" "http://www.blaaoslo.no/" blaa)
     ("Mir" "http://www.lufthavna.no/" mir)
     ;;("Crossroads" "https://www.facebook.com/thecrossroadclub/events?key=events" facebook)
@@ -101,7 +101,7 @@
     ("Josefine" "http://josefinevise.no/" josefine)
     ("Izakaya" "https://www.facebook.com/Izakaya-343430575679537/events?ref=page_internal" facebook)
     ("Sentralen" "http://www.sentralen.no/arrangementer" sentralen)
-    ("Ingensteds" "https://ingensteds.ticketco.no/" ingensteds)
+    ("Ingensteds" "https://ingensteds.ticketco.no/" ticketco)
     ("Enga" "https://www.facebook.com/Enga-419256284860268/events?ref=page_internal" facebook)
     ("Big Dipper" "https://www.facebook.com/Platebutikken-Big-Dipper-428305525645/events?ref=page_internal" facebook)
     ("Krøsset" "https://www.facebook.com/krxsset/events?ref=page_internal" facebook)
@@ -1149,7 +1149,7 @@ no further processing).  URL is either a string or a parsed URL."
 		      (dom-attr event 'href)
 		      (replace-regexp-in-string "^[^:]+: +" "" text))))
 
-(defun csid-parse-ingensteds (dom)
+(defun csid-parse-ticketco (dom)
   (loop for event in (dom-by-class dom "^tc-events-list--item$")
 	for elem = (dom-by-tag (dom-by-tag event 'h3) 'a)
 	for date = (csid-parse-full-numeric-date

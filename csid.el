@@ -1016,21 +1016,20 @@ no further processing).  URL is either a string or a parsed URL."
 		       (dom-texts (dom-by-class event "event-title"))))))
 
 (defun csid-parse-pph (dom)
-  (loop with date
-	for event in (dom-by-tag (dom-by-class dom "programbg") 'p)
-	for texts = (loop for child in (dom-children event)
-			  when (stringp child)
-			  collect child
-			  when (and (not (stringp child))
-				    (plusp (length (dom-text child))))
-			  collect (dom-text child))
-	when (and (= (length texts) 2)
-		  (setq date (csid-parse-numeric-date (car texts)))
+  (let* ((box (dom-by-class dom "programbg"))
+	 (texts (delete "" (split-string (dom-texts box "|") "|"))))
+    (loop while texts
+	  for date = (csid-parse-numeric-date (car texts))
+	  if (and date
 		  (csid-valid-date-p date)
 		  (csid-date-likely-p date))
-	collect (list date
-		      "http://www.pph.oslo.no/"
-		      (csid-clean-string (cadr texts)))))
+	  collect (prog1
+		      (list date
+			    "http://www.pph.oslo.no/"
+			    (cadr texts))
+		    (setq texts (cddr texts)))
+	  else
+	  do (setq texts (cdr texts)))))
 
 (defun csid-parse-villa (dom)
   (loop for event in (dom-by-class dom "^group$")

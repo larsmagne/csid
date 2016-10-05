@@ -921,7 +921,14 @@ no further processing).  URL is either a string or a parsed URL."
 (defun csid-parse-buckleys (dom)
   (loop for elem in (dom-by-tag dom 'h2)
 	for event = (dom-parent dom (car (dom-by-tag elem 'br)))
-	for name = (cadr (dom-strings event))
+	for name = (or
+		    (loop for string in (cdr (dom-strings event))
+			  when (and (not (member string csid-months))
+				    (not (string-match "[0-9][0-9]:[0-9][0-9]"
+						       string))
+				    (not (string-match "presenterer" string)))
+			  return string)
+		    (cadr (dom-strings event)))
 	for date = (csid-parse-short-yearless-month (dom-texts elem))
 	when (and name
 		  (csid-valid-date-p date)

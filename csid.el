@@ -1284,7 +1284,7 @@ no further processing).  URL is either a string or a parsed URL."
 		   (url-insert-entities-in-string word)))
    " "))
 
-(defun csid-add-weekday (date)
+(defun csid-add-weekday (date &optional year)
   (let* ((day (string-to-number (substring date 8)))
 	 (time (encode-time 0 0 0
 			    day
@@ -1296,7 +1296,10 @@ no further processing).  URL is either a string or a parsed URL."
 	     ((= (mod day 10) 1) "st")
 	     ((= (mod day 10) 2) "nd")
 	     ((= (mod day 10) 3) "rd")
-	     (t "th")))))
+	     (t "th"))
+	    (if year
+		(format-time-string " %Y" time)
+	      ""))))
 
 (defun csid-update-html (file &optional inhibit-fetch)
   (csid-read-database)
@@ -1335,18 +1338,22 @@ no further processing).  URL is either a string or a parsed URL."
       (atom-print feed)
       (write-region (point-min) (point-max) file))))
 
-(defun csid-write-date (dir)
+(defun csid-write-date (dir &optional date)
   (csid-read-database)
   (let ((database (sort (copy-sequence csid-database)
 			(lambda (e1 e2)
 			  (string< (nth 1 e1)
 				   (nth 1 e2)))))
-	(this-date (format-time-string "%Y-%m-%d"))
+	(this-date (or date (format-time-string "%Y-%m-%d")))
 	(coding-system-for-write 'utf-8))
     (with-temp-buffer
-      (insert "<head><title>Crowdsourcing Is Dead</title><meta charset='utf-8'><link href='http://csid.no/csid.css' rel='stylesheet' type='text/css'><meta name='viewport' content='width=device-width, initial-scale=1'><link href='http://csid.no/pikaday.css' rel='stylesheet' type='text/css'><link rel='icon' href='http://csid.no/favicon.ico'><body><div id='body-container'><div id='large-heading'><a href=\"http://csid.no/\"><img src='http://csid.no/csid.png' id='logo'></a><p>(Also known as <a href='http://lars.ingebrigtsen.no/2013/09/crowdsourcing-is-dead.html'>'Concerts In Oslo' or 'Konserter i Oslo'</a>.)</p></div><div id='small-heading'><img src='http://csid.no/menu.png' id='small-menu'>Crowdsourcing Is Dead</div>")
+      (insert
+       (format
+	"<head><title>Crowdsourcing Is Dead</title><meta charset='utf-8'><link href='http://csid.no/csid.css' rel='stylesheet' type='text/css'><meta name='viewport' content='width=device-width, initial-scale=1'><link href='http://csid.no/pikaday.css' rel='stylesheet' type='text/css'><link rel='icon' href='http://csid.no/favicon.ico'><body><div id='body-container'><div id='large-heading'><a href=\"http://csid.no/\"><img src='http://csid.no/csid.png' id='logo'></a><p>(Also known as <a href='http://lars.ingebrigtsen.no/2013/09/crowdsourcing-is-dead.html'>'Concerts In Oslo' or 'Konserter i Oslo'</a> on %s.)</p></div><div id='small-heading'><img src='http://csid.no/menu.png' id='small-menu'>Crowdsourcing Is Dead</div>"
+	(csid-add-weekday this-date t)))
       (insert "<table class='events'>")
-      (loop for (venue date url name id scan-time) in database
+      (loop for (venue date url name id scan-time) in
+	    (sort database (lambda (e1 e2) (string< (car e1) (car e2))))
 	    when (equal this-date date)
 	    do (insert (format "<tr><td><a href=\"%s\">%s</a><td>%s"
 			       url name venue)))

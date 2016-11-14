@@ -117,9 +117,10 @@
 
 (defun csid-update-database (data)
   (dolist (elem data)
-    (if (not (and (nth 1 elem)
-		  (csid-valid-date-p (nth 1 elem))))
-	(message "Invalid date for %S" elem)
+    (if (or (not (and (nth 1 elem)
+		      (csid-valid-date-p (nth 1 elem))))
+	    (null (nth 3 elem)))
+	(message "Invalid data for %S" elem)
       (setcar (nthcdr 3 elem) (csid-clean-string (nth 3 elem)))
       (let ((old
 	     (cl-member (nth 4 elem) csid-database

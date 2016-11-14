@@ -597,7 +597,7 @@ no further processing).  URL is either a string or a parsed URL."
 	collect (list (csid-parse-month-date
 		       (dom-text (dom-by-class elem "programtid")))
 		      (dom-attr link 'href)
-		      (dom-attr link 'title))))
+		      (dom-texts link))))
 
 (defun csid-parse-facebook (dom)
   (let ((id (loop for meta in (dom-by-tag dom 'meta)

@@ -48,7 +48,7 @@
     ("Rockefeller" "http://rockefeller.no/index.html" rockefeller :multi)
     ("Mono" "http://www.cafemono.no/program/" mono)
     ("Parkteateret" "http://parkteatret.no/program/" parkteateret)
-    ("Konsertforeninga" "http://www.konsertforeninga.no/konserter"
+    ("Konsertforeninga" "http://www.konsertforeninga.no/event-directory/"
      konsertforeninga)
     ("Maksitaksi" "https://www.facebook.com/maksitaksii/events?ref=page_internal" facebook)
     ("Betong" "https://www.facebook.com/betongoslo/events" facebook)
@@ -501,6 +501,13 @@ no further processing).  URL is either a string or a parsed URL."
 	  (substring string 4 6) "-"
 	  (substring string 6 8)))
 
+(defun csid-parse-sloppy-iso8601 (string)
+  (and (string-match "\\`\\([0-9]+\\)-\\([0-9]+\\)-\\([0-9]+\\)" string)
+       (format "%04d-%02d-%02d"
+	       (string-to-number (match-string 1 string))
+	       (string-to-number (match-string 2 string))
+	       (string-to-number (match-string 3 string)))))
+
 ;; 23.09
 (defun csid-parse-numeric-date (string)
   (if (string-match "\\([0-9]+\\).\\([0-9]+\\)" string)
@@ -674,12 +681,16 @@ no further processing).  URL is either a string or a parsed URL."
 		      (dom-texts (dom-by-tag elem 'h2)))))
 
 (defun csid-parse-konsertforeninga (dom)
-  (loop for elem in (dom-by-tag (dom-by-tag dom 'table) 'tr)
-	for tds = (dom-by-tag elem 'td)
-	for link = (dom-by-tag (nth 2 tds) 'a)
-	collect (list (csid-parse-month-date (car (last (nth 0 tds))))
-		      (shr-expand-url (dom-attr link 'href))
-		      (dom-text link))))
+  (loop for elem in (dom-by-class dom "eventon_list_event")
+	for time = (loop for time in (dom-by-tag elem 'time)
+			 when (equal (dom-attr time 'itemprop) "startDate")
+			 return (dom-attr time 'datetime))
+	for link = (dom-by-tag elem 'a)
+	for title = (dom-texts (dom-by-class elem "evcal_event_title"))
+	when time
+	collect (list (csid-parse-sloppy-iso8601 time)
+		      (dom-attr link 'href)
+		      title)))
 
 (defun csid-parse-betong (dom)
   (loop for elem in (dom-by-tag

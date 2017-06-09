@@ -55,7 +55,7 @@
     ("Bidrobon" "http://bidrobon.weebly.com/" bidrobon)
     ("Cosmopolite" "http://cosmopolite.no/program/cosmopolite" cosmopolite)
     ("Belleville" "http://cosmopolite.no/program/belleville" cosmopolite)
-    ("Vulkan" "http://vulkanarena.no/shows" vulkan)
+    ("Vulkan" "https://vulkanarena.no/" vulkan)
     ("Jakob" "http://jakob.no/program/" jakob)
     ;;("Vanguard" "http://www.fanrx.com/facebook/events.php?theme=custom&page=vanguardoslo&bgcolor=ffffff&textcolor=000000&linkcolor=555555&max=15" vanguard)
     ("Ultima" "http://ultima.no/program" ultima)
@@ -733,12 +733,11 @@ no further processing).  URL is either a string or a parsed URL."
 		      (csid-clean-string (dom-texts (dom-by-tag elem 'h2))))))
 
 (defun csid-parse-vulkan (dom)
-  (loop for elem in (dom-by-tag dom 'article)
-	for date = (dom-attr elem 'data-starts-at)
-	when date
-	collect (list (csid-parse-iso8601 date)
-		      (shr-expand-url (dom-attr (dom-by-tag elem 'a) 'href))
-		      (dom-attr elem 'data-title))))
+  (loop for elem in (dom-by-class dom "event_container")
+	collect (list (csid-parse-short-yearless-month
+			(dom-texts (dom-by-class elem "^date$")))
+		      (dom-attr (dom-by-tag elem 'a) 'href)
+		      (dom-texts (dom-by-class elem "event_title")))))
 
 (defun csid-parse-jakob (dom)
   (loop for event in (dom-by-tag dom 'article)

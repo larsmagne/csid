@@ -72,7 +72,7 @@
     ;;("Verkstedet" "http://www.verkstedetbar.no/program/" verkstedet :date)
     ("Gamla" "http://www.gamla.no/" gamla)
     ;;("Sawol" "http://www.sawol.no/category/program/" sawol)
-    ("Buckleys" "http://www.buckleys.no/konserter.html" buckleys :date)
+    ;;("Buckleys" "http://www.buckleys.no/konserter.html" buckleys :date)
     ;;("New Orleans" "http://www.neworleansworkshop.com/program" neworleans :date)
     ;;("NB" "http://www.nb.no/Hva-skjer/Arrangementer/Konserter" nasjonalbiblioteket)
     ("Uhørt" "https://www.facebook.com/uhortistroget/events" facebook)

@@ -1139,16 +1139,11 @@ no further processing).  URL is either a string or a parsed URL."
 		      (replace-regexp-in-string " " " " text))))
 
 (defun csid-parse-subscene (dom)
-  (loop for event in (dom-by-class dom "^post-")
-	for title = (dom-by-tag (dom-by-tag event 'h1) 'a)
-	for date = (csid-parse-month-date (dom-texts (dom-by-tag event 'h3)))
-	for class = (dom-texts (dom-by-class event "cat-links"))
-	when (and class
-		  (string-match "Arrangementer" class)
-		  (csid-valid-date-p date))
-	collect (list date
-		      (dom-attr title 'href)
-		      (dom-texts title))))
+  (loop for event in (dom-by-class dom "eo-event-cat-konserter")
+	for link = (dom-by-tag event 'a)
+	collect (list (csid-parse-month-date (dom-text event))
+		      (dom-attr link 'href)
+		      (dom-texts link))))
 
 (defun csid-parse-josefine (dom)
   (loop for event in (dom-by-tag (dom-by-id dom "^northsidebar$") 'a)

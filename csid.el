@@ -1050,11 +1050,11 @@ no further processing).  URL is either a string or a parsed URL."
 	  do (setq texts (cdr texts)))))
 
 (defun csid-parse-villa (dom)
-  (loop for event in (dom-by-class dom "^group$")
-	for link = (dom-by-tag (dom-by-class event "sub-head") 'a)
-	when (dom-attr link 'href)
-	collect (list (csid-parse-short-month
-		       (dom-texts (dom-by-tag event 'p)) t)
+  (loop for event in (dom-by-class dom "edgtf-event-content")
+	for link = (dom-by-tag event 'a)
+	collect (list (csid-parse-short-yearless-month
+		       (dom-texts
+			(dom-by-class event "edgtf-event-date-holder")))
 		      (dom-attr link 'href)
 		      (dom-texts link))))
 

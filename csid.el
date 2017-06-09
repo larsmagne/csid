@@ -77,7 +77,7 @@
     ;;("NB" "http://www.nb.no/Hva-skjer/Arrangementer/Konserter" nasjonalbiblioteket)
     ("Uhørt" "https://www.facebook.com/uhortistroget/events" facebook)
     ("Kulturhuset" "https://www.facebook.com/kulturhusetioslo/events" facebook)
-    ("Kampenjazz" "http://oysteineide.wix.com/kampenjazz#!konserter/cb30" kampenjazz :date)
+    ;;("Kampenjazz" "http://oysteineide.wix.com/kampenjazz#!konserter/cb30" kampenjazz :date)
     ("Cafeteatret" "http://nordicblacktheatre.no/wp-admin/admin-ajax.php?action=wpcal-getevents&end=1444600800&start=1440972000" cafeteatret :json)
     ("Telenor Arena" "http://telenorarena.no/en/events/" telenor)
     ("Postkontoret" "https://www.facebook.com/toyenpostkontor/events?key=events"

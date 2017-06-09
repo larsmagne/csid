@@ -82,7 +82,7 @@
     ("Telenor Arena" "http://telenorarena.no/en/events/" telenor)
     ("Postkontoret" "https://www.facebook.com/toyenpostkontor/events?key=events"
      facebook)
-    ("Per på hjørnet" "http://www.pph.oslo.no/" pph :date)
+    ;;("Per på hjørnet" "http://www.pph.oslo.no/" pph :date)
     ("The Villa" "http://www.thevilla.no/program/" villa)
     ("Dattera" "http://www.dattera.no/nb/pages/6-Kalender" dattera)
     ("Internasjonalen" "http://www.internasjonalen.no/program/" internasjonalen)

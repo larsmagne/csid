@@ -610,25 +610,17 @@ no further processing).  URL is either a string or a parsed URL."
   (let ((id (loop for meta in (dom-by-tag dom 'meta)
 		  for content = (dom-attr meta 'content)
 		  when (and content
-			    (string-match "fb.*/\\([0-9]+\\)$" content))
+			    (string-match "fb://page/\\([0-9]+\\)" content))
 		  return (match-string 1 content))))
     (when id
-      (csid-parse-facebook-1 (csid-facebook id)))))
+      (csid-parse-facebook-1 (csid-get-facebook-events id)))))
 
 (defun csid-parse-facebook-1 (json)
-  (loop with edges
-	for entry in (cadr (assq 'response (car json)))
-	when (and (consp entry)
-		  (consp (cdr entry))
-		  (setq edges (assq 'edges entry)))
-	append (loop for e across (cdr edges)
-		     for event = (cdr (assq 'node e))
-		     collect
-		     (list
-		      (csid-parse-iso8601
-		       (cdr (car (cdr (assq 'time_range event)))))
-		      (cdr (assq 'url event))
-		      (cdr (assq 'name event))))))
+  (loop for event across (cdr (assq 'data json))
+	collect (list (csid-parse-iso8601 (cdr (assq 'start_time event)))
+		      (format "https://www.facebook.com/events/%s/"
+			      (cdr (assq 'id event)))
+		      (cdr (assq 'name event)))))
 
 (defun csid-parse-victoria (dom)
   (loop for elem in (dom-by-class dom "event-entry")
@@ -1367,30 +1359,15 @@ no further processing).  URL is either a string or a parsed URL."
       (write-region (point-min) (point-max)
 		    (expand-file-name (format "%s.html" this-date) dir)))))
 
-(defun csid-facebook (id)
-  (let* ((url-request-method "POST")
-	 (boundary (mml-compute-boundary '()))
-	 (url-request-data
-	  (mm-url-encode-www-form-urlencoded
-	   `(("__a" . "1")
-	     ("__dyn" . "7xe7oS11Axq2qEcEyEhy8jXWo466E4a68K5U4e1FxZ3ocUO6EKaxe4Ea8uwh8eUny8lwIwhEiw")
-	     ("__req" . "1")
-	     ("__rev" . "2215361")
-	     ("__user" . "0")
-	     ("batch_name" . "TimelineEventsCalendarRoute")
-	     ("lsd" . "AVqLOmAW")
-	     ("method" . "GET")
-	     ("queries" . ,(format "{\"q0\":{\"priority\":0,\"q\":\"Query TimelineEventsCalendarRoute{node(%s){id,__typename,@F5}} QueryFragment F0 : Page{id,name,url,is_owned} QueryFragment F1 : Node{id,__typename} QueryFragment F2 : Event{id,name,url} QueryFragment F3 : Event{id,time_range{start},is_event_draft,scheduled_publish_timestamp,start_time_sentence.format(SHORT_TIME_LABEL) as _start_time_sentenceiczKr,suggested_event_context_sentence.show_category(false) as _suggested_event_context_sentence2eg3eg{text},event_place{contextual_name,city{contextual_name,id},__typename,@F0,@F1},event_viewer_capability{is_viewer_admin},is_canceled,@F2} QueryFragment F4 : Page{id,viewer_profile_permissions} QueryFragment F5 : Page{id,name,viewer_profile_permissions,all_owned_events.upcoming(true).allowed_states(CANCELED,DRAFT,SCHEDULED_DRAFT_FOR_PUBLICATION,PUBLISHED).filter_out_canceled_events_if_not_connected(true).first(10) as _all_owned_events2E5FjY{edges{is_hidden_on_profile_calendar,is_added_to_profile_calendar,node{id,time_range{start},@F3},cursor},page_info{has_next_page,has_previous_page}},all_owned_events.past(true).allowed_states(CANCELED,DRAFT,SCHEDULED_DRAFT_FOR_PUBLICATION,PUBLISHED).filter_out_canceled_events_if_not_connected(true).first(10) as _all_owned_events3oqq9Y{edges{is_hidden_on_profile_calendar,is_added_to_profile_calendar,node{id,time_range{start},@F3},cursor},page_info{has_next_page,has_previous_page}},@F4}\",\"query_params\":{}}}"
-				   id))
-	     ("scheduler" . "phased)")))))
-    (with-current-buffer (csid-retrieve-synchronously
-			  "https://www.facebook.com/api/graphqlbatch/")
-      (goto-char (point-min))
-      (when (re-search-forward "^\r?\n" nil t)
-	(prog1
-	    (ignore-errors (json-read))
-	  (kill-buffer (current-buffer)))))))
-
+(defun csid-get-facebook-events (id)
+  (with-current-buffer
+      (url-retrieve-synchronously
+       (format
+	"https://graph.facebook.com/v2.9/%s/events?access_token=%s"
+	id csid-facebook-access-token))
+    (goto-char (point-min))
+    (when (re-search-forward "^$" nil t)
+      (json-read))))
 
 (provide 'csid)
 

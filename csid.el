@@ -1369,6 +1369,39 @@ no further processing).  URL is either a string or a parsed URL."
     (when (re-search-forward "^$" nil t)
       (json-read))))
 
+(defvar csid-app-id nil)
+(defvar csid-app-secret nil)
+
+(defun csid-get-long-token ()
+  (with-current-buffer
+      (url-retrieve-synchronously
+       (format
+	"https://graph.facebook.com/v2.9/oauth/access_token?grant_type=fb_exchange_token&client_id=%s&client_secret=%s&fb_exchange_token=%s"
+	csid-app-id
+	csid-app-secret
+	csid-facebook-access-token))
+    (goto-char (point-min))
+    (when (re-search-forward "^$" nil t)
+      (buffer-substring (point) (point-max)))))
+
+
+(defun csid-get-access-token (code)
+  (with-current-buffer
+      (url-retrieve-synchronously
+       (format
+	"https://graph.facebook.com/v2.8/oauth/access_token?client_id=%s&redirect_uri=%s&client_secret=%s&code=%s"
+	csid-app-id
+	"http://quimby.gnus.org/cicrus/token.php"
+	csid-app-secret
+	code))
+    (goto-char (point-min))
+    (when (re-search-forward "^$" nil t)
+      (json-read))))
+
+(defun csid-make-oauth-url ()
+  (format "https://www.facebook.com/v2.9/dialog/oauth?client_id=%s&redirect_uri=http://quimby.gnus.org/cicrus/token.php"
+	  csid-app-id))
+
 (provide 'csid)
 
 ;;; csid.el ends here

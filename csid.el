@@ -105,6 +105,7 @@
     ("Enga" "https://www.facebook.com/Enga-419256284860268/events?ref=page_internal" facebook)
     ("Big Dipper" "https://www.facebook.com/Platebutikken-Big-Dipper-428305525645/events?ref=page_internal" facebook)
     ("Krøsset" "https://www.facebook.com/krxsset/events?ref=page_internal" facebook)
+    ("Kafé hærverk" "https://www.facebook.com/pg/kafehaerverk/events/?ref=page_internal" facebook)
     ))
 
 (defvar csid-database nil)

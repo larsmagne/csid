@@ -107,6 +107,7 @@
     ("Krøsset" "https://www.facebook.com/krxsset/events?ref=page_internal" facebook)
     ("Kafé hærverk" "https://www.facebook.com/pg/kafehaerverk/events/?ref=page_internal" facebook)
     ("Cappelens forslag" "https://www.facebook.com/pg/CappelensForslag/events/?ref=page_internal" facebook)
+    ("Barrikaden" "http://vestbredden.net/barrikaden/" barrikaden :date)
     ))
 
 (defvar csid-database nil)
@@ -1203,6 +1204,17 @@ no further processing).  URL is either a string or a parsed URL."
       (and time
 	   (>= (csid-clock-to-seconds time)
 	       (csid-clock-to-seconds "19.00"))))))
+
+(defun csid-parse-barrikaden (dom)
+  (loop for section in (dom-by-tag (dom-by-class dom "entry-content") 'p)
+	for elem = (dom-texts section)
+	for date = (csid-parse-full-numeric-date elem)
+	for text = (replace-regexp-in-string ".*[0-9]+.[0-9]+.[0-9]+.[: ]*" "" elem)
+	when (and date
+		  (plusp (length text)))
+	collect (list date
+		      "http://vestbredden.net/barrikaden/"
+		      text)))
 
 (defun csid-clock-to-seconds (string)
   (if (string-match "\\([0-9][0-9]\\)[^0-9]\\([0-9][0-9]\\)" string)

@@ -108,6 +108,7 @@
     ("Kafé hærverk" "https://www.facebook.com/pg/kafehaerverk/events/?ref=page_internal" facebook)
     ("Cappelens forslag" "https://www.facebook.com/pg/CappelensForslag/events/?ref=page_internal" facebook)
     ("Barrikaden" "http://vestbredden.net/barrikaden/" barrikaden :date)
+    ("Henie Onstad" "http://henieonstadsanatorium.no/kalender" henie-onstad :date)
     ))
 
 (defvar csid-database nil)
@@ -1215,6 +1216,19 @@ no further processing).  URL is either a string or a parsed URL."
 	collect (list date
 		      "http://vestbredden.net/barrikaden/"
 		      text)))
+
+(defun csid-parse-henie-onstad (dom)
+  (loop for event in (dom-by-class
+		      (loop for elem in (dom-by-class dom "calendar")
+			    when (eq (dom-tag elem) 'ul)
+			    return elem)
+		      "^row$")
+	for type = (dom-text (dom-by-class event "type"))
+	when (member type '("Konsert" "Performance"))
+	collect (list (csid-parse-numeric-date
+		       (dom-text (dom-by-class event "date-start")))
+		      "http://henieonstadsanatorium.no/kalender"
+		      (dom-text (dom-by-tag event 'h3)))))
 
 (defun csid-clock-to-seconds (string)
   (if (string-match "\\([0-9][0-9]\\)[^0-9]\\([0-9][0-9]\\)" string)

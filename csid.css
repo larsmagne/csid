@@ -197,7 +197,7 @@ div#small-heading {
   }
   div#small-heading img#small-menu {
     position: absolute;
-    top: -2px;
+    top: -7px;
     left: 10px;
   }
   table.events tr td:nth-child(3) {
@@ -334,14 +334,14 @@ div.apps {
   text-align: center;
   position: absolute;
   color: black;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
   background-color: white;
   padding: 5px;
   border-radius: 5px;
 }
 .map-marker-label span {
-  font-size: 12px;
+  font-size: 10px;
   font-weight: normal;
   display: block;
  }

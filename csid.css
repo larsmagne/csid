@@ -338,3 +338,12 @@ div.apps {
   padding: 5px;
   border-radius: 5px;
 }
+div.map-heading {
+  text-align: center;
+  width: 100%;
+  height: 25px;
+  background: linear-gradient(to bottom, #40a040 0%, #105010 100%);
+  color: white;
+  font-weight: bold;
+  padding-top: 8px;
+}

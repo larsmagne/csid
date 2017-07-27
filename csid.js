@@ -419,9 +419,10 @@ function sortByDistance() {
       return;
     }
     var venue = elem.getAttribute("name");
-    if (! venue || ! locations[venue])
+    if (! venue || ! elem.getAttribute("lat"))
       return;
-    var dist = distance(homePos, locations[elem.getAttribute("name")]);
+    var dist = distance(homePos,
+			[elem.getAttribute("lat"), elem.getAttribute("lng")]);
     var d = document.createElement("div");
     d.className = "distance";
     if (dist < 10) {
@@ -437,8 +438,8 @@ function sortByDistance() {
   });
 
   trs = trs.sort(function(a, b) {
-    return distance(homePos, locations[b.getAttribute("name")]) -
-      distance(homePos, locations[a.getAttribute("name")]);
+    return distance(homePos, [b.getAttribute("lat"), b.getAttribute("lng")]) -
+      distance(homePos, [a.getAttribute("lat"), a.getAttribute("lng")]);
   });
   var first = $("tr")[0];
   trs.forEach(function(elem) {
@@ -1188,12 +1189,13 @@ function collectPositions() {
     if (dat && dat == today) {
       var venue = node.getAttribute("name");
       var event = node.childNodes[0].childNodes[0].innerHTML;
-      if (locations[venue]) {
+      if (node.getAttribute("lat")) {
 	if (pos[venue])
 	  pos[venue][0] += "<br>" + event;
 	else {
-	  pos[venue] = [event, venue, locations[venue][0],
-			locations[venue][1],
+	  pos[venue] = [event, venue,
+			parseFloat(node.getAttribute("lat")),
+			parseFloat(node.getAttribute("lng")),
 			node.id
 		       ];
 	}

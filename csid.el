@@ -1272,10 +1272,12 @@ no further processing).  URL is either a string or a parsed URL."
 				     "visible")
 				   (csid-add-weekday date))))
 		 (setq prev-date date)
-		 (insert (format "<tr name='%s' id='event-%s' data=%s date='%s' time='%s'><td><a href='%s'>%s<td>%s</tr>"
+		 (insert (format "<tr name='%s' id='event-%s' data=%s date='%s' time='%s' lat='%s' lng='%s'><td><a href='%s'>%s<td>%s</tr>"
 				 (replace-regexp-in-string " " "_" venue)
 				 id
 				 rank date fetch-date
+				 (csid-latlng venue 0)
+				 (csid-latlng venue 1)
 				 url
 				 (csid-make-text-breakable
 				  (if (> (length name) 1000)
@@ -1284,19 +1286,17 @@ no further processing).  URL is either a string or a parsed URL."
 				 venue)))
 	    (setq prev-date date))
       (insert "</table><div id='selector'></div>")
-      (insert "<script>var locations = [];")
-      (dolist (source csid-sources)
-	(loop for elem in source
-	      when (and (listp elem)
-			(= (length elem) 2)
-			(numberp (car elem))
-			(numberp (cadr elem)))
-	      do (insert (format "locations[%S] = [%s, %s];"
-				 (car source)
-				 (car elem)
-				 (cadr elem)))))
-      (insert "</script>");
       (insert "<script type='text/javascript' src='jquery-1.10.2.min.js'></script><script type='text/javascript' src='jquery.cookie.js'></script><script type='text/javascript' src='jquery.colorbox-min.js'></script><script type='text/javascript' src='FileSaver.min.js'></script><script type='text/javascript' src='csid.js'></script><script type='text/javascript' src='pikaday.js'></script><script type='text/javascript'>addNavigation();</script>"))))
+
+(defun csid-latlng (venue index)
+  (let ((pos (loop for elem in (assoc venue csid-sources)
+		   when (and (listp elem)
+			     (= (length elem) 2)
+			     (numberp (car elem))
+			     (numberp (cadr elem)))
+		   return elem)))
+    ;; Default to the middle of the world.
+    (elt (or pos '(59.913074 10.751834)) index)))
 
 (defun csid-make-text-breakable (string)
   (mapconcat

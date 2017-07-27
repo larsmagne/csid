@@ -751,22 +751,26 @@ function setCookie(c_name, value, expiredays) {
 }
 
 function addScrollActions() {
+  $('body').bind('touchmove', function(e) {
+    e.preventDefault();
+  });
+  return;
   if (! phoneGap || device.platform == "iOS")
     return;
   removeScrollActions();
   $(window).on("touchmove", function() {
-    $("#box").remove();
     closeColorbox();
     return true;
   });
   $(window).on("scroll", function() {
-    $("#box").remove();
     closeColorbox();
     return true;
   });
 }
 
 function removeScrollActions() {
+  $('body').unbind('touchmove');
+  return;
   $(window).off("touchmove");
   $(window).off("scroll");
 }
@@ -921,10 +925,12 @@ function miscMenu() {
     $("table").show();
     closeColorbox();
     $(".pika-single").remove();
+    document.removeEventListener("backbutton", func);
     return false;
   };
   $("#csid-close").bind("click", func);
   $("#cboxLoadedContent").bind("click", func);
+  document.addEventListener("backbutton", func, false);
   addScrollActions();
 }
 
@@ -970,14 +976,17 @@ function colorbox(html) {
   box.style.padding = "0px";
   box.className = "event-lightbox";
   box.innerHTML = html;
-  $("#csid-close").bind("click", function() {
+  var func = function() {
     closeColorbox();
+    document.removeEventListener("backbutton", func);
     return false;
-  });
+  };
+  $("#csid-close").bind("click", func);
   $(box).bind("click", function() {
     closeColorbox();
     return false;
   });
+  document.addEventListener("backbutton", func, false);
   document.body.appendChild(box);
 }
 
@@ -1113,12 +1122,16 @@ function showMap() {
   box.appendChild(heading);
   box.appendChild(map);
   document.body.appendChild(box);
-  $(heading).click(function() {
+  var func = function() {
     $(box).remove();
-  });
+    removeScrollActions();
+    document.removeEventListener("backbutton", func);
+  };
+  $(heading).click(func);
   var script = document.createElement("script");
   script.setAttribute("src", "https://maps.googleapis.com/maps/api/js?key=AIzaSyDOzwQi0pHvnJ1hW__DTC2H4f2qPCr3pWw&callback=initMap");
   document.body.appendChild(script);
+  document.addEventListener("backbutton", func, false);
   addScrollActions();
 }
 

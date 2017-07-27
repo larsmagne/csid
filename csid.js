@@ -1210,7 +1210,11 @@ function initMap() {
       icon: 'pixel.png',
       draggable: false
     });
+    if (key == "here")
+      var hereMarker = marker;
   };
+  if (herePos && map.getBounds().contains(hereMarker.getPosition()))
+    map.setCenter(herePos);
 }
 
 function collectPositions() {

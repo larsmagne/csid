@@ -485,6 +485,11 @@ function exportCalendar() {
   saveAs(blob, "csid.ics");
 }
 
+function eventMenu(id) {
+  var elem = $("#" + id)[0];
+  actionEventMenu(elem, elem.getAttribute("name"));
+}
+
 function actionEventMenu(node, venue) {
   var link = $(node).find("a").attr("href");
   var idString = $(node).find("input").attr("id");
@@ -1130,8 +1135,8 @@ function initMap() {
     this.span = document.createElement('span');
     this.span.className = 'map-marker-label';
     $(this.span).click(function() {
-      if (options.marker.linkUrl)
-	followLink(options.marker.linkUrl);
+      if (options.marker.eventId)
+	eventMenu(options.marker.eventId);
     });
   };
 
@@ -1165,7 +1170,7 @@ function initMap() {
       map: map,
       position: {lat: venue[2], lng: venue[3]},
       label: venue[0],
-      linkUrl: venue[4],
+      eventId: venue[4],
       icon: 'pixel.png',
       draggable: false
     });
@@ -1186,7 +1191,7 @@ function collectPositions() {
 	else {
 	  pos[venue] = [event, venue, locations[venue][0],
 			locations[venue][1],
-			node.childNodes[0].childNodes[0].getAttribute("href")
+			node.id
 		       ];
 	}
       }

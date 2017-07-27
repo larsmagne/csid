@@ -1048,11 +1048,10 @@ function showMap() {
 }
 
 function initMap() {
-  console.log("foo");
   var work = {lat: 59.913074, lng: 10.751834};
   var markerSize = { x: 22, y: 40 };
 
-  google.maps.Marker.prototype.setLabel = function(label){
+  google.maps.Marker.prototype.setLabel = function(label) {
     this.label = new MarkerLabel({
       map: this.map,
       marker: this,
@@ -1066,7 +1065,7 @@ function initMap() {
     this.span = document.createElement('span');
     this.span.className = 'map-marker-label';
     $(this.span).click(function() {
-      
+      followLink(options.marker.linkUrl);
     });
   };
 
@@ -1096,16 +1095,18 @@ function initMap() {
   pos["here"] = ["You are here", "here", work["lat"], work["lng"]];
   for (var key in pos) {
     var venue = pos[key];
-    console.log(venue);
-    new google.maps.Marker({
+    var marker = new google.maps.Marker({
       map: map,
       position: {lat: venue[2], lng: venue[3]},
       label: venue[0],
-      link: venue[4],
+      linkUrl: venue[4],
       icon: 'pixel.png',
-      draggable: true
+      draggable: false
     });
-  }
+    google.maps.event.addListener(marker, 'click', function() {
+      followLink(venue[4]);
+    });
+  };
 }
 
 function collectPositions() {

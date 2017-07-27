@@ -1205,7 +1205,7 @@ function initMap() {
     var marker = new google.maps.Marker({
       map: map,
       position: {lat: venue[2], lng: venue[3]},
-      label: venue[0],
+      label: venue[0] + "<span>" + venue[1] + "</span>",
       eventId: venue[4],
       icon: 'pixel.png',
       draggable: false

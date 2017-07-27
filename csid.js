@@ -751,7 +751,7 @@ function setCookie(c_name, value, expiredays) {
 }
 
 function addScrollActions() {
-  $('body').bind('touchmove', function(e) {
+  $(window).bind('touchmove', function(e) {
     e.preventDefault();
   });
   return;
@@ -769,7 +769,7 @@ function addScrollActions() {
 }
 
 function removeScrollActions() {
-  $('body').unbind('touchmove');
+  $(window).unbind('touchmove');
   return;
   $(window).off("touchmove");
   $(window).off("scroll");
@@ -1102,6 +1102,11 @@ function allVenues() {
 }
 
 function showMap() {
+  navigator.geolocation.getCurrentPosition(showMapCont);
+}
+
+function showMapCont(pos) {
+  homePos = [pos.coords.latitude, pos.coords.longitude];
   var box = document.createElement("div");
   box.style.position = "absolute";
   box.style.left = "0px";

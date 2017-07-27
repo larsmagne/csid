@@ -944,12 +944,19 @@ function chooseDate() {
       else {
 	closeColorbox();
 	$('html, body').animate({
-          scrollTop: $(first).prev().offset().top
+          scrollTop: $(first).prev().offset().top - 38
 	}, 2000);
       }
     }
   });
   document.body.appendChild(picker.el);
+  // Ensure that the calendar is visible if the page is scrolled.
+  var box = $(".pika-single");
+  box.style.position = "absolute";
+  box.style.left = "0px";
+  box.style.top = $(window).scrollTop() + "px";
+  box.style.height = $(window).height() + "px";
+  box.style.width = $(window).width() + "px";
   return false;
 }
 

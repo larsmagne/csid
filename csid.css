@@ -169,12 +169,15 @@ div#small-heading {
   table.events {
     width: 100%;
     float: none;
+    margin-top: 38px;
   }
   div#large-heading {
     display: none;
   }
   div#small-heading {
     display: block;
+    position: fixed;
+    top: 0;
     width: 100%;
     font-weight: bold;
     text-align: center;

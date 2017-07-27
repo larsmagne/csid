@@ -537,7 +537,6 @@ function actionEventMenu(node, venue) {
     followLink(this.href);
     return false;
   });
-  addScrollActions();
 }
 
 function followLink(src) {
@@ -596,7 +595,6 @@ function actionVenueMenu(name) {
     closeColorbox();
     return false;
   });
-  addScrollActions();
 }
 
 function showVenueChooser() {
@@ -635,7 +633,6 @@ function showVenueChooser() {
   };
   $("div.venue-top").bind("click", func);
   $("#csid-close").bind("click", func);
-  removeScrollActions();
 }
 
 function addLogos() {
@@ -748,31 +745,6 @@ function getCookie(c_name) {
 
 function setCookie(c_name, value, expiredays) {
   return localStorage.setItem(c_name, value);
-}
-
-function addScrollActions() {
-  $(window).bind('touchmove', function(e) {
-    e.preventDefault();
-  });
-  return;
-  if (! phoneGap || device.platform == "iOS")
-    return;
-  removeScrollActions();
-  $(window).on("touchmove", function() {
-    closeColorbox();
-    return true;
-  });
-  $(window).on("scroll", function() {
-    closeColorbox();
-    return true;
-  });
-}
-
-function removeScrollActions() {
-  $(window).unbind('touchmove');
-  return;
-  $(window).off("touchmove");
-  $(window).off("scroll");
 }
 
 function setHardWidths() {
@@ -931,7 +903,6 @@ function miscMenu() {
   $("#csid-close").bind("click", func);
   $("#cboxLoadedContent").bind("click", func);
   document.addEventListener("backbutton", func, false);
-  addScrollActions();
 }
 
 function searchEvents() {
@@ -965,9 +936,9 @@ function colorbox(html) {
     box = false;
   }
   box = document.createElement("div");
-  box.style.position = "absolute";
+  box.style.position = "fixed";
   box.style.left = "0px";
-  box.style.top = $(window).scrollTop() + "px";
+  box.style.top = "0px";
   box.style.height = $(window).height() + "px";
   box.style.width = $(window).width() + "px";
   box.style.display = "block";
@@ -1025,9 +996,9 @@ function chooseDate() {
   document.body.appendChild(picker.el);
   // Ensure that the calendar is visible if the page is scrolled.
   var box = $(".pika-single");
-  box.style.position = "absolute";
+  box.style.position = "fixed";
   box.style.left = "0px";
-  box.style.top = $(window).scrollTop() + "px";
+  box.style.top = "0px";
   box.style.height = $(window).height() + "px";
   box.style.width = $(window).width() + "px";
   return false;
@@ -1121,9 +1092,9 @@ function showMapCont(sp, hp) {
   startPos = sp;
   herePos = hp;
   var box = document.createElement("div");
-  box.style.position = "absolute";
+  box.style.position = "fixed";
   box.style.left = "0px";
-  box.style.top = $(window).scrollTop() + "px";
+  box.style.top = "0px";
   box.style.width = $(window).width() + "px";
   box.style.height = $(window).height() + "px";
   box.style.display = "block";
@@ -1142,7 +1113,6 @@ function showMapCont(sp, hp) {
   document.body.appendChild(box);
   var func = function() {
     $(box).remove();
-    removeScrollActions();
     document.removeEventListener("backbutton", func);
   };
   $(heading).click(func);
@@ -1150,7 +1120,6 @@ function showMapCont(sp, hp) {
   script.setAttribute("src", "https://maps.googleapis.com/maps/api/js?key=AIzaSyDOzwQi0pHvnJ1hW__DTC2H4f2qPCr3pWw&callback=initMap");
   document.body.appendChild(script);
   document.addEventListener("backbutton", func, false);
-  addScrollActions();
 }
 
 function initMap() {

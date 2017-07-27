@@ -347,3 +347,7 @@ div.map-heading {
   font-weight: bold;
   padding-top: 8px;
 }
+div.distance {
+  font-weight: normal !important;
+  font-size: 12px;
+}

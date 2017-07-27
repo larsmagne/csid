@@ -2,6 +2,8 @@ var reveal = false;
 var phoneGap = false;
 var sortOrder = "date";
 var savedTable = false;
+var homePos = [59.913074, 10.751834];
+
 
 var mapKey = "AIzaSyDOzwQi0pHvnJ1hW__DTC2H4f2qPCr3pWw";
 
@@ -180,7 +182,6 @@ function addNavigation() {
   if (! savedTable)
     savedTable = $("table").clone({withDataAndEvents: true});
   */
-  showMap();
 }
 
 function addVenue(name, deniedVenues) {
@@ -401,6 +402,52 @@ function sortByScanOrder() {
       return parseInt($(a).attr("data")) - parseInt(($(b).attr("data")));
     })
     .appendTo($table);
+}
+
+function sortByDistance() {
+  var today = new Date().toISOString().substring(0, 10);
+  var trs = [];
+  var count = 0;
+  $("tr").map(function (index, elem) {
+    var dat = this.getAttribute("date");
+    if (dat && dat == today) {
+      trs[count++] = elem;
+      $(elem).show();
+    } else {
+      $(elem).hide();
+      return;
+    }
+    var venue = elem.getAttribute("name");
+    if (! venue || ! locations[venue])
+      return;
+    var dist = distance(homePos, locations[elem.getAttribute("name")]);
+    var d = document.createElement("div");
+    d.className = "distance";
+    if (dist < 10) {
+      var meter = Math.ceil(dist * 1000);
+      if (meter < 1)
+	d.innerHTML = "you are there";
+      else
+	d.innerHTML = "" + meter + " meters";
+    } else
+      d.innerHTML = "" + Math.round((dist * 10) / 10) + " km";
+      
+    elem.childNodes[1].appendChild(d);
+  });
+
+  trs = trs.sort(function(a, b) {
+    return distance(homePos, locations[b.getAttribute("name")]) -
+      distance(homePos, locations[a.getAttribute("name")]);
+  });
+  var first = $("tr")[0];
+  trs.forEach(function(elem) {
+    var parent = elem.parentNode;
+    insertAfter(elem, first);
+  });
+}
+
+function insertAfter(newNode, referenceNode) {
+  referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
 }
 
 function addRestoreLink() {
@@ -749,7 +796,7 @@ function miscMenu() {
     pgString = "<a href='#' id='reload'>Reload Data</a>";
     appString = "";
   }
-  colorbox("<a href='#' id='show-venues'>Choose Venues to Exclude</a><a href='#' id='list-new'>List New Events</a><a href='#' id='export-calendar'>Export Calendar</a><a href='#' id='sort-method'>" +
+  colorbox("<a href='#' id='show-venues'>Choose Venues to Exclude</a><a href='#' id='show-map'>Show Today's Events on a Map</a><a href='#' id='list-closest'>List the Closest Events Today</a><a href='#' id='list-new'>List New Events</a><a href='#' id='export-calendar'>Export Calendar</a><a href='#' id='sort-method'>" +
 	   sortString +
 	   "</a><a href='#' id='choose-date'>Choose Date</a><a href='#' id='search'>Search</a>" +
 	   restoreString +
@@ -769,6 +816,11 @@ function miscMenu() {
     return false;
   };
   $("#about").bind("click", aboutPage);
+  $("#show-map").bind("click", showMap);
+  $("#list-closest").bind("click", function() {
+    limitedDisplay = true;
+    sortByDistance();
+  });
   $("#add-venue").bind("click", function() {
     colorbox("<a href='#' id='add'>To request a new venue, click here and leave a comment on the blog page.</a>");
     $("#add").bind("click", aboutPage);
@@ -988,6 +1040,8 @@ function exportEvent(id) {
 }
 
 function restoreTable() {
+  $(".distance").remove();
+  $("tr").show();
   if (limitedDisplay) {
     hideShow();
     limitedDisplay = false;
@@ -1059,7 +1113,6 @@ function showMap() {
 }
 
 function initMap() {
-  var work = {lat: 59.913074, lng: 10.751834};
   var markerSize = { x: 22, y: 40 };
 
   google.maps.Marker.prototype.setLabel = function(label) {
@@ -1101,10 +1154,10 @@ function initMap() {
 
   var map = new google.maps.Map(document.getElementById('map'), {
     zoom: 14,
-    center: work
+    center: {lat: homePos[0], lng: homePos[1]}
   });
   var pos = collectPositions();
-  pos["here"] = ["You are here", "here", work["lat"], work["lng"]];
+  pos["here"] = ["You are here", "here", homePos[0], homePos[1]];
   for (var key in pos) {
     var venue = pos[key];
     var marker = new google.maps.Marker({
@@ -1141,3 +1194,24 @@ function collectPositions() {
   return pos;
 }
 
+function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
+  var R = 6371; // Radius of the earth in km
+  var dLat = deg2rad(lat2-lat1);  // deg2rad below
+  var dLon = deg2rad(lon2-lon1); 
+  var a = 
+      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+      Math.sin(dLon/2) * Math.sin(dLon/2)
+  ; 
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+  var d = R * c; // Distance in km
+  return d;
+}
+
+function deg2rad(deg) {
+  return deg * (Math.PI/180);
+}
+
+function distance(a, b) {
+  return getDistanceFromLatLonInKm(a[0], a[1], b[0], b[1]);
+}

@@ -2,7 +2,7 @@ var reveal = false;
 var phoneGap = false;
 var sortOrder = "date";
 var savedTable = false;
-var homePos = [59.913074, 10.751834];
+var homePos = [59.915430, 10.751862];
 
 
 var mapKey = "AIzaSyDOzwQi0pHvnJ1hW__DTC2H4f2qPCr3pWw";

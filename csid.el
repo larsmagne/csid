@@ -1284,7 +1284,18 @@ no further processing).  URL is either a string or a parsed URL."
 				 venue)))
 	    (setq prev-date date))
       (insert "</table><div id='selector'></div>")
-      (write-region start (point) "/tmp/csid-table.html")
+      (insert "<script>var locations = [];")
+      (dolist (source csid-sources)
+	(loop for elem in source
+	      when (and (listp elem)
+			(= (length elem) 2)
+			(numberp (car elem))
+			(numberp (cadr elem)))
+	      do (insert (format "locations[%S] = [%s, %s];"
+				 (car source)
+				 (car elem)
+				 (cadr elem)))))
+      (insert "</script>");
       (insert "<script type='text/javascript' src='jquery-1.10.2.min.js'></script><script type='text/javascript' src='jquery.cookie.js'></script><script type='text/javascript' src='jquery.colorbox-min.js'></script><script type='text/javascript' src='FileSaver.min.js'></script><script type='text/javascript' src='csid.js'></script><script type='text/javascript' src='pikaday.js'></script><script type='text/javascript'>addNavigation();</script>"))))
 
 (defun csid-make-text-breakable (string)

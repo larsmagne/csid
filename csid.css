@@ -329,3 +329,12 @@ div.apps {
   padding-bottom: 10px;
   background: #808080;
 }
+.map-marker-label {
+  position: absolute;
+  color: black;
+  font-size: 16px;
+  font-weight: bold;
+  background-color: white;
+  padding: 5px;
+  border-radius: 5px;
+}

@@ -3,6 +3,8 @@ var phoneGap = false;
 var sortOrder = "date";
 var savedTable = false;
 
+var mapKey = "AIzaSyDOzwQi0pHvnJ1hW__DTC2H4f2qPCr3pWw";
+
 function getSettings(name) {
   var settings = $.cookie(name);
   if (phoneGap)
@@ -177,7 +179,8 @@ function addNavigation() {
   /*
   if (! savedTable)
     savedTable = $("table").clone({withDataAndEvents: true});
-   */
+  */
+  showMap();
 }
 
 function addVenue(name, deniedVenues) {
@@ -477,13 +480,17 @@ function actionEventMenu(node, venue) {
   });
   $("#event-link").bind("click", function() {
     closeColorbox();
-    if (phoneGap && device.platform != "Android")
-      window.open(this.href, "_system", "location=no");
-    else
-      document.location.href = this.href;
+    followLink(this.href);
     return false;
   });
   addScrollActions();
+}
+
+function followLink(src) {
+  if (phoneGap && device.platform != "Android")
+    window.open(src, "_system", "location=no");
+  else
+    document.location.href = src;
 }
 
 function actionVenueMenu(name) {
@@ -758,10 +765,7 @@ function miscMenu() {
   var aboutPage = function() {
     closeColorbox();
     var url = "http://lars.ingebrigtsen.no/2013/09/22/crowdsourcing-is-dead/";
-    if (phoneGap && device.platform != "Android")
-      window.open(url, "_system", "location=no");
-    else
-      document.location.href = url;
+    followLink(url);
     return false;
   };
   $("#about").bind("click", aboutPage);
@@ -933,7 +937,6 @@ function chooseDate() {
       $("table").show();
       $(".pika-single").remove();
       var first = false;
-      //var tr = $("tr[date=" + iso + "]")[0];
       $("tr").each(function(key, node) {
 	var dat = node.getAttribute("date");
 	if (dat && dat == iso && ! first)
@@ -990,11 +993,13 @@ function restoreTable() {
     limitedDisplay = false;
   }
   return;
+  /*
   var parent = $("table")[0].parentNode;
   $("table").remove();
   parent.appendChild(savedTable.clone({withDataAndEvents: true})[0]);
   if (! phoneGap)
     loadLogos(true);
+  */
 }
 
 function shareEvent(id) {
@@ -1023,3 +1028,106 @@ function allVenues() {
   });
   return venues;
 }
+
+function showMap() {
+  var box = document.createElement("div");
+  box.style.position = "absolute";
+  box.style.left = "0px";
+  box.style.top = $(window).scrollTop() + "px";
+  box.style.height = window.innerHeight + "px";
+  //box.style.height = "500px";
+  box.style.width = $(window).width() + "px";
+  box.style.display = "block";
+  box.style.background = "grey";
+  box.style.padding = "0px";
+  box.id = "map";
+  document.body.appendChild(box);
+  var script = document.createElement("script");
+  script.setAttribute("src", "https://maps.googleapis.com/maps/api/js?key=AIzaSyDOzwQi0pHvnJ1hW__DTC2H4f2qPCr3pWw&callback=initMap");
+  document.body.appendChild(script);
+}
+
+function initMap() {
+  console.log("foo");
+  var work = {lat: 59.913074, lng: 10.751834};
+  var markerSize = { x: 22, y: 40 };
+
+  google.maps.Marker.prototype.setLabel = function(label){
+    this.label = new MarkerLabel({
+      map: this.map,
+      marker: this,
+      text: label
+    });
+    this.label.bindTo('position', this, 'position');
+  };
+
+  var MarkerLabel = function(options) {
+    this.setValues(options);
+    this.span = document.createElement('span');
+    this.span.className = 'map-marker-label';
+    $(this.span).click(function() {
+      
+    });
+  };
+
+  MarkerLabel.prototype = $.extend(new google.maps.OverlayView(), {
+    onAdd: function() {
+      this.getPanes().overlayImage.appendChild(this.span);
+      var self = this;
+      this.listeners = [
+        google.maps.event.addListener(this, 'position_changed', function() {
+	  self.draw();
+	})];
+    },
+    draw: function() {
+      var text = String(this.get('text'));
+      var position = this.getProjection().fromLatLngToDivPixel(this.get('position'));
+      this.span.innerHTML = text;
+      this.span.style.left = (position.x - (markerSize.x / 2)) - (text.length * 3) + 10 + 'px';
+      this.span.style.top = (position.y - markerSize.y + 40) + 'px';
+    }
+  });
+
+  var map = new google.maps.Map(document.getElementById('map'), {
+    zoom: 14,
+    center: work
+  });
+  var pos = collectPositions();
+  pos["here"] = ["You are here", "here", work["lat"], work["lng"]];
+  for (var key in pos) {
+    var venue = pos[key];
+    console.log(venue);
+    new google.maps.Marker({
+      map: map,
+      position: {lat: venue[2], lng: venue[3]},
+      label: venue[0],
+      link: venue[4],
+      icon: 'pixel.png',
+      draggable: true
+    });
+  }
+}
+
+function collectPositions() {
+  var today = new Date().toISOString().substring(0, 10);
+  var pos = [];
+  $("tr").each(function(key, node) {
+    var dat = node.getAttribute("date");
+    if (dat && dat == today) {
+      var venue = node.getAttribute("name");
+      var event = node.childNodes[0].childNodes[0].innerHTML;
+      if (locations[venue]) {
+	if (pos[venue])
+	  pos[venue][0] += "<br>" + event;
+	else {
+	  pos[venue] = [event, venue, locations[venue][0],
+			locations[venue][1],
+			node.childNodes[0].childNodes[0].getAttribute("href")
+		       ];
+	}
+      }
+    }
+  });
+  return pos;
+}
+

@@ -274,6 +274,7 @@ function hideShow(onlyVenue, onlyAfterTimestamp, onlyEvent,
 	  $(node).text().match(/quiz/i))
 	visible = false;
     }
+
     
     if (visible) {
       $(node).removeClass("invisible");
@@ -412,9 +413,9 @@ function sortByDistance() {
     var dat = this.getAttribute("date");
     if (dat && dat == today) {
       trs[count++] = elem;
-      $(elem).show();
+      $(elem).removeClass("invisible");
     } else {
-      $(elem).hide();
+      $(elem).addClass("invisible");
       return;
     }
     var venue = elem.getAttribute("name");
@@ -1041,7 +1042,7 @@ function exportEvent(id) {
 
 function restoreTable() {
   $(".distance").remove();
-  $("tr").show();
+  $("tr").removeClass("invisible");
   if (limitedDisplay) {
     hideShow();
     limitedDisplay = false;

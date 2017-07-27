@@ -1102,11 +1102,24 @@ function allVenues() {
 }
 
 function showMap() {
-  navigator.geolocation.getCurrentPosition(showMapCont);
+  if (phoneGap) 
+    navigator.geolocation.getCurrentPosition(function(pos) {
+      homePos = [pos.coords.latitude, pos.coords.longitude];
+      showMapCont(homePos, homePos);
+    }, function() {
+      // On failure to get the position, just center somewhere.
+      showMapCont(homePos, false);
+    });
+  else
+    showMapCont(homePos, false);
 }
 
-function showMapCont(pos) {
-  homePos = [pos.coords.latitude, pos.coords.longitude];
+var startPos = homePos;
+var herePos = false;
+
+function showMapCont(sp, hp) {
+  startPos = sp;
+  herePos = hp;
   var box = document.createElement("div");
   box.style.position = "absolute";
   box.style.left = "0px";
@@ -1182,10 +1195,11 @@ function initMap() {
 
   var map = new google.maps.Map(document.getElementById('map'), {
     zoom: 14,
-    center: {lat: homePos[0], lng: homePos[1]}
+    center: {lat: startPos[0], lng: startPos[1]}
   });
   var pos = collectPositions();
-  pos["here"] = ["You are here", "here", homePos[0], homePos[1]];
+  if (herePos)
+    pos["here"] = ["You are here", "here", herePos[0], herePos[1]];
   for (var key in pos) {
     var venue = pos[key];
     var marker = new google.maps.Marker({

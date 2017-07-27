@@ -754,10 +754,12 @@ function addScrollActions() {
     return;
   removeScrollActions();
   $(window).on("touchmove", function() {
+    $("#box").remove();
     closeColorbox();
     return true;
   });
   $(window).on("scroll", function() {
+    $("#box").remove();
     closeColorbox();
     return true;
   });
@@ -1116,6 +1118,7 @@ function showMap() {
   var script = document.createElement("script");
   script.setAttribute("src", "https://maps.googleapis.com/maps/api/js?key=AIzaSyDOzwQi0pHvnJ1hW__DTC2H4f2qPCr3pWw&callback=initMap");
   document.body.appendChild(script);
+  addScrollActions();
 }
 
 function initMap() {

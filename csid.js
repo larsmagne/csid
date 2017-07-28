@@ -1179,13 +1179,13 @@ function initMap() {
 					      new google.maps.Point(10, 10));
   var pos = collectPositions();
   if (herePos)
-    pos["here"] = ["You are here", "here", herePos[0], herePos[1]];
+    pos["here"] = ["You are here", false, herePos[0], herePos[1]];
   for (var key in pos) {
     var venue = pos[key];
     var marker = new google.maps.Marker({
       map: map,
       position: {lat: venue[2], lng: venue[3]},
-      label: venue[0] + "<span>" + venue[1] + "</span>",
+      label: venue[0] + (venue[1]? "<span>" + venue[1] + "</span>": ""),
       eventId: venue[4],
       icon: (key == "here"? homeImage: markerImage),
       draggable: false

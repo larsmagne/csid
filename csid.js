@@ -942,8 +942,8 @@ function colorbox(html) {
   box.style.position = "fixed";
   box.style.left = "0px";
   box.style.top = "0px";
-  box.style.height = $(window).height() + "px";
-  box.style.width = $(window).width() + "px";
+  box.style.height = window.innerHeight + "px";
+  box.style.width = window.innerWidth + "px";
   box.style.display = "block";
   box.style.background = "#105010";
   box.style.color = "black";

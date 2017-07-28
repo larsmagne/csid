@@ -781,7 +781,9 @@ function miscMenu() {
     pgString = "<a href='#' id='reload'>Reload Data</a>";
     appString = "";
   }
-  colorbox("<a href='#' id='show-venues'>Choose Venues to Exclude</a><a href='#' id='show-map'>Show Today's Events on a Map</a><a href='#' id='list-closest'>List the Closest Events Today</a><a href='#' id='list-new'>List New Events</a><a href='#' id='export-calendar'>Export Calendar</a><a href='#' id='sort-method'>" +
+  colorbox("<a href='#' id='show-venues'>Choose Venues to Exclude</a><a href='#' id='show-map'>Show Today's Events on a Map</a>" +
+	   (phoneGap? "<a href='#' id='list-closest'>List Today's Nearest Events</a>": "") +
+	   "<a href='#' id='list-new'>List New Events</a><a href='#' id='export-calendar'>Export Calendar</a><a href='#' id='sort-method'>" +
 	   sortString +
 	   "</a><a href='#' id='choose-date'>Choose Date</a><a href='#' id='search'>Search</a>" +
 	   restoreString +
@@ -1198,7 +1200,7 @@ function collectPositions() {
 	if (pos[venue])
 	  pos[venue][0] += "<br>" + event;
 	else {
-	  pos[venue] = [event, venue,
+	  pos[venue] = [event, venue.replace(/_/, " "),
 			parseFloat(node.getAttribute("lat")),
 			parseFloat(node.getAttribute("lng")),
 			node.id

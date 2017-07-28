@@ -407,6 +407,16 @@ function sortByScanOrder() {
 }
 
 function sortByDistance() {
+  navigator.geolocation.getCurrentPosition(function(pos) {
+    homePos = [pos.coords.latitude, pos.coords.longitude];
+    sortByDistanceCont();
+  }, function() {
+    // On failure to get the position, just center somewhere.
+    colorbox("Unable to get the current location.");
+  });
+}
+
+function sortByDistanceCont() {
   var today = new Date().toISOString().substring(0, 10);
   var trs = [];
   var count = 0;

@@ -182,6 +182,7 @@ function addNavigation() {
   if (! savedTable)
     savedTable = $("table").clone({withDataAndEvents: true});
   */
+  showMap();
 }
 
 function addVenue(name, deniedVenues) {
@@ -1125,8 +1126,6 @@ function showMapCont(sp, hp) {
 }
 
 function initMap() {
-  var markerSize = { x: 22, y: 40 };
-
   google.maps.Marker.prototype.setLabel = function(label) {
     this.label = new MarkerLabel({
       map: this.map,
@@ -1159,8 +1158,8 @@ function initMap() {
       var text = String(this.get('text'));
       var position = this.getProjection().fromLatLngToDivPixel(this.get('position'));
       this.span.innerHTML = text;
-      this.span.style.left = (position.x - (markerSize.x / 2)) - (text.length * 3) + 10 + 'px';
-      this.span.style.top = (position.y - markerSize.y + 40) + 'px';
+      this.span.style.left = (position.x - 50) + 'px';
+      this.span.style.top = position.y + 'px';
     }
   });
 

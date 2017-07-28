@@ -1173,6 +1173,10 @@ function initMap() {
 						new google.maps.Size(20, 20),
 						new google.maps.Point(0, 0),
 						new google.maps.Point(10, 10));
+  var homeImage = new google.maps.MarkerImage('home-cross.png',
+					      new google.maps.Size(20, 20),
+					      new google.maps.Point(0, 0),
+					      new google.maps.Point(10, 10));
   var pos = collectPositions();
   if (herePos)
     pos["here"] = ["You are here", "here", herePos[0], herePos[1]];
@@ -1183,7 +1187,7 @@ function initMap() {
       position: {lat: venue[2], lng: venue[3]},
       label: venue[0] + "<span>" + venue[1] + "</span>",
       eventId: venue[4],
-      icon: markerImage,
+      icon: (key == "here"? homeImage: markerImage),
       draggable: false
     });
     if (key == "here")

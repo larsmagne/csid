@@ -1109,10 +1109,10 @@ function showMapCont(sp, hp) {
   heading.className = "map-heading";
   var map = document.createElement("div");
   map.style.width = $(window).width() + "px";
-  map.style.height = window.innerHeight + "px";
+  map.style.height = window.innerHeight - 30 + "px";
   map.id = "map";
-  box.appendChild(heading);
   box.appendChild(map);
+  box.appendChild(heading);
   document.body.appendChild(box);
   var func = function() {
     $(box).remove();

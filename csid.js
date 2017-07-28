@@ -1124,9 +1124,11 @@ function showMapCont(sp, hp) {
   box.appendChild(map);
   box.appendChild(heading);
   document.body.appendChild(box);
-  var func = function() {
+  var func = function(e) {
     $(box).remove();
     document.removeEventListener("backbutton", func);
+    e.preventDefault();
+    return;
   };
   $('#close-map').click(func);
   $('#show-labels').click(showLabels);

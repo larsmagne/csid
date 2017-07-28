@@ -1105,7 +1105,7 @@ function showMapCont(sp, hp) {
   box.style.padding = "0px";
   box.id = "box";
   var heading = document.createElement("div");
-  heading.innerHTML = "Close";
+  heading.innerHTML = "<span id='show-labels'>Show</span><span id='hide-labels'>Hide</span><span id='close-map'>Close</span>";
   heading.className = "map-heading";
   var map = document.createElement("div");
   map.style.width = $(window).width() + "px";
@@ -1118,7 +1118,9 @@ function showMapCont(sp, hp) {
     $(box).remove();
     document.removeEventListener("backbutton", func);
   };
-  $(heading).click(func);
+  $('#close-map').click(func);
+  $('#show-labels').click(showLabels);
+  $('#hide-labels').click(hideLabels);
   var script = document.createElement("script");
   script.setAttribute("src", "https://maps.googleapis.com/maps/api/js?key=AIzaSyDOzwQi0pHvnJ1hW__DTC2H4f2qPCr3pWw&callback=initMap");
   document.body.appendChild(script);
@@ -1167,6 +1169,10 @@ function initMap() {
     zoom: 14,
     center: {lat: startPos[0], lng: startPos[1]}
   });
+  var markerImage = new google.maps.MarkerImage('cross.png',
+						new google.maps.Size(20, 20),
+						new google.maps.Point(0, 0),
+						new google.maps.Point(10, 10));
   var pos = collectPositions();
   if (herePos)
     pos["here"] = ["You are here", "here", herePos[0], herePos[1]];
@@ -1177,7 +1183,7 @@ function initMap() {
       position: {lat: venue[2], lng: venue[3]},
       label: venue[0] + "<span>" + venue[1] + "</span>",
       eventId: venue[4],
-      icon: 'pixel.png',
+      icon: markerImage,
       draggable: false
     });
     if (key == "here")
@@ -1232,3 +1238,10 @@ function deg2rad(deg) {
 function distance(a, b) {
   return getDistanceFromLatLonInKm(a[0], a[1], b[0], b[1]);
 }
+
+function showLabels() {
+}
+
+function hideLabels() {
+}
+

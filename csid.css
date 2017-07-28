@@ -197,7 +197,7 @@ div#small-heading {
   }
   div#small-heading img#small-menu {
     position: absolute;
-    top: -7px;
+    top: -8px;
     left: 10px;
   }
   table.events tr td:nth-child(3) {

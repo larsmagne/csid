@@ -359,6 +359,11 @@ div.map-heading {
 div.map-heading span {
   padding-left: 10px;
   padding-right: 10px;
+  border: 1px solid black;
+  border-radius: 5px;
+  margin-left: 2px;
+  margin-right: 2px;
+  background-color: #808080;
 }
 div.distance {
   font-weight: normal !important;

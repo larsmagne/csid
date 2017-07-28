@@ -1105,7 +1105,7 @@ function showMapCont(sp, hp) {
   box.style.padding = "0px";
   box.id = "box";
   var heading = document.createElement("div");
-  heading.innerHTML = "<span id='show-labels'>Show</span><span id='hide-labels'>Hide</span><span id='close-map'>Close</span>";
+  heading.innerHTML = "<span id='hide-labels'>Hide Events</span><span id='show-labels'>Show Events</span><span id='close-map'>Close Map</span>";
   heading.className = "map-heading";
   var map = document.createElement("div");
   map.style.width = $(window).width() + "px";
@@ -1188,6 +1188,12 @@ function initMap() {
     });
     if (key == "here")
       var hereMarker = marker;
+    var cFunc = function(id) {
+      return function() {
+	eventMenu(id);
+      };
+    };
+    marker.addListener('click', cFunc(venue[4]));
   };
   if (herePos && map.getBounds().contains(hereMarker.getPosition()))
     map.setCenter(herePos);
@@ -1240,8 +1246,10 @@ function distance(a, b) {
 }
 
 function showLabels() {
+  $(".map-marker-label").show();
 }
 
 function hideLabels() {
+  $(".map-marker-label").hide();
 }
 

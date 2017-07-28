@@ -182,7 +182,6 @@ function addNavigation() {
   if (! savedTable)
     savedTable = $("table").clone({withDataAndEvents: true});
   */
-  showMap();
 }
 
 function addVenue(name, deniedVenues) {

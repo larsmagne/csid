@@ -1289,13 +1289,16 @@ no further processing).  URL is either a string or a parsed URL."
       (insert "<script type='text/javascript' src='jquery-1.10.2.min.js'></script><script type='text/javascript' src='jquery.cookie.js'></script><script type='text/javascript' src='jquery.colorbox-min.js'></script><script type='text/javascript' src='FileSaver.min.js'></script><script type='text/javascript' src='csid.js'></script><script type='text/javascript' src='pikaday.js'></script><script type='text/javascript'>addNavigation();</script>"))))
 
 (defun csid-latlng (venue index)
+  ;; Special-case the only venue that has several sub-venues.
+  (when (member venue '("Bushwick" "Leiligheten" "John Dee"))
+    (setq venue "Rockefeller"))
   (let ((pos (loop for elem in (assoc venue csid-sources)
 		   when (and (listp elem)
 			     (= (length elem) 2)
 			     (numberp (car elem))
 			     (numberp (cadr elem)))
 		   return elem)))
-    ;; Default to the middle of the world.
+    ;; Default to the middle of the world, which is Sentrum Scene.
     (elt (or pos '(59.913074 10.751834)) index)))
 
 (defun csid-make-text-breakable (string)

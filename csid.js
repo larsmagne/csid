@@ -2,7 +2,8 @@ var reveal = false;
 var phoneGap = false;
 var sortOrder = "date";
 var savedTable = false;
-var homePos = [59.915430, 10.751862];
+var sentrum = [59.915430, 10.751862];
+var homePos = sentrum;
 
 
 var mapKey = "AIzaSyDOzwQi0pHvnJ1hW__DTC2H4f2qPCr3pWw";
@@ -1166,7 +1167,7 @@ function initMap() {
 
   var map = new google.maps.Map(document.getElementById('map'), {
     zoom: 14,
-    center: {lat: startPos[0], lng: startPos[1]}
+    center: {lat: sentrum[0], lng: sentrum[1]}
   });
   var markerImage = new google.maps.MarkerImage('cross.png',
 						new google.maps.Size(20, 20),

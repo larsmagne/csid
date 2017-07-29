@@ -195,11 +195,6 @@ div#small-heading {
     text-decoration: none;
     font-weight: bold;
   }
-  div#small-heading img#small-menu {
-    position: absolute;
-    top: -8px;
-    left: 10px;
-  }
   table.events tr td:nth-child(3) {
     display: none;
   }
@@ -368,4 +363,28 @@ div.map-heading span {
 div.distance {
   font-weight: normal !important;
   font-size: 12px;
+}
+
+.box-shadow-menu {
+  position: relative;
+  float: left;
+}
+.box-shadow-menu:before {
+  content: "";
+  position: absolute;
+  left: 8px;
+  top: 0.25em;
+  width: 1em;
+  height: 0.15em;
+  background: white;
+  box-shadow: 
+    0 0.3em 0 0 white,
+    0 0.6em 0 0 white;
+}
+div#small-menu {
+  position: absolute;
+  top: 9px;
+  margin-left: 3px;
+  height: 20px;
+  width: 35px;
 }

@@ -349,7 +349,7 @@ div.map-heading {
   background: linear-gradient(to bottom, #40a040 0%, #105010 100%);
   color: white;
   font-weight: bold;
-  padding-top: 8px;
+  padding-top: 6px;
 }
 div.map-heading span {
   padding-left: 10px;

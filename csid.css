@@ -384,6 +384,7 @@ div.distance {
 div#small-menu {
   position: absolute;
   top: 9px;
+  left: 2px;
   margin-left: 3px;
   height: 20px;
   width: 35px;

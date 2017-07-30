@@ -183,6 +183,16 @@ function addNavigation() {
   if (! savedTable)
     savedTable = $("table").clone({withDataAndEvents: true});
   */
+  if (phoneGap) {
+    document.addEventListener("backbutton", function() {
+      if (limitedDisplay) {
+	restoreTable();
+	limitedDisplay = false;
+      } else {
+	navigator.app.exitApp();
+      }
+    }, false);
+  }
 }
 
 function addVenue(name, deniedVenues) {

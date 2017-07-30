@@ -302,14 +302,6 @@ no further processing).  URL is either a string or a parsed URL."
 		       (libxml-parse-html-region (point) (point-max)))))))
       (kill-buffer (current-buffer)))))
 
-(defun csid-parse-revolver (dom)
-  (loop for elem in (dom-by-class dom "views-table")
-	for date = (dom-attr (dom-by-class elem "date-display-single") 'content)
-	for link = (dom-by-tag elem 'a)
-	collect (list (substring date 0 10)
-		      (shr-expand-url (dom-attr link 'href))
-		      (dom-text link))))
-
 (defun csid-parse-blaa (dom)
   (loop for month in (dom-by-class dom "^month$")
 	for month-name = (dom-texts (dom-by-tag month 'h1))
@@ -1145,15 +1137,15 @@ no further processing).  URL is either a string or a parsed URL."
 		      (replace-regexp-in-string "^[^:]+: +" "" text))))
 
 (defun csid-parse-ticketco (dom)
-  (loop for event in (dom-by-class dom "^tc-events-list--item$")
-	for elem = (dom-by-tag (dom-by-tag event 'h3) 'a)
+  (loop for event in (dom-by-class dom "tc-events-list--details")
+	for a = (dom-by-tag event 'a)
 	for date = (csid-parse-full-numeric-date
 		    (dom-texts (dom-by-class
 				event "^tc-events-list--place-time$")))
 	when (csid-valid-date-p date)
 	collect (list date
-		      (dom-attr elem 'href)
-		      (dom-texts elem))))
+		      (dom-attr a 'href)
+		      (dom-texts a))))
 
 (defun csid-parse-sentralen (dom)
   (append

@@ -1022,6 +1022,7 @@ function exportEvent(id) {
   var endDate = new Date(date[0], date[1] - 1, date[2], 20, 00, 0, 0, 0);
 
   var success = function(message) {
+    colorbox("Added event " + title + " to calendar on " + date[0]);
   };
   var error = function(message) {
     alert("Unable to export event: " + message);

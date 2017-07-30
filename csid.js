@@ -618,6 +618,7 @@ function showVenueChooser() {
   });
   venues += "<a href='#' id='csid-close'>Close</a>";
   colorbox(venues);
+  box.style.position = "absolute";
   $("table").hide();
   $("div.venue").bind("click", function() {
     var id = $(this).attr("data");

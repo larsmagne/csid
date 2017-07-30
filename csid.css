@@ -251,8 +251,8 @@ div#small-heading {
   cursor: pointer;
   background: linear-gradient(to bottom, #40a040 0%, #207020 100%);
   color: white;
-  padding-top: 10px;
-  padding-bottom: 10px;
+  padding-top: 15px;
+  padding-bottom: 15px;
   display: block;
 }
 .event-lightbox button {

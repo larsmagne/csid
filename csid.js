@@ -575,6 +575,7 @@ function actionVenueMenu(name) {
 	   "</a><a href='#' id='all-venues'>Show all events from all venues</a><a href='#' id='csid-close'>Close</a>");
   $("#venue-limit").bind("click", function() {
     if (lastVenue != name) {
+      limitedDisplay = true;
       hideShow(name);
       lastVenue = name;
     } else {

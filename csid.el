@@ -102,7 +102,7 @@
     ("Kafé hærverk" "https://www.facebook.com/pg/kafehaerverk/events/?ref=page_internal" facebook (59.919202 10.751920))
     ("Cappelens forslag" "https://www.facebook.com/pg/CappelensForslag/events/?ref=page_internal" facebook (59.915077 10.753527))
     ;;("Barrikaden" "http://vestbredden.net/barrikaden/" barrikaden :date)
-    ("Henie Onstad" "http://henieonstadsanatorium.no/kalender" henie-onstad :date (59.888617 10.553501))
+    ("Henie Onstad" "http://henieonstadsanatorium.no/kalender" henie-onstad :date (59.888617 10.553501) :nobound)
     ))
 
 (defvar csid-database nil)

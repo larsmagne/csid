@@ -82,8 +82,8 @@
     ("Dattera" "http://www.dattera.no/nb/pages/6-Kalender" dattera (59.913291 10.760122))
     ("Internasjonalen" "http://www.internasjonalen.no/program/" internasjonalen (59.914558 10.749595))
     ("Jæger" "http://jaegeroslo.no/program/" jaeger (59.913957 10.743499))
-    ("Union" "http://unionscene.no/program/" union (59.743974 10.192263))
-    ("Musikkflekken" "https://www.facebook.com/Musikkflekken/events" facebook (59.890424 10.524722))
+    ("Union" "http://unionscene.no/program/" union (59.743974 10.192263) :nobound)
+    ("Musikkflekken" "https://www.facebook.com/Musikkflekken/events" facebook (59.890424 10.524722) :nobound)
     ("Smelteverket" "https://www.facebook.com/Smelteverket/events" facebook (59.921999 10.752267))
     ;;("Skuret" "https://www.facebook.com/skuret/events" facebook)
     ("Pizdets" "https://www.facebook.com/pissjets/events" facebook (59.916321 10.748236))
@@ -1272,12 +1272,15 @@ no further processing).  URL is either a string or a parsed URL."
 				     "visible")
 				   (csid-add-weekday date))))
 		 (setq prev-date date)
-		 (insert (format "<tr name='%s' id='event-%s' data=%s date='%s' time='%s' lat='%s' lng='%s'><td><a href='%s'>%s<td>%s</tr>"
+		 (insert (format "<tr name='%s' id='event-%s' data=%s date='%s' time='%s' lat='%s' lng='%s'%s><td><a href='%s'>%s<td>%s</tr>"
 				 (replace-regexp-in-string " " "_" venue)
 				 id
 				 rank date fetch-date
 				 (csid-latlng venue 0)
 				 (csid-latlng venue 1)
+				 (if (memq :nobound (assoc venue csid-sources))
+				     " nobound='true'"
+				   "")
 				 url
 				 (csid-make-text-breakable
 				  (if (> (length name) 1000)

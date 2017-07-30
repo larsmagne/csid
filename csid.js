@@ -179,20 +179,6 @@ function addNavigation() {
   } else {
     addDesktopLogos();
   }
-  /*
-  if (! savedTable)
-    savedTable = $("table").clone({withDataAndEvents: true});
-  */
-  if (phoneGap) {
-    document.addEventListener("backbutton", function() {
-      if (limitedDisplay) {
-	restoreTable();
-	limitedDisplay = false;
-      } else {
-	navigator.app.exitApp();
-      }
-    }, false);
-  }
 }
 
 function addVenue(name, deniedVenues) {
@@ -920,12 +906,10 @@ function miscMenu() {
     $("table").show();
     closeColorbox();
     $(".pika-single").remove();
-    document.removeEventListener("backbutton", func);
     return false;
   };
   $("#csid-close").bind("click", func);
   $("#cboxLoadedContent").bind("click", func);
-  document.addEventListener("backbutton", func, false);
 }
 
 function searchEvents() {
@@ -972,7 +956,6 @@ function colorbox(html) {
   box.innerHTML = html;
   var func = function() {
     closeColorbox();
-    document.removeEventListener("backbutton", func);
     return false;
   };
   $("#csid-close").bind("click", func);
@@ -980,7 +963,6 @@ function colorbox(html) {
     closeColorbox();
     return false;
   });
-  document.addEventListener("backbutton", func, false);
   document.body.appendChild(box);
 }
 
@@ -1136,7 +1118,6 @@ function showMapCont(sp, hp) {
   document.body.appendChild(box);
   var func = function(e) {
     $(box).remove();
-    document.removeEventListener("backbutton", func);
     e.preventDefault();
     return;
   };
@@ -1146,7 +1127,6 @@ function showMapCont(sp, hp) {
   var script = document.createElement("script");
   script.setAttribute("src", "https://maps.googleapis.com/maps/api/js?key=AIzaSyDOzwQi0pHvnJ1hW__DTC2H4f2qPCr3pWw&callback=initMap");
   document.body.appendChild(script);
-  document.addEventListener("backbutton", func, false);
 }
 
 function initMap() {

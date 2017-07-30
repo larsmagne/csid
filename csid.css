@@ -249,20 +249,16 @@ div#small-heading {
 .event-lightbox a {
   text-align: center;
   cursor: pointer;
-  background: linear-gradient(to bottom, #40a040 0%, #105010 100%);
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #40a040), color-stop(1, #105010));
-  background: -webkit-linear-gradient(top, #40a040 0%, #105010 100%);
+  background: linear-gradient(to bottom, #40a040 0%, #207020 100%);
   color: white;
-  padding-top: 20px;
-  padding-bottom: 20px;
+  padding-top: 10px;
+  padding-bottom: 10px;
   display: block;
 }
 .event-lightbox button {
   display: block;
   width: 100%;
   background: linear-gradient(to bottom, #40a040 0%, #105010 100%);
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #40a040), color-stop(1, #105010));
-  background: -webkit-linear-gradient(top, #40a040 0%, #105010 100%);
   padding-top: 20px;
   padding-bottom: 20px;
   border: 0px;

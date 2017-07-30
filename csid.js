@@ -1176,7 +1176,7 @@ function initMap() {
       this.span.style.top = position.y + 'px';
     }
   });
-
+  
   var map = new google.maps.Map(document.getElementById('map'), {
     zoom: 14,
     center: {lat: sentrum[0], lng: sentrum[1]}
@@ -1189,6 +1189,7 @@ function initMap() {
 					      new google.maps.Size(20, 20),
 					      new google.maps.Point(0, 0),
 					      new google.maps.Point(10, 10));
+  var bounds = new google.maps.LatLngBounds();
   var pos = collectPositions();
   if (herePos)
     pos["here"] = ["You are here", false, herePos[0], herePos[1]];
@@ -1204,6 +1205,9 @@ function initMap() {
     });
     if (key == "here")
       var hereMarker = marker;
+    // Certain venues outside Oslo are disregarded when computing the bounds.
+    else if (! venue[5])
+      bounds.extend(marker.getPosition());
     var cFunc = function(id) {
       return function() {
 	eventMenu(id);
@@ -1211,6 +1215,8 @@ function initMap() {
     };
     marker.addListener('click', cFunc(venue[4]));
   };
+  // Rescale the map to display all the events.
+  map.fitBounds(bounds);
   if (herePos && map.getBounds().contains(hereMarker.getPosition()))
     map.setCenter(herePos);
 }
@@ -1230,7 +1236,8 @@ function collectPositions() {
 	  pos[venue] = [event, venue.replace(/_/, " "),
 			parseFloat(node.getAttribute("lat")),
 			parseFloat(node.getAttribute("lng")),
-			node.id
+			node.id,
+			node.getAttribute("nobound")
 		       ];
 	}
       }

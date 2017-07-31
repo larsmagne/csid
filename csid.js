@@ -1133,7 +1133,8 @@ function showMapCont(sp, hp) {
   startPos = sp;
   herePos = hp;
   var script = document.createElement("script");
-  script.setAttribute("src", "https://maps.googleapis.com/maps/api/js?key=AIzaSyDOzwQi0pHvnJ1hW__DTC2H4f2qPCr3pWw&callback=initMap");
+  script.setAttribute("src", "https://maps.googleapis.com/maps/api/js?key=" +
+		      mapKey + "&callback=initMap");
   document.body.appendChild(script);
 }
 

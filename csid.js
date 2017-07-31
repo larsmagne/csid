@@ -1082,25 +1082,10 @@ function allVenues() {
   return venues;
 }
 
-function showMap() {
-  if (phoneGap) 
-    navigator.geolocation.getCurrentPosition(function(pos) {
-      homePos = [pos.coords.latitude, pos.coords.longitude];
-      showMapCont(homePos, homePos);
-    }, function() {
-      // On failure to get the position, just center somewhere.
-      showMapCont(homePos, false);
-    });
-  else
-    showMapCont(homePos, false);
-}
-
 var startPos = homePos;
 var herePos = false;
 
-function showMapCont(sp, hp) {
-  startPos = sp;
-  herePos = hp;
+function showMap() {
   var box = document.createElement("div");
   box.style.position = "fixed";
   box.style.left = "0px";
@@ -1129,6 +1114,25 @@ function showMapCont(sp, hp) {
   $('#close-map').click(func);
   $('#show-labels').click(showLabels);
   $('#hide-labels').click(hideLabels);
+  showMapPos();  
+}
+
+function showMapPos() {
+  if (phoneGap) 
+    navigator.geolocation.getCurrentPosition(function(pos) {
+      homePos = [pos.coords.latitude, pos.coords.longitude];
+      showMapCont(homePos, homePos);
+    }, function() {
+      // On failure to get the position, just center somewhere.
+      showMapCont(homePos, false);
+    });
+  else
+    showMapCont(homePos, false);
+}
+
+function showMapCont(sp, hp) {
+  startPos = sp;
+  herePos = hp;
   var script = document.createElement("script");
   script.setAttribute("src", "https://maps.googleapis.com/maps/api/js?key=AIzaSyDOzwQi0pHvnJ1hW__DTC2H4f2qPCr3pWw&callback=initMap");
   document.body.appendChild(script);

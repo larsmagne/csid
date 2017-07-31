@@ -5,7 +5,6 @@ var savedTable = false;
 var sentrum = [59.915430, 10.751862];
 var homePos = sentrum;
 
-
 var mapKey = "AIzaSyDOzwQi0pHvnJ1hW__DTC2H4f2qPCr3pWw";
 
 function getSettings(name) {
@@ -1214,10 +1213,12 @@ function initMap() {
     };
     marker.addListener('click', cFunc(venue[4]));
   };
-  // Rescale the map to display all the events.
-  map.fitBounds(bounds);
   if (herePos && map.getBounds().contains(hereMarker.getPosition()))
     map.setCenter(herePos);
+  else
+    map.setCenter(startPos);
+  // Rescale the map to display all the events.
+  map.fitBounds(bounds);
 }
 
 function collectPositions() {

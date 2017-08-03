@@ -1395,7 +1395,7 @@ no further processing).  URL is either a string or a parsed URL."
 
 (defun csid-get-facebook-events (id)
   (with-current-buffer
-      (url-retrieve-synchronously
+      (csid-retrieve-synchronously
        (format
 	"https://graph.facebook.com/v2.9/%s/events?access_token=%s"
 	id csid-facebook-access-token))
@@ -1408,7 +1408,7 @@ no further processing).  URL is either a string or a parsed URL."
 
 (defun csid-get-long-token ()
   (with-current-buffer
-      (url-retrieve-synchronously
+      (csid-retrieve-synchronously
        (format
 	"https://graph.facebook.com/v2.9/oauth/access_token?grant_type=fb_exchange_token&client_id=%s&client_secret=%s&fb_exchange_token=%s"
 	csid-app-id
@@ -1421,7 +1421,7 @@ no further processing).  URL is either a string or a parsed URL."
 
 (defun csid-get-access-token (code)
   (with-current-buffer
-      (url-retrieve-synchronously
+      (csid-retrieve-synchronously
        (format
 	"https://graph.facebook.com/v2.8/oauth/access_token?client_id=%s&redirect_uri=%s&client_secret=%s&code=%s"
 	csid-app-id

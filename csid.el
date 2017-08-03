@@ -202,14 +202,22 @@
     (append elem (list (or found (incf csid-sequence))
 		       (format-time-string "%FT%T")))))
 
+(defun csid-close ()
+  (maphash
+   (lambda (key val)
+     (dolist (proc val)
+       (delete-process proc)))
+   url-http-open-connections)
+  (setq url-http-open-connections (make-hash-table :test 'equal
+						   :size 17)))
+
 (defun csid-retrieve-synchronously (url &optional silent inhibit-cookies)
   "Retrieve URL synchronously.
 Return the buffer containing the data, or nil if there are no data
 associated with it (the case for dired, info, or mailto URLs that need
 no further processing).  URL is either a string or a parsed URL."
   ;; Never reuse anything, because perhaps that creates problems?
-  (setq url-http-open-connections (make-hash-table :test 'equal
-						   :size 17))
+  (csid-close)
   (url-do-setup)
 
   (let ((retrieval-done nil)

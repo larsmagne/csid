@@ -237,7 +237,7 @@ no further processing).  URL is either a string or a parsed URL."
 	;; process output.
 	(while (and (not retrieval-done)
 		    (< (float-time (time-subtract (current-time) start-time))
-		       60))
+		       20))
 	  (url-debug 'retrieval
 		     "Spinning in url-retrieve-synchronously: %S (%S)"
 		     retrieval-done asynch-buffer)
@@ -1401,7 +1401,7 @@ no further processing).  URL is either a string or a parsed URL."
 	id csid-facebook-access-token))
     (goto-char (point-min))
     (when (re-search-forward "^$" nil t)
-      (json-read))))
+      (ignore-errors (json-read)))))
 
 (defvar csid-app-id nil)
 (defvar csid-app-secret nil)
@@ -1430,7 +1430,7 @@ no further processing).  URL is either a string or a parsed URL."
 	code))
     (goto-char (point-min))
     (when (re-search-forward "^$" nil t)
-      (json-read))))
+      (ignore-errors (json-read)))))
 
 (defun csid-make-oauth-url ()
   (format "https://www.facebook.com/v2.9/dialog/oauth?client_id=%s&redirect_uri=http://quimby.gnus.org/cicrus/token.php"

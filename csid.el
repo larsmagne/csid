@@ -207,6 +207,9 @@
 Return the buffer containing the data, or nil if there are no data
 associated with it (the case for dired, info, or mailto URLs that need
 no further processing).  URL is either a string or a parsed URL."
+  ;; Never reuse anything, because perhaps that creates problems?
+  (setq url-http-open-connections (make-hash-table :test 'equal
+						   :size 17))
   (url-do-setup)
 
   (let ((retrieval-done nil)

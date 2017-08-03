@@ -34,6 +34,7 @@
 (require 'vcalendar)
 (require 'json)
 (require 'atom)
+(require 'url-http)
 
 (defvar csid-database-file-name "~/.emacs.d/csid.data")
 

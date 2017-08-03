@@ -237,7 +237,7 @@ no further processing).  URL is either a string or a parsed URL."
 	;; process output.
 	(while (and (not retrieval-done)
 		    (< (float-time (time-subtract (current-time) start-time))
-		       20))
+		       60))
 	  (url-debug 'retrieval
 		     "Spinning in url-retrieve-synchronously: %S (%S)"
 		     retrieval-done asynch-buffer)

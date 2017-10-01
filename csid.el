@@ -1445,6 +1445,13 @@ no further processing).  URL is either a string or a parsed URL."
   (format "https://www.facebook.com/v2.9/dialog/oauth?client_id=%s&redirect_uri=http://quimby.gnus.org/cicrus/token.php"
 	  csid-app-id))
 
+;; To get a token, run csid-make-oauth-url and then open the URL in
+;; Firefox.  Then log in and copy the CODE part of the 404 URL from
+;; quimby.  Then set csid-facebook-access-token to that code and run
+;; csid-get-access-token, and then get-long-token and set the token
+;; again.
+;; This should be streamlined.
+
 (provide 'csid)
 
 ;;; csid.el ends here

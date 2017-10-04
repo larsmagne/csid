@@ -193,7 +193,8 @@ function addVenue(name, deniedVenues) {
     setVenueCookie();
   });
   $("#venue-" + name).bind("click", function(e) {
-    fixPosition();
+    if (phoneGap || $("body").width() < 600)
+      fixPosition();
     if (lastVenue != name) {
       hideShow(name);
       lastVenue = name;

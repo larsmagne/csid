@@ -104,6 +104,7 @@
     ("Cappelens forslag" "https://www.facebook.com/pg/CappelensForslag/events/?ref=page_internal" facebook (59.915077 10.753527))
     ;;("Barrikaden" "http://vestbredden.net/barrikaden/" barrikaden :date)
     ("Henie Onstad" "http://henieonstadsanatorium.no/kalender" henie-onstad :date (59.888617 10.553501) :nobound)
+    ("Ila fysikalske" "https://nb-no.facebook.com/pg/ilafysikalske/events/" facebook (59.930864 10.753765))
     ))
 
 (defvar csid-database nil)
@@ -1425,8 +1426,14 @@ no further processing).  URL is either a string or a parsed URL."
 	csid-facebook-access-token))
     (goto-char (point-min))
     (when (re-search-forward "^$" nil t)
-      (buffer-substring (point) (point-max)))))
+      (ignore-errors (json-read)))))
 
+(defun csid-update-long-token ()
+  (let* ((json (csid-get-long-token))
+	 (token (cdr (assq 'access_token json))))
+    (when token
+      (setq csid-facebook-access-token token))
+    json))
 
 (defun csid-get-access-token (code)
   (with-current-buffer

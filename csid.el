@@ -105,6 +105,7 @@
     ;;("Barrikaden" "http://vestbredden.net/barrikaden/" barrikaden :date)
     ("Henie Onstad" "http://henieonstadsanatorium.no/kalender" henie-onstad :date (59.888617 10.553501) :nobound)
     ("Ila fysikalske" "https://nb-no.facebook.com/pg/ilafysikalske/events/" facebook (59.930864 10.753765))
+    ("Khartoum" "https://nb-no.facebook.com/pg/khartoumcontemporary/events/?ref=page_internal" facebook (59.917118 10.750163))
     ))
 
 (defvar csid-database nil)

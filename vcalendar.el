@@ -62,16 +62,20 @@
 	    (if (string-match "\\`\\(.*\\);\\(.*\\)$" tag)
 		(let ((note (match-string 2 tag)))
 		  (push (list (intern (downcase (match-string 1 tag)) obarray)
-			      (cons :note note)
-			      (cons :value value))
+			      (if (string-match "^\\([^=]+\\)=\\(.*\\)" note)
+				  (list (cons
+					 (intern (match-string 1 note) obarray)
+					 (match-string 2 note)))
+				(list (cons 'note note)))
+			      value)
 			result))
 	      ;; Regular, un-semicoloned items.
-	      (push (list (intern (downcase tag) obarray)
-			  (cons :value value))
+	      (push (list (intern (downcase tag) obarray) nil value)
 		    result))
 	    (forward-line 1)))))
-      (cons (intern (downcase section-name) obarray)
-	    (nreverse result)))))
+      (list* (intern (downcase section-name) obarray)
+	     nil
+	     (nreverse result)))))
 
 (provide 'vcalendar)
 

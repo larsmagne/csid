@@ -106,6 +106,7 @@
     ("Henie Onstad" "http://henieonstadsanatorium.no/kalender" henie-onstad :date (59.888617 10.553501) :nobound)
     ("Ila fysikalske" "https://nb-no.facebook.com/pg/ilafysikalske/events/" facebook (59.930864 10.753765))
     ("Khartoum" "https://nb-no.facebook.com/pg/khartoumcontemporary/events/?ref=page_internal" facebook (59.917118 10.750163))
+    ("Salt" "http://salted.no/events/list/?tribe_event_display=list&ical=1&tribe_display=list" salt :vcalendar (59.907498 10.747032))
     ))
 
 (defvar csid-database nil)
@@ -154,6 +155,15 @@
   (dolist (elem csid-database)
     (setq csid-sequence (max (nth 4 elem) csid-sequence))))
 
+(defun csid-source-type (source)
+  (cond
+   ((memq :json source)
+    :json)
+   ((memq :vcalendar source)
+    :vcalendar)
+   (t
+    :html)))
+
 (defun csid-parse-sources (&optional type)
   ;; When calling interactively, clear out the list for easier debugging.
   (when type
@@ -175,18 +185,14 @@
 			      (if (fboundp function)
 				  function
 				'csid-parse-new)
-			      (if (memq :json source)
-				  :json
-				:html))
+			      (csid-source-type source))
 			   (progn
 			     (csid-parse-source
 			      url
 			      (if (fboundp function)
 				  function
 				'csid-parse-new)
-			      (if (memq :json source)
-				  :json
-				:html))))))
+			      (csid-source-type source))))))
 		   (unless results
 		     (message "No results for type %s" name))
 		   (loop for result in results
@@ -306,14 +312,23 @@ no further processing).  URL is either a string or a parsed URL."
 		    (or (cdr (assq 'charset (cdr content-type)))
 			(eww-detect-charset t)
 			"utf-8"))))
-		 (shr-base (shr-parse-base url)))
-	    (decode-coding-region (point) (point-max) charset)
-	    (funcall function
-		     (cond
-		      ((eq data-type :json)
-		       (ignore-errors (json-read)))
-		      (t
-		       (libxml-parse-html-region (point) (point-max)))))))
+		 (shr-base (shr-parse-base url))
+		 (start (point))
+		 (end (point-max))
+		 (buf (current-buffer)))
+	    (with-temp-buffer
+	      (insert-buffer-substring buf start end)
+	      (goto-char (point-min))
+	      (decode-coding-region (point) (point-max) charset)
+	      (funcall function
+		       (cond
+			((eq data-type :json)
+			 (ignore-errors (json-read)))
+			((eq data-type :vcalendar)
+			 (ignore-errors
+			   (vcalendar-parse-region (point) (point-max))))
+			(t
+			 (libxml-parse-html-region (point) (point-max))))))))
       (kill-buffer (current-buffer)))))
 
 (defun csid-parse-blaa (dom)
@@ -760,21 +775,17 @@ no further processing).  URL is either a string or a parsed URL."
 		      link
 		      (dom-attr event 'data-title))))
    
-(defun csid-parse-vcalendar (url)
-  (with-current-buffer (csid-retrieve-synchronously url t t)
-    (goto-char (point-min))
-    (while (re-search-forward "\r" nil t)
-      (replace-match "" t t))
-    (goto-char (point-min))
-    (when (search-forward "\n\n")
-      (loop for event in (dom-by-tag
-			  (vcalendar-parse-region (point) (point-max))
-			  'vevent)
-	    collect
-	    (list (csid-parse-compact-iso8601
-		   (dom-attr (dom-by-tag event 'dtstart) 'value))
-		  (dom-attr (dom-by-tag event 'url) 'value)
-		  (dom-attr (dom-by-tag event 'summary) 'value))))))
+(defun csid-parse-salt (dom)
+  (loop with regexp = "concert\\|konsert"
+	for elem in (dom-by-tag dom 'vevent)
+	for subject = (dom-text (dom-by-tag elem 'summary))
+	when (or (string-match regexp subject)
+		 (string-match
+		  regexp (dom-text (dom-by-tag elem 'description))))
+	collect (list (csid-parse-compact-iso8601
+		       (dom-text (dom-by-tag elem 'dtstart)))
+		      (dom-text (dom-by-tag elem 'url))
+		      subject)))
 
 (defun csid-parse-blitz (dom)
   (loop for elem in (dom-by-class dom "views-row")

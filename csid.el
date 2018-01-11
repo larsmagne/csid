@@ -107,6 +107,7 @@
     ("Ila fysikalske" "https://nb-no.facebook.com/pg/ilafysikalske/events/" facebook (59.930864 10.753765))
     ("Khartoum" "https://nb-no.facebook.com/pg/khartoumcontemporary/events/?ref=page_internal" facebook (59.917118 10.750163))
     ("Salt" "http://salted.no/events/list/?tribe_event_display=list&ical=1&tribe_display=list" salt :vcalendar (59.907498 10.747032))
+    ("Røverstaden" "https://www.facebook.com/pg/roverstaden/events/?ref=page_internal" facebook (59.913562 10.729115))
     ))
 
 (defvar csid-database nil)

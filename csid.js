@@ -364,12 +364,6 @@ function fixPosition() {
   if (phoneGap || $("body").width() < 600)
     return;
 
-  $("#body-container").each(function(key, body) {
-    var pos = $(body).offset();
-    body.style.position = "absolute";
-    body.style.left = pos.left + "px";
-    body.style.top = pos.top + "px";
-  });
   $("table").each(function (key, table) {
     table.width = table.offsetWidth + "px";
     $(table).find("colgroup").children("col").each(function(key, col) {

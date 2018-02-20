@@ -225,6 +225,12 @@
 						   :size 17)))
 
 (defun csid-retrieve-synchronously (url &optional silent inhibit-cookies)
+  (condition-case var
+      (csid-retrieve-synchronously-1 url silent inhibit-cookies)
+    (error
+     (generate-new-buffer "*csid error*"))))
+
+(defun csid-retrieve-synchronously-1 (url &optional silent inhibit-cookies)
   "Retrieve URL synchronously.
 Return the buffer containing the data, or nil if there are no data
 associated with it (the case for dired, info, or mailto URLs that need
@@ -232,6 +238,7 @@ no further processing).  URL is either a string or a parsed URL."
   ;; Never reuse anything, because perhaps that creates problems?
   (csid-close)
   (url-do-setup)
+  (error)
 
   (let ((retrieval-done nil)
 	(start-time (current-time))

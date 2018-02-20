@@ -238,7 +238,6 @@ no further processing).  URL is either a string or a parsed URL."
   ;; Never reuse anything, because perhaps that creates problems?
   (csid-close)
   (url-do-setup)
-  (error)
 
   (let ((retrieval-done nil)
 	(start-time (current-time))

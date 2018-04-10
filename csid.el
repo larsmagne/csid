@@ -103,7 +103,7 @@
     ("Kafé hærverk" "https://www.facebook.com/pg/kafehaerverk/events/?ref=page_internal" facebook (59.919202 10.751920))
     ("Cappelens forslag" "https://www.facebook.com/pg/CappelensForslag/events/?ref=page_internal" facebook (59.915077 10.753527))
     ;;("Barrikaden" "http://vestbredden.net/barrikaden/" barrikaden :date)
-    ("Henie Onstad" "http://henieonstadsanatorium.no/kalender" henie-onstad :date (59.888617 10.553501) :nobound)
+    ("Henie Onstad" "http://hok.no/kalender" henie-onstad :date (59.888617 10.553501) :nobound)
     ("Ila fysikalske" "https://nb-no.facebook.com/pg/ilafysikalske/events/" facebook (59.930864 10.753765))
     ("Khartoum" "https://nb-no.facebook.com/pg/khartoumcontemporary/events/?ref=page_internal" facebook (59.917118 10.750163))
     ("Salt" "http://salted.no/events/list/?tribe_event_display=list&ical=1&tribe_display=list" salt :vcalendar (59.907498 10.747032))
@@ -1248,7 +1248,7 @@ no further processing).  URL is either a string or a parsed URL."
 	when (member type '("Konsert" "Performance"))
 	collect (list (csid-parse-numeric-date
 		       (dom-text (dom-by-class event "date-start")))
-		      "http://henieonstadsanatorium.no/kalender"
+		      "http://hok.no/kalender"
 		      (dom-text (dom-by-tag event 'h3)))))
 
 (defun csid-clock-to-seconds (string)

@@ -644,11 +644,8 @@ no further processing).  URL is either a string or a parsed URL."
 		  return (match-string 1 content)))
 	(cursor nil))
     (when id
-      (loop for json = (csid-get-facebook-events-public id cursor)
-	    append (csid-parse-facebook-public-1 json)
-	    for page-info = (cdr (assq 'page_info (cdr (assq 'upcoming_events (cdr (assq 'page (cdr (assq 'data json))))))))
-	    while (eq (cdr (assq 'has_next_page page-info)) t)
-	    do (setq cursor (cdr (assq 'end_cursor page-info)))))))
+      (csid-parse-facebook-public-1
+       (csid-get-facebook-events-public id cursor)))))
 
 (defun csid-parse-facebook-1 (json)
   (loop for event across (cdr (assq 'data json))

@@ -111,6 +111,7 @@
     ("No 53" "https://www.facebook.com/pg/No-53-139168752824276/events/?ref=page_internal" facebook (59.908699 10.767789))
     ("LilleKampen" "https://www.facebook.com/pg/lillekampen/events/?ref=page_internal" facebook (59.913884 10.781574))
     ("Goon Bar" "https://www.facebook.com/pg/WeAreAllGoons/events/?ref=page_internal" facebook (59.917146 10.749779))
+    ("Vaterland" "https://www.facebook.com/pg/vaterlandoslo/events/?ref=page_internal" facebook (59.913885 10.756072))
     ))
 
 (defvar csid-database nil)

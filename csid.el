@@ -641,9 +641,14 @@ no further processing).  URL is either a string or a parsed URL."
 		  for content = (dom-attr meta 'content)
 		  when (and content
 			    (string-match "fb://page/\\([0-9]+\\)" content))
-		  return (match-string 1 content))))
+		  return (match-string 1 content)))
+	(cursor nil))
     (when id
-      (csid-parse-facebook-public-1 (csid-get-facebook-events-public id)))))
+      (loop for json = (csid-get-facebook-events-public id cursor)
+	    append (csid-parse-facebook-public-1 json)
+	    for page-info = (cdr (assq 'page_info (cdr (assq 'upcoming_events (cdr (assq 'page (cdr (assq 'data json))))))))
+	    while (eq (cdr (assq 'has_next_page page-info)) t)
+	    do (setq cursor (cdr (assq 'end_cursor page-info)))))))
 
 (defun csid-parse-facebook-1 (json)
   (loop for event across (cdr (assq 'data json))
@@ -1495,7 +1500,7 @@ no further processing).  URL is either a string or a parsed URL."
 ;; again.
 ;; This should be streamlined.
 
-(defun csid-get-facebook-events-public (id)
+(defun csid-get-facebook-events-public (id &optional cursor)
   (let* ((url-request-method "POST")
 	 (boundary (mml-compute-boundary '()))
 	 (url-request-extra-headers '(("Content-Type" . "application/x-www-form-urlencoded")))
@@ -1503,7 +1508,9 @@ no further processing).  URL is either a string or a parsed URL."
 	  (concat
 	  "av=0&__user=0&__a=1&__dyn=5V8WXBzamaUmgDBzFHpUR1ycCzScybGiWF3ozGFuS-CGgjK2a5RzoaqhEpyAubGqKi5azppEG5VGwwyKbG4V9B88x2axuF98SmjBXDmEgF3ebBz998iGtxifGcze8AzoSbBWAhfypfh6bx25UCiajz8gzAcy4mEepoG9Km4VVpV8KmuidwNxzx-q9CJ4gqz8ixbAJkUGrxjDUG6aJUhxR5zopAgSUCdyFE-5oV6x6WLGFEHAxpu9iFkF7GiumqyaA8DDio8lfy89V8KUK66bBOaqdyU4e4eby9p8HCzmXXghx69jGeyV8V7iQmuaVeaDCyoll4ykmmiQ4UK4ESmiaVp4ehbx6uegryEy4p9VEycGdxOeGFUO8x6V9azeUnKQUSq&__req=5&__be=-1&__pc=PHASED%3ADEFAULT&__rev=3926293&lsd=AVrTTEzk&fb_api_caller_class=RelayModern&variables=%7B%22pageID%22%3A%22"
 	  id
-	  "%22%7D&doc_id=2005269106169671")))
+	  (if cursor (url-hexify-string
+		      (format "\",\"count\":9,\"cursor\":\"%s" cursor)))
+	  "%22%7D&doc_id=1385041971602528")))
     (with-current-buffer (csid-retrieve-synchronously
 			  "https://www.facebook.com/api/graphql")
       (goto-char (point-min))

@@ -643,7 +643,7 @@ no further processing).  URL is either a string or a parsed URL."
 			    (string-match "fb://page/\\([0-9]+\\)" content))
 		  return (match-string 1 content))))
     (when id
-      (csid-parse-facebook-1 (csid-get-facebook-events id)))))
+      (csid-parse-facebook-public-1 (csid-get-facebook-events-public id)))))
 
 (defun csid-parse-facebook-1 (json)
   (loop for event across (cdr (assq 'data json))
@@ -651,6 +651,14 @@ no further processing).  URL is either a string or a parsed URL."
 		      (format "https://www.facebook.com/events/%s/"
 			      (cdr (assq 'id event)))
 		      (cdr (assq 'name event)))))
+
+(defun csid-parse-facebook-public-1 (json)
+  (loop for event across (cdr (assq 'edges (cdr (assq 'upcoming_events (cdr (assq 'page (cdr (assq 'data json))))))))
+	for elem = (cdr (assq 'node event))
+	collect (list (csid-parse-iso8601 (cdar (cdr (assq 'time_range elem))))
+		      (format "https://www.facebook.com/events/%s/"
+			      (cdr (assq 'id elem)))
+		      (cdr (assq 'name elem)))))
 
 (defun csid-parse-victoria (dom)
   (loop for elem in (dom-by-class dom "event-entry")
@@ -1430,11 +1438,13 @@ no further processing).  URL is either a string or a parsed URL."
   (with-current-buffer
       (csid-retrieve-synchronously
        (format
-	"https://graph.facebook.com/v2.9/%s/events?access_token=%s"
+	"https://graph.facebook.com/v3.0/%s/events?access_token=%s"
 	id csid-facebook-access-token))
     (goto-char (point-min))
-    (when (re-search-forward "^$" nil t)
-      (ignore-errors (json-read)))))
+    (prog1
+	(when (re-search-forward "^$" nil t)
+	  (ignore-errors (json-read)))
+      (kill-buffer (current-buffer)))))
 
 (defvar csid-app-id nil)
 (defvar csid-app-secret nil)
@@ -1472,15 +1482,35 @@ no further processing).  URL is either a string or a parsed URL."
       (ignore-errors (json-read)))))
 
 (defun csid-make-oauth-url ()
-  (format "https://www.facebook.com/v2.9/dialog/oauth?client_id=%s&redirect_uri=http://quimby.gnus.org/cicrus/token.php"
-	  csid-app-id))
+  (with-temp-buffer
+    (insert (format "https://www.facebook.com/v2.9/dialog/oauth?client_id=%s&redirect_uri=http://quimby.gnus.org/cicrus/token.php"
+		    csid-app-id))
+    (copy-region-as-kill (point-min) (point-max))))
 
-;; To get a token, run csid-make-oauth-url and then open the URL in
+;; To get a token, run (csid-make-oauth-url) and then open the URL in
 ;; Firefox.  Then log in and copy the CODE part of the 404 URL from
-;; quimby.  Then set csid-facebook-access-token to that code and run
-;; csid-get-access-token, and then get-long-token and set the token
+;; quimby. Then run
+;; (csid-get-access-token code), and then set csid-facebook-access-token to thoe access_token
+;; (csid-get-long-token) and set the token
 ;; again.
 ;; This should be streamlined.
+
+(defun csid-get-facebook-events-public (id)
+  (let* ((url-request-method "POST")
+	 (boundary (mml-compute-boundary '()))
+	 (url-request-extra-headers '(("Content-Type" . "application/x-www-form-urlencoded")))
+	 (url-request-data
+	  (concat
+	  "av=0&__user=0&__a=1&__dyn=5V8WXBzamaUmgDBzFHpUR1ycCzScybGiWF3ozGFuS-CGgjK2a5RzoaqhEpyAubGqKi5azppEG5VGwwyKbG4V9B88x2axuF98SmjBXDmEgF3ebBz998iGtxifGcze8AzoSbBWAhfypfh6bx25UCiajz8gzAcy4mEepoG9Km4VVpV8KmuidwNxzx-q9CJ4gqz8ixbAJkUGrxjDUG6aJUhxR5zopAgSUCdyFE-5oV6x6WLGFEHAxpu9iFkF7GiumqyaA8DDio8lfy89V8KUK66bBOaqdyU4e4eby9p8HCzmXXghx69jGeyV8V7iQmuaVeaDCyoll4ykmmiQ4UK4ESmiaVp4ehbx6uegryEy4p9VEycGdxOeGFUO8x6V9azeUnKQUSq&__req=5&__be=-1&__pc=PHASED%3ADEFAULT&__rev=3926293&lsd=AVrTTEzk&fb_api_caller_class=RelayModern&variables=%7B%22pageID%22%3A%22"
+	  id
+	  "%22%7D&doc_id=2005269106169671")))
+    (with-current-buffer (csid-retrieve-synchronously
+			  "https://www.facebook.com/api/graphql")
+      (goto-char (point-min))
+      (when (re-search-forward "^\r?\n" nil t)
+	(prog1
+	    (ignore-errors (json-read))
+	  (kill-buffer (current-buffer)))))))
 
 (provide 'csid)
 

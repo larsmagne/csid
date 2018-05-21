@@ -112,6 +112,7 @@
     ("LilleKampen" "https://www.facebook.com/pg/lillekampen/events/?ref=page_internal" facebook (59.913884 10.781574))
     ("Goon Bar" "https://www.facebook.com/pg/WeAreAllGoons/events/?ref=page_internal" facebook (59.917146 10.749779))
     ("Vaterland" "https://www.facebook.com/pg/vaterlandoslo/events/?ref=page_internal" facebook (59.913885 10.756072))
+    ("Rommen scene" "https://www.rommenscene.no/program/" rommen (59.967347 10.914572))
     ))
 
 (defvar csid-database nil)
@@ -1261,6 +1262,13 @@ no further processing).  URL is either a string or a parsed URL."
 		       (dom-text (dom-by-class event "date-start")))
 		      "http://hok.no/kalender"
 		      (dom-text (dom-by-tag event 'h3)))))
+
+(defun csid-parse-rommen (dom)
+  (loop for event in (dom-by-tag (dom-by-class dom "eventlist--upcoming")
+				 'article)
+	collect (list (dom-attr (dom-by-tag event 'time) 'datetime)
+		      (shr-expand-url (dom-attr (dom-by-tag event 'a) 'href))
+		      (dom-texts (dom-by-class event "eventlist-title")))))
 
 (defun csid-clock-to-seconds (string)
   (if (string-match "\\([0-9][0-9]\\)[^0-9]\\([0-9][0-9]\\)" string)

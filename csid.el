@@ -49,7 +49,7 @@
     ("Mono" "http://www.cafemono.no/program/" mono (59.913942 10.749326))
     ("Parkteateret" "http://parkteatret.no/program/" parkteateret (59.923515 10.758537))
     ("Konsertforeninga" "http://www.konsertforeninga.no/event-directory/" konsertforeninga)
-    ("Maksitaksi" "https://www.facebook.com/maksitaksii/events?ref=page_internal" facebook (59.918278 10.737577))
+    ;;("Maksitaksi" "https://www.facebook.com/maksitaksii/events?ref=page_internal" facebook (59.918278 10.737577))
     ("Betong" "https://www.facebook.com/betongoslo/events" facebook (59.932264 10.712854))
     ("Bidrobon" "https://nb-no.facebook.com/pg/Drivhuset-musikkverksted-bidrobon-Biermannsg%C3%A5rden-202355836444/events/?ref=page_internal" facebook (59.931460 10.755416))
     ("Cosmopolite" "http://cosmopolite.no/program/cosmopolite" cosmopolite (59.936133 10.765991))
@@ -67,7 +67,7 @@
     ("Riksscenen" "http://www.riksscenen.no/program.95415.no.html" riksscenen (59.919877 10.761074))
     ("Olsen" "http://shop.olsenbar.no/program/" olsen (59.907644 10.818268))
     ;;("Verkstedet" "http://www.verkstedetbar.no/program/" verkstedet :date)
-    ("Gamla" "http://www.gamla.no/" gamla (59.913654 10.745297))
+    ("Gamla" "https://www.gamla.no/" gamla (59.913654 10.745297))
     ;;("Sawol" "http://www.sawol.no/category/program/" sawol)
     ;;("Buckleys" "http://www.buckleys.no/konserter.html" buckleys :date)
     ;;("New Orleans" "http://www.neworleansworkshop.com/program" neworleans :date)
@@ -936,12 +936,12 @@ no further processing).  URL is either a string or a parsed URL."
 		 (dom-text (dom-by-tag elem 'h3)))))
 
 (defun csid-parse-gamla (dom)
-  (loop for elem in (dom-by-class dom "event-small")
-	for link = (dom-by-tag elem 'a)
+  (loop for elem in (dom-by-tag (dom-by-class dom "av-upcoming-events") 'a)
 	collect (list
-		 (csid-parse-shortish-month (dom-text (dom-by-tag elem 'h4)))
-		 (dom-attr link 'href)
-		 (dom-attr link 'title))))
+		 (csid-parse-month-date
+		  (dom-texts (dom-by-class elem "tribe-event-date-start")))
+		 (dom-attr elem 'href)
+		 (dom-texts (dom-by-tag elem 'h4)))))
 
 (defun csid-parse-sawol (dom)
   (append

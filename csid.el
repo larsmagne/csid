@@ -1340,7 +1340,7 @@ no further processing).  URL is either a string or a parsed URL."
 				 venue)))
 	    (setq prev-date date))
       (insert "</table><div id='selector'></div>")
-      (insert "<script type='text/javascript' src='jquery-1.10.2.min.js'></script><script type='text/javascript' src='jquery.cookie.js'></script><script type='text/javascript' src='jquery.colorbox-min.js'></script><script type='text/javascript' src='FileSaver.min.js'></script><script type='text/javascript' src='csid.js'></script><script type='text/javascript' src='pikaday.js'></script><script type='text/javascript'>addNavigation();</script>"))))
+      (insert "<script type='text/javascript' src='jquery-1.10.2.min.js'></script><script type='text/javascript' src='jquery.cookie.js'></script><script type='text/javascript' src='jquery.colorbox-min.js'></script><script type='text/javascript' src='FileSaver.min.js'></script><script type='text/javascript' src='csid.js'></script><script type='text/javascript' src='pikaday.js'><script type='text/javascript' src='sha1.js'></script><script type='text/javascript'>addNavigation();</script>"))))
 
 (defun csid-latlng (venue index)
   ;; Special-case the only venue that has several sub-venues.

@@ -76,7 +76,7 @@
     ("Kulturhuset" "https://www.facebook.com/kulturhusetioslo/events" facebook (59.914646 10.750909))
     ;;("Kampenjazz" "http://oysteineide.wix.com/kampenjazz#!konserter/cb30" kampenjazz :date)
     ("Cafeteatret" "http://nordicblacktheatre.no/wp-admin/admin-ajax.php?action=wpcal-getevents&end=1444600800&start=1440972000" cafeteatret :json (59.910344 10.767058))
-    ("Telenor Arena" "http://telenorarena.no/en/events/" telenor (59.903079 10.624335))
+    ("Telenor Arena" "http://telenorarena.no/en/calendar" telenor (59.903079 10.624335))
     ("Postkontoret" "https://www.facebook.com/toyenpostkontor/events?key=events" facebook (59.914083 10.775254))
     ;;("Per på hjørnet" "http://www.pph.oslo.no/" pph :date)
     ("The Villa" "http://www.thevilla.no/program/" villa (59.915832 10.748751))
@@ -1053,15 +1053,15 @@ no further processing).  URL is either a string or a parsed URL."
 		       "Kampenjazz presenterer:? +" "" title))))
 
 (defun csid-parse-telenor (dom)
-  (loop for event in (dom-by-class dom "^module-content$")
+  (loop for event in (dom-by-class dom "^item event$")
+	for link = (dom-attr (dom-by-tag event 'a) 'href)
+	when link
 	collect (list (csid-parse-short-month
-		       (dom-texts (dom-by-class event "event-date"))
+		       (dom-texts (dom-by-class event "date"))
 		       t)
-		      (dom-attr
-		       (dom-by-tag (dom-parent dom event) 'a)
-		       'href)
+		      (shr-expand-url link)
 		      (csid-clean-string
-		       (dom-texts (dom-by-class event "event-title"))))))
+		       (dom-texts (dom-by-tag event 'h3))))))
 
 (defun csid-parse-pph (dom)
   (let* ((box (dom-by-class dom "programbg"))

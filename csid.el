@@ -113,6 +113,7 @@
     ("Goon Bar" "https://www.facebook.com/pg/WeAreAllGoons/events/?ref=page_internal" facebook (59.917146 10.749779))
     ("Vaterland" "https://www.facebook.com/pg/vaterlandoslo/events/?ref=page_internal" facebook (59.913885 10.756072))
     ("Rommen scene" "https://www.rommenscene.no/program/" rommen (59.967347 10.914572))
+    ("Skippergata" "https://www.facebook.com/pg/Skippergata.oslo/events/?ref=page_internal" facebook (59.910627 10.747597))
     ))
 
 (defvar csid-database nil)

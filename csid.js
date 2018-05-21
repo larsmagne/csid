@@ -28,7 +28,6 @@ var lastVenue = false;
 
 function addNavigation() {
   // Default to not showing quizes.
-  //var defaultDenied = "Quiz,Buckleys,Herr Nilsen,Konserthuset,NB,Olsen,Per på hjørnet,Riksscenen,UiO";
   var defaultDenied = "Quiz";
   if (phoneGap) {
     if (getSettings("deniedVenues") == "")
@@ -178,6 +177,8 @@ function addNavigation() {
   } else {
     addDesktopLogos();
   }
+
+  //addSummaries();
 }
 
 function addVenue(name, deniedVenues) {
@@ -722,8 +723,8 @@ function hideDuplicates() {
   var seen = [];
   var shows = getSettings("shows");
   $("tr").each(function(key, node) {
-    var id = node.id.replace(/event-/, "");
-    if (! id)
+    var id = node.id.replace(/^event-/, "");
+    if (! id || id.match(/summary/))
       return;
     var text = node.childNodes[0].childNodes[0].innerHTML;
     if (! text)
@@ -1272,3 +1273,57 @@ function hideLabels() {
   $(".map-marker-label").hide();
 }
 
+function addSummaries() {
+  var day = 0;
+  var ids = [];
+  $("tr").each(function(key, node) {
+    var id = node.getAttribute("id");
+    if (! id || ! id.match("event")) {
+      day++;
+      return;
+    }
+    if (day > 1)
+      return;
+    var link = node.firstChild.firstChild;
+    $(node).after("<tr class='summary' id='summary-" + id +
+		  "'><td colspan=3></tr>");
+    ids.push([id, link.href]);
+  });
+  fetchSummaries(ids, 0);
+}
+
+function fetchSummaries(ids, index) {
+  var hash = sha1(ids[index][1]);
+  var url = "summaries";
+  for (var i = 0; i < 4; i++) {
+    url += "/" + hash.substring(i * 10, (i + 1) * 10);
+  }
+  url += "-data.json";
+  $.ajax({
+    url: url,
+    dataType: "text",
+    success: function(data) {
+      var json = $.parseJSON(data);
+      insertSummary(ids[index][0], ids[index][1], json);
+      if (index + 1 < ids.length)
+	fetchSummaries(ids, index + 1);
+    },
+    error: function(data) {
+      if (index + 1 < ids.length)
+	fetchSummaries(ids, index + 1);
+    }
+  });
+}
+
+function insertSummary(id, url, data) {
+  var td = document.getElementById("summary-" + id).firstChild;
+  var image = document.createElement("img");
+  image.src = data.image;
+  td.appendChild(image);
+  var text = document.createElement("div");
+  text.innerHTML = data.summary;
+  td.appendChild(text);
+  $(td).click(function() {
+    document.location = url;
+  });
+}

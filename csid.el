@@ -1633,11 +1633,12 @@ no further processing).  URL is either a string or a parsed URL."
 	     (goto-char (point-min))
 	     (when (re-search-forward "^\r?\n" nil t)
 	       (let ((dimensions
-		      (image-size (create-image
-				   (buffer-substring (point)
-						     (point-max))
-				   nil t)
-				  t)))
+		      (ignore-errors
+			(image-size (create-image
+				     (buffer-substring (point)
+						       (point-max))
+				     nil t)
+				    t))))
 		 (when dimensions
 		   (setq size (* (car dimensions) (cdr dimensions))))
 		 (kill-buffer (current-buffer)))))

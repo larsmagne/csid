@@ -1356,11 +1356,12 @@ function addHoverSummaries() {
 		  function() {
 		    if (hover) {
 		      $(hover).slideUp();
-		      $(node).animate({height: 45}, 200);
 		    }
 		  });
   });
 }
+
+var prevHovers = [];
 
 function hoverSummary(tr, url, data) {
   var div = document.createElement("div");
@@ -1375,9 +1376,15 @@ function hoverSummary(tr, url, data) {
   div.style.width = $(tr).width() - 20 + "px";
   var offset = $(tr).offset();
   div.style.left = offset.left + "px";
-  div.style.top = offset.top + 45 + "px";
+  div.style.top = offset.top + 55 + "px";
   document.body.appendChild(div);
+  $.map(prevHovers, function(div) {
+    $(div).slideUp(function(div) {
+      $(div).remove();
+    });
+  });
+  prevHovers = [];
+  prevHovers.push(div);
   $(div).animate({height: 200}, 200);
-  $(tr).animate({height: $(tr).height() + 220}, 200);
   return div;
 }

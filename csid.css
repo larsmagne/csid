@@ -19,7 +19,7 @@ div#selector {
   float: right;
 }
 table.events tr td {
-  vertical-align: top;
+  vertical-align: middle;
   line-height: 45px;
 }
 table.events tr.date td {

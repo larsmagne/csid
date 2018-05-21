@@ -38,6 +38,8 @@
 
 (defvar csid-database-file-name "~/.emacs.d/csid.data")
 
+(defvar csid-summary-directory "~/src/csid/summaries")
+
 (defvar csid-sequence 0)
 
 (defvar csid-sources
@@ -1526,6 +1528,131 @@ no further processing).  URL is either a string or a parsed URL."
 	(prog1
 	    (ignore-errors (json-read))
 	  (kill-buffer (current-buffer)))))))
+
+(defun csid-write-event-summaries ()
+  (csid-read-database)
+  (loop for (nil date url nil event-id) in csid-database
+	when (and url
+		  (or (string> date (format-time-string "%F"))
+		      (equal date (format-time-string "%F")))
+		  (not (file-exists-p (csid-summary-file url))))
+	do (csid-write-event-summary url event-id)))    
+
+(defun csid-write-event-summary (url &optional event-id)
+  (let ((file (csid-summary-file url))
+	(dom (csid-retrieve-event-dom url)))
+    (when dom
+      (let ((image (csid-get-event-image dom))
+	    (summary (csid-get-event-summary dom))
+	    (url-request-extra-headers '(("Cookie" . "fr=0iznHLOd07GF3Pj78..BZ8tLB.QG.AAA.0.0.Bano-m.AWVOfML3; sb=6tlhWvzwnenK3Wm6ZmN2WUgS; noscript=1"))))
+	(with-temp-buffer
+	  (insert "{\"image\": \"data:image/jpeg;base64,")
+	  (insert
+	   (with-current-buffer (csid-retrieve-synchronously image)
+	     (goto-char (point-min))
+	     (if (not (re-search-forward "^\r?\n" nil t))
+		 ""
+	       (delete-region (point-min) (point))
+	       (call-process-region (point) (point-max)
+				    "convert"
+				    t t nil
+				    "-resize" "300x200>" "-" "jpg:-")
+	       (base64-encode-region (point-min) (point-max))
+	       (goto-char (point-min))
+	       (while (search-forward "\n" nil t)
+		 (replace-match ""))
+	       (prog1
+		   (buffer-string)
+		 (kill-buffer (current-buffer))))))
+	  (insert "\", \"summary\": \""
+		  (replace-regexp-in-string "\"" "" summary)
+		  "\", \"id\": \""
+		  (if event-id
+		      (format "%s" event-id)
+		    "")
+		  "\"}\n")
+	  (unless (file-exists-p (file-name-directory file))
+	    (make-directory (file-name-directory file) t))
+	  (let ((coding-system-for-write 'binary))
+	    (write-region (point-min) (point-max) file))
+	  (message "%s" summary))))))
+
+(defun csid-summary-file (url)
+  (with-temp-buffer
+    (insert (sha1 url))
+    (goto-char (point-min))
+    (forward-char 10)
+    (while (not (eobp))
+      (insert "/")
+      (forward-char 10))
+    (insert "-data.json")
+    (goto-char (point-min))
+    (insert csid-summary-directory "/")
+    (buffer-string)))
+
+(defun csid-get-event-image (dom)
+  (let ((images (csid-rank-images dom url)))
+    (when images
+      (if (> (caar images) (* 200 200))
+	  ;; We found a big image, so just use that.
+	  (cadr (car images))
+	(setq images
+	      (sort
+	       (csid-get-image-sizes images)
+	       (lambda (i1 i2)
+		 (> (car i1) (car i2)))))
+	(cadr (car images))))))
+
+(defun csid-retrieve-event-dom (url)
+  (with-current-buffer (csid-retrieve-synchronously url)
+    (goto-char (point-min))
+    (when (re-search-forward "^\r?\n" nil t)
+      (prog1
+	  (libxml-parse-html-region (point) (point-max))
+	(kill-buffer (current-buffer))))))
+
+(defun csid-rank-images (dom url)
+  (sort
+   (loop for image in (dom-by-tag dom 'img)
+	 for width = (dom-attr image 'width)
+	 for height = (dom-attr image 'height)
+	 collect (list (if (and width height)
+			   (* (string-to-number width)
+			      (string-to-number height))
+			 -1)
+		       (shr-expand-url
+			(dom-attr image 'src)
+			url)))
+   (lambda (i1 i2)
+     (> (car i1) (car i2)))))
+
+(defun csid-get-image-sizes (images)
+  (loop for (size url) in images
+	when (= size -1)
+	do (with-current-buffer (csid-retrieve-synchronously url)
+	     (goto-char (point-min))
+	     (when (re-search-forward "^\r?\n" nil t)
+	       (let ((dimensions
+		      (image-size (create-image
+				   (buffer-substring (point)
+						     (point-max))
+				   nil t)
+				  t)))
+		 (when dimensions
+		   (setq size (* (car dimensions) (cdr dimensions))))
+		 (kill-buffer (current-buffer)))))
+	collect (list size url)))
+
+(defun csid-get-event-summary (dom)
+  (dolist (tag '(style script comment))
+    (loop for comment in (dom-by-tag dom tag)
+	  do (dom-remove-node dom comment)))
+  (eww-score-readability dom)
+  (let ((text (dom-texts (eww-highest-readability dom))))
+    (setq text (replace-regexp-in-string "[\t\n\r ]+" " " text))
+    (if (> (length text) 400)
+	(concat (substring text 0 400) "[...]")
+      text)))
 
 (provide 'csid)
 

@@ -19,7 +19,12 @@ div#selector {
   float: right;
 }
 table.events tr td {
+  vertical-align: top;
+  line-height: 45px;
+}
+table.events tr.date td {
   vertical-align: middle;
+  line-height: 35px;
 }
 p {
 }
@@ -384,4 +389,27 @@ div#small-menu {
   margin-left: 3px;
   height: 20px;
   width: 35px;
+}
+tr.summary td {
+  height: 200px;
+}
+tr.summary td div {
+  margin: 10px;
+}
+tr.summary td img {
+  float: left;
+  padding-right: 20px;
+}
+div.hover-summary {
+  position: absolute;
+  background: white;
+  border: 10px solid black;
+  border-radius: 5px;
+}
+div.hover-summary img {
+  float: left;
+  padding-right: 20px;
+}
+div.hover-summary div {
+  margin: 20px;
 }

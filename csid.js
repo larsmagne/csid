@@ -178,7 +178,7 @@ function addNavigation() {
     addDesktopLogos();
   }
 
-  //addSummaries();
+  addHoverSummaries();
 }
 
 function addVenue(name, deniedVenues) {
@@ -1326,4 +1326,58 @@ function insertSummary(id, url, data) {
   $(td).click(function() {
     document.location = url;
   });
+}
+
+function addHoverSummaries() {
+  $("tr").each(function(key, node) {
+    var hover;
+    var id = node.getAttribute("id");
+    if (! id || ! id.match("event"))
+      return;
+    $(node).hover(function() {
+      var link = node.firstChild.firstChild.href;
+      var hash = sha1(link);
+      var url = "summaries";
+      for (var i = 0; i < 4; i++) {
+	url += "/" + hash.substring(i * 10, (i + 1) * 10);
+      }
+      url += "-data.json";
+      $.ajax({
+	url: url,
+	dataType: "text",
+	success: function(data) {
+	  var json = $.parseJSON(data);
+	  hover = hoverSummary(node, url, json);
+	},
+	error: function(data) {
+	}
+      });
+    },
+		  function() {
+		    if (hover) {
+		      $(hover).slideUp();
+		      $(node).animate({height: 45}, 200);
+		    }
+		  });
+  });
+}
+
+function hoverSummary(tr, url, data) {
+  var div = document.createElement("div");
+  div.className = "hover-summary";
+  var image = document.createElement("img");
+  image.src = data.image;
+  var text = document.createElement("div");
+  text.innerHTML = data.summary;
+  div.appendChild(image);
+  div.appendChild(text);
+  div.style.height = "0px";
+  div.style.width = $(tr).width() - 20 + "px";
+  var offset = $(tr).offset();
+  div.style.left = offset.left + "px";
+  div.style.top = offset.top + 45 + "px";
+  document.body.appendChild(div);
+  $(div).animate({height: 200}, 200);
+  $(tr).animate({height: $(tr).height() + 220}, 200);
+  return div;
 }

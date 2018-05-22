@@ -20,11 +20,9 @@ div#selector {
 }
 table.events tr td {
   vertical-align: middle;
-  line-height: 45px;
 }
 table.events tr.date td {
   vertical-align: middle;
-  line-height: 35px;
 }
 p {
 }

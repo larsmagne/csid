@@ -185,6 +185,12 @@ function addNavigation() {
     else
       showSummaries(this);
   });
+  $(window).scroll(function() {
+    clearTimeout($.data(this, 'scrollTimer'));
+    $.data(this, 'scrollTimer', setTimeout(function() {
+      viewable();
+    }, 250));
+  });
 }
 
 function addVenue(name, deniedVenues) {
@@ -1370,16 +1376,37 @@ function hideSummaries(tr) {
   }
 }
 
-function showSummaries(tr) {
+var fetchedSummaries = [];
+
+function showSummaries(tr, noRepeat) {
   var ids = [];
   tr = tr.nextSibling;
   while (tr && ! $(tr).hasClass("date")) {
     var id = tr.getAttribute("id");
     if (id || id.match("event")) {
       var link = tr.firstChild.firstChild;
-      ids.push([id, link.href]);
+      if (! noRepeat || ! fetchedSummaries[link.href]) {
+	ids.push([id, link.href]);
+	fetchedSummaries[link.href] = true;
+      }
     }
     tr = tr.nextSibling;
   }
-  fetchSummaries(ids, 0);
+  if (ids.length > 0)
+    fetchSummaries(ids, 0);
+}
+
+function isVisible(node) {
+  var offset = $(node).offset();
+  var windowTop = $(window).scrollTop();
+  return offset.top > windowTop &&
+    offset.top < windowTop + window.innerHeight;
+}
+
+function viewable() {
+  $("tr.date").each(function(i, tr) {
+    if (isVisible(tr) && ! hasSummaries(tr)) {
+      showSummaries(tr, true);
+    }
+  });
 }

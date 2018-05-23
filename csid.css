@@ -200,6 +200,7 @@ div#small-heading {
     padding-top: 10px;
     padding-bottom: 10px;
     vertical-align: middle;
+    z-index: 1000;
   }
   div#small-heading a {
     color: white;

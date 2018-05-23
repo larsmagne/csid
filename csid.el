@@ -1541,7 +1541,11 @@ no further processing).  URL is either a string or a parsed URL."
 (defun csid-write-event-summary (url &optional event-id)
   (let ((file (csid-summary-file url))
 	(dom (csid-retrieve-event-dom url)))
-    (when dom
+    (if (not dom)
+	;; If we can't find anything, then write an empty JSON file.
+	(with-temp-buffer
+	  (insert "{}")
+	  (write-region (point-min) (point-max) file))
       (let ((image (csid-get-event-image dom))
 	    (summary (csid-get-event-summary dom))
 	    (url-request-extra-headers '(("Cookie" . "fr=0iznHLOd07GF3Pj78..BZ8tLB.QG.AAA.0.0.Bano-m.AWVOfML3; sb=6tlhWvzwnenK3Wm6ZmN2WUgS; noscript=1"))))
@@ -1614,17 +1618,53 @@ no further processing).  URL is either a string or a parsed URL."
 	  (libxml-parse-html-region (point) (point-max))
 	(kill-buffer (current-buffer))))))
 
+(defun csid-preferred-image (dom)
+  (let ((srcset (or (dom-attr dom 'srcset)
+		    (dom-attr dom 'data-srcset)))
+        (width (string-to-number (or (dom-attr dom 'width) "100")))
+        candidate)
+    (when (> (length srcset) 0)
+      ;; srcset consist of a series of URL/size specifications
+      ;; separated by the ", " string.
+      (setq srcset
+            (sort (mapcar
+                   (lambda (elem)
+                     (let ((spec (split-string elem "[\t\n\r ]+")))
+                       (cond
+                        ((= (length spec) 1)
+                         ;; Make sure it's well formed.
+                         (list (car spec) 0))
+                        ((string-match "\\([0-9]+\\)x\\'" (cadr spec))
+                         ;; If we have an "x" form, then use the width
+                         ;; spec to compute the real width.
+                         (list (car spec)
+                               (* width (string-to-number
+                                         (match-string 1 (cadr spec))))))
+                        (t
+                         (list (car spec)
+                               (string-to-number (cadr spec)))))))
+                   (split-string (replace-regexp-in-string
+				  "\\`[\t\n\r ]+\\|[\t\n\r ]+\\'" "" srcset)
+				 "[\t\n\r ]*,[\t\n\r ]*"))
+                  (lambda (e1 e2)
+                    (> (cadr e1) (cadr e2)))))
+      ;; Choose the smallest picture that's bigger than the current
+      ;; frame.
+      (setq candidate (caar (last srcset))))
+    (or candidate (dom-attr dom 'src))))
+
 (defun csid-get-imgs (dom url)
   (loop for image in (dom-by-tag dom 'img)
 	for width = (dom-attr image 'width)
 	for height = (dom-attr image 'height)
+	for src = (csid-preferred-image image)
+	when (and src
+		  (not (string-match "banner\\|progapr" src)))
 	collect (list (if (and width height)
 			  (* (string-to-number width)
 			     (string-to-number height))
 			-1)
-		      (shr-expand-url
-		       (dom-attr image 'src)
-		       url))))
+		      (shr-expand-url src url))))
 
 (defun csid-get-backgrounds (dom url)
   (loop for style in (dom-by-tag dom 'style)
@@ -1662,12 +1702,30 @@ no further processing).  URL is either a string or a parsed URL."
 		 (kill-buffer (current-buffer)))))
 	collect (list size url)))
 
+(defun csid-highest-readability (node)
+  (let ((result node)
+	highest)
+    (dolist (elem (dom-non-text-children node))
+      (when (> (or (dom-attr
+		    (setq highest (eww-highest-readability elem))
+		    :eww-readability-score)
+		   most-negative-fixnum)
+	       (or (dom-attr result :eww-readability-score)
+		   most-negative-fixnum))
+        ;; We set a lower bound to how long we accept that the
+        ;; readable portion of the page is going to be.
+        (when (and (> (length (split-string (dom-texts highest))) 100)
+		   (not (string-match "kapsler\\|cookies"
+				      (dom-texts highest))))
+	  (setq result highest))))
+    result))
+
 (defun csid-get-event-summary (dom)
   (dolist (tag '(style script comment))
     (loop for comment in (dom-by-tag dom tag)
 	  do (dom-remove-node dom comment)))
   (eww-score-readability dom)
-  (let ((text (dom-texts (eww-highest-readability dom))))
+  (let ((text (dom-texts (csid-highest-readability dom))))
     (setq text (replace-regexp-in-string "[\t\n\r ]+" " " text))
     (if (> (length text) 400)
 	(concat (substring text 0 400) "[...]")

@@ -1611,6 +1611,7 @@ no further processing).  URL is either a string or a parsed URL."
 	(cadr (car images))))))
 
 (defun csid-retrieve-event-dom (url)
+  (message "%s" url)
   (with-current-buffer (csid-retrieve-synchronously url)
     (goto-char (point-min))
     (when (re-search-forward "^\r?\n" nil t)

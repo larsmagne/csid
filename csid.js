@@ -4,6 +4,7 @@ var sortOrder = "date";
 var savedTable = false;
 var sentrum = [59.915430, 10.751862];
 var homePos = sentrum;
+var autoSummaries = true;
 
 var mapKey = "AIzaSyDOzwQi0pHvnJ1hW__DTC2H4f2qPCr3pWw";
 
@@ -107,7 +108,24 @@ function addNavigation() {
     .appendTo("#selector");
 
   hideShow();
-  
+
+  $("#selector").append("<div id='summaries' class='export " + visible + 
+			"'><a class='summaries'>" + sumText() + "</a></div>");
+  $("a.summaries").bind("click", function(e) {
+    autoSummaries = ! autoSummaries;
+    viewable();
+    if (! autoSummaries) {
+      setSettings("summariesOff", "yes");
+      $("tr.date").each(function(key, node) {
+	if (hasSummaries(node))
+	  hideSummaries(node);
+      });
+      fetchedSummaries = [];
+    } else
+      setSettings("summariesOff", "no");
+    this.innerHTML = sumText();
+  });
+
   var visible = "invisible";
   if ($("tr.checked").length > 0 || window.location.href.match("shows="))
     visible = "";
@@ -191,6 +209,7 @@ function addNavigation() {
       viewable();
     }, 250));
   });
+  addHoverSummaries();
 }
 
 function addVenue(name, deniedVenues) {
@@ -1333,6 +1352,9 @@ function fetchSummaries(ids, index) {
 
 function insertSummary(id, url, data) {
   var tr = document.getElementById(id);
+  // If there's already a summary here, then do nothing.
+  if ($(tr).find("div.summary")[0])
+    return;
   var td = tr.firstChild;
   var div = document.createElement("div");
   div.className = "summary";
@@ -1409,9 +1431,38 @@ function isVisible(node) {
 }
 
 function viewable() {
+  if (! autoSummaries)
+    return;
   $("tr.date").each(function(i, tr) {
     if (isVisible(tr) && ! hasSummaries(tr)) {
       showSummaries(tr, true);
     }
   });
 }
+
+function sumText() {
+  if (getSettings("summariesOff") == "yes")
+    autoSummaries = false;
+  var sumText = "Summaries are loaded automatically";
+  if (! autoSummaries)
+    sumText = "Summaries are displayed when hovering";
+  return sumText;
+}
+
+function addHoverSummaries() {
+  $("tr").each(function(key, node) {
+    var hover;
+    var id = node.getAttribute("id");
+    if (! id || ! id.match("event"))
+      return;
+    $(node).hover(function() {
+      if (autoSummaries)
+	return;
+      var link = node.firstChild.firstChild.href;
+      var ids = [];
+      ids.push([id, link]);
+      fetchSummaries(ids, 0);
+    });
+  });
+}
+

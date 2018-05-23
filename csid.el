@@ -1535,7 +1535,8 @@ no further processing).  URL is either a string or a parsed URL."
 	when (and url
 		  (or (string> date (format-time-string "%F"))
 		      (equal date (format-time-string "%F")))
-		  (not (file-exists-p (csid-summary-file url))))
+		  (or (string-match "facebook" url)
+		      (not (file-exists-p (csid-summary-file url)))))
 	do (csid-write-event-summary url event-id)))    
 
 (defun csid-write-event-summary (url &optional event-id)

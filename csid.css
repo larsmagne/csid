@@ -62,11 +62,6 @@ table.events tr {
 table.events tr.checked {
   vertical-align: middle;
   cursor: pointer;
-  background: -ms-linear-gradient(top, #80F080 0%, #80E080 100%);
-  background: -moz-linear-gradient(top, #80F080 0%, #80E080 100%);
-  background: -o-linear-gradient(top, #80F080 0%, #80E080 100%);
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #80F080), color-stop(1, #80E080));
-  background: -webkit-linear-gradient(top, #80F080 0%, #80E080 100%);
   background: linear-gradient(to bottom, #80F080 0%, #80E080 100%);
 }
 table.events td > a {
@@ -322,10 +317,10 @@ div#small-heading {
 }
 table.events td.thumb-logo {
   text-align: center;
-  vertical-align: middle;
+  vertical-align: top;
 }
 td.thumb-logo img {
-  vertical-align: middle;
+  padding-top: 3px;
 }
 div.apps {
   padding-top: 10px;
@@ -414,7 +409,8 @@ div.summary img {
 }
 div.logo-container {
   height: 45px;
-  position:relative;
+  position: relative;
+  text-align: left;
 }
 div.logo-container img {
   position: absolute;

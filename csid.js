@@ -176,20 +176,21 @@ function addNavigation() {
     }
   } else {
     addDesktopLogos();
-    viewable();
-    $("tr.date").click(function() {
-      if (hasSummaries(this))
-	hideSummaries(this);
-      else
-	showSummaries(this);
-    });
-    $(window).scroll(function() {
-      clearTimeout($.data(this, 'scrollTimer'));
-      $.data(this, 'scrollTimer', setTimeout(function() {
-	viewable();
-      }, 250));
-    });
   }
+
+  viewable();
+  $("tr.date").click(function() {
+    if (hasSummaries(this))
+      hideSummaries(this);
+    else
+      showSummaries(this);
+  });
+  $(window).scroll(function() {
+    clearTimeout($.data(this, 'scrollTimer'));
+    $.data(this, 'scrollTimer', setTimeout(function() {
+      viewable();
+    }, 250));
+  });
 }
 
 function addVenue(name, deniedVenues) {
@@ -660,12 +661,12 @@ function addLogos() {
     td.className = "thumb-logo";
 
     if (phoneGap && ! existingLogos[fixName(venue)]) {
-      td.innerHTML = "<img src='http://csid.no/logos/thumb/" +
+      td.innerHTML = "<div class='logo-container'><img src='http://csid.no/logos/thumb/" +
 	fixName(venue) + ".png' srcset='http://csid.no/logos/thumb/" +
-	fixName(venue) + "x2.png 2x'>";
+	fixName(venue) + "x2.png 2x'></td>";
     } else {
-      td.innerHTML = "<img src='logos/thumb/" + fixName(venue) +
-	".png' srcset='logos/thumb/" + fixName(venue) + "x2.png 2x'>";
+      td.innerHTML = "<div class='logo-container'><img src='logos/thumb/" + fixName(venue) +
+	".png' srcset='logos/thumb/" + fixName(venue) + "x2.png 2x'></div>";
     }
   });
 }
@@ -715,9 +716,9 @@ function loadLogo(mobilep, venues, index) {
     $("tr[name=" + venue + "]").each(function(key, node) {
       var td = node.childNodes[1];
       td.title = td.innerHTML;
-      td.innerHTML = "";
+      td.innerHTML = "<div class='logo-container'></div>";
       td.className = "thumb-logo";
-      td.appendChild(image.cloneNode());
+      td.firstChild.appendChild(image.cloneNode());
     });
     if (index < (venues.length - 1))
       loadLogo(mobilep, venues, index + 1);

@@ -1321,6 +1321,8 @@ function addSummaries() {
   fetchSummaries(ids, 0);
 }
 
+var summaryQuery = false;
+
 function fetchSummaries(ids, index) {
   var hash = sha1(ids[index][1]);
   var url = "summaries";
@@ -1328,7 +1330,7 @@ function fetchSummaries(ids, index) {
     url += "/" + hash.substring(i * 10, (i + 1) * 10);
   }
   url += "-data.json";
-  $.ajax({
+  summaryQuery = $.ajax({
     url: url,
     dataType: "text",
     beforeSend: function(xhr){
@@ -1344,6 +1346,8 @@ function fetchSummaries(ids, index) {
 	fetchSummaries(ids, index + 1);
     },
     error: function(data) {
+      if (data.statusText == "abort")
+	return;
       if (index + 1 < ids.length)
 	fetchSummaries(ids, index + 1);
     }
@@ -1392,6 +1396,8 @@ function hasSummaries(tr) {
 }
 
 function hideSummaries(tr) {
+  if (summaryQuery)
+    summaryQuery.abort();
   tr = tr.nextSibling;
   while (tr && ! $(tr).hasClass("date")) {
     if ($(tr).find("div.summary")) {

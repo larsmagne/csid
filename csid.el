@@ -1546,25 +1546,28 @@ no further processing).  URL is either a string or a parsed URL."
 	    (summary (csid-get-event-summary dom))
 	    (url-request-extra-headers '(("Cookie" . "fr=0iznHLOd07GF3Pj78..BZ8tLB.QG.AAA.0.0.Bano-m.AWVOfML3; sb=6tlhWvzwnenK3Wm6ZmN2WUgS; noscript=1"))))
 	(with-temp-buffer
-	  (insert "{\"image\": \"data:image/jpeg;base64,")
-	  (insert
-	   (with-current-buffer (csid-retrieve-synchronously image)
-	     (goto-char (point-min))
-	     (if (not (re-search-forward "^\r?\n" nil t))
-		 ""
-	       (delete-region (point-min) (point))
-	       (call-process-region (point) (point-max)
-				    "convert"
-				    t t nil
-				    "-resize" "300x200>" "-" "jpg:-")
-	       (base64-encode-region (point-min) (point-max))
+	  (insert "{")
+	  (when image
+	    (insert "\"image\": \"data:image/jpeg;base64,")
+	    (insert
+	     (with-current-buffer (csid-retrieve-synchronously image)
 	       (goto-char (point-min))
-	       (while (search-forward "\n" nil t)
-		 (replace-match ""))
-	       (prog1
-		   (buffer-string)
-		 (kill-buffer (current-buffer))))))
-	  (insert "\", \"summary\": \""
+	       (if (not (re-search-forward "^\r?\n" nil t))
+		   ""
+		 (delete-region (point-min) (point))
+		 (call-process-region (point) (point-max)
+				      "convert"
+				      t t nil
+				      "-resize" "300x200>" "-" "jpg:-")
+		 (base64-encode-region (point-min) (point-max))
+		 (goto-char (point-min))
+		 (while (search-forward "\n" nil t)
+		   (replace-match ""))
+		 (prog1
+		     (buffer-string)
+		   (kill-buffer (current-buffer))))))
+	    (insert "\", "))
+	  (insert "\"summary\": \""
 		  (replace-regexp-in-string "\"" "" summary)
 		  "\", \"id\": \""
 		  (if event-id
@@ -1611,18 +1614,33 @@ no further processing).  URL is either a string or a parsed URL."
 	  (libxml-parse-html-region (point) (point-max))
 	(kill-buffer (current-buffer))))))
 
+(defun csid-get-imgs (dom url)
+  (loop for image in (dom-by-tag dom 'img)
+	for width = (dom-attr image 'width)
+	for height = (dom-attr image 'height)
+	collect (list (if (and width height)
+			  (* (string-to-number width)
+			     (string-to-number height))
+			-1)
+		      (shr-expand-url
+		       (dom-attr image 'src)
+		       url))))
+
+(defun csid-get-backgrounds (dom url)
+  (loop for style in (dom-by-tag dom 'style)
+	for style-text = (dom-text style)
+	for image = (and style-text
+			 (string-match "background-image.*url.*\\(http[^)]+\\)"
+				       style-text)
+			 (match-string 1 style-text))
+	when image
+	collect (list -1
+		      (shr-expand-url image url))))
+
 (defun csid-rank-images (dom url)
   (sort
-   (loop for image in (dom-by-tag dom 'img)
-	 for width = (dom-attr image 'width)
-	 for height = (dom-attr image 'height)
-	 collect (list (if (and width height)
-			   (* (string-to-number width)
-			      (string-to-number height))
-			 -1)
-		       (shr-expand-url
-			(dom-attr image 'src)
-			url)))
+   (append (csid-get-imgs dom url)
+	   (csid-get-backgrounds dom url))
    (lambda (i1 i2)
      (> (car i1) (car i2)))))
 

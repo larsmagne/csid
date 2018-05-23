@@ -1659,7 +1659,7 @@ no further processing).  URL is either a string or a parsed URL."
 	for height = (dom-attr image 'height)
 	for src = (csid-preferred-image image)
 	when (and src
-		  (not (string-match "banner\\|progapr" src)))
+		  (not (string-match "banner\\|progapr\\|for-print" src)))
 	collect (list (if (and width height)
 			  (* (string-to-number width)
 			     (string-to-number height))

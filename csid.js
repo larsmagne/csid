@@ -1339,6 +1339,8 @@ function insertSummary(id, url, data) {
   if (data.image) {
     var image = document.createElement("img");
     image.src = data.image;
+    if (image.width > window.innerWidth / 2)
+      image.width = window.innerWidth / 2;
     div.appendChild(image);
   }
   var text = document.createElement("div");

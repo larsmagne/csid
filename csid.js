@@ -178,7 +178,7 @@ function addNavigation() {
     addDesktopLogos();
   }
 
-  addHoverSummaries();
+  addSummaries();
 }
 
 function addVenue(name, deniedVenues) {
@@ -1285,8 +1285,6 @@ function addSummaries() {
     if (day > 1)
       return;
     var link = node.firstChild.firstChild;
-    $(node).after("<tr class='summary' id='summary-" + id +
-		  "'><td colspan=3></tr>");
     ids.push([id, link.href]);
   });
   fetchSummaries(ids, 0);
@@ -1302,6 +1300,12 @@ function fetchSummaries(ids, index) {
   $.ajax({
     url: url,
     dataType: "text",
+    beforeSend: function(xhr){
+      if (xhr.overrideMimeType)
+      {
+	xhr.overrideMimeType("application/json");
+      }
+    },
     success: function(data) {
       var json = $.parseJSON(data);
       insertSummary(ids[index][0], ids[index][1], json);
@@ -1316,75 +1320,24 @@ function fetchSummaries(ids, index) {
 }
 
 function insertSummary(id, url, data) {
-  var td = document.getElementById("summary-" + id).firstChild;
+  var tr = document.getElementById(id);
+  var td = tr.firstChild;
+  var div = document.createElement("div");
+  div.className = "summary";
   var image = document.createElement("img");
   image.src = data.image;
-  td.appendChild(image);
+  div.appendChild(image);
   var text = document.createElement("div");
   text.innerHTML = data.summary;
-  td.appendChild(text);
+  div.style.width = $(tr).width() - 20 + "px";
+  var offset = $(tr).offset();
+  td.style.position = "relative";
+  td.style.paddingBottom = "235px";
+  document.body.appendChild(div);
+
+  div.appendChild(text);
+  td.appendChild(div);
   $(td).click(function() {
     document.location = url;
   });
-}
-
-function addHoverSummaries() {
-  $("tr").each(function(key, node) {
-    var hover;
-    var id = node.getAttribute("id");
-    if (! id || ! id.match("event"))
-      return;
-    $(node).hover(function() {
-      var link = node.firstChild.firstChild.href;
-      var hash = sha1(link);
-      var url = "summaries";
-      for (var i = 0; i < 4; i++) {
-	url += "/" + hash.substring(i * 10, (i + 1) * 10);
-      }
-      url += "-data.json";
-      $.ajax({
-	url: url,
-	dataType: "text",
-	success: function(data) {
-	  var json = $.parseJSON(data);
-	  hover = hoverSummary(node, url, json);
-	},
-	error: function(data) {
-	}
-      });
-    },
-		  function() {
-		    if (hover) {
-		      $(hover).slideUp();
-		    }
-		  });
-  });
-}
-
-var prevHovers = [];
-
-function hoverSummary(tr, url, data) {
-  var div = document.createElement("div");
-  div.className = "hover-summary";
-  var image = document.createElement("img");
-  image.src = data.image;
-  var text = document.createElement("div");
-  text.innerHTML = data.summary;
-  div.appendChild(image);
-  div.appendChild(text);
-  div.style.height = "0px";
-  div.style.width = $(tr).width() - 20 + "px";
-  var offset = $(tr).offset();
-  div.style.left = offset.left + "px";
-  div.style.top = offset.top + 55 + "px";
-  document.body.appendChild(div);
-  $.map(prevHovers, function(div) {
-    $(div).slideUp(function(div) {
-      $(div).remove();
-    });
-  });
-  prevHovers = [];
-  prevHovers.push(div);
-  $(div).animate({height: 200}, 200);
-  return div;
 }

@@ -19,10 +19,22 @@ div#selector {
   float: right;
 }
 table.events tr td {
-  vertical-align: middle;
+  vertical-align: top;
 }
 table.events tr.date td {
   vertical-align: middle;
+}
+table.events tr.date td:first-letter {
+  padding-top: 0px;
+}
+table.events tr td a {
+  padding-top: 15px;
+}
+table.events tr td:first-letter {
+  padding-top: 30px;
+}
+table.events tr td input {
+  margin-top: 12px;
 }
 p {
 }
@@ -43,12 +55,7 @@ a {
 }
 table.events tr {
   cursor: pointer;
-  background: -ms-linear-gradient(top, #F0F0F0 0%, #E0E0E0 100%);
-  background: -moz-linear-gradient(top, #F0F0F0 0%, #E0E0E0 100%);
-  background: -o-linear-gradient(top, #F0F0F0 0%, #E0E0E0 100%);
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #F0F0F0), color-stop(1, #E0E0E0));
-  background: -webkit-linear-gradient(top, #F0F0F0 0%, #E0E0E0 100%);
-  background: linear-gradient(to bottom, #F0F0F0 0%, #E0E0E0 100%);
+  background: linear-gradient(to bottom, #F0F0F0 0%, #E0E0E0 45px);
   height: 45px;
 }
 table.events tr.checked {
@@ -125,7 +132,7 @@ span.venue {
 table.events td.show {
   padding-left: 15px;
   padding-right: 10px;
-  vertical-align: middle;
+  vertical-align: top;
 }
 div.export {
   padding-top: 10px;
@@ -388,26 +395,20 @@ div#small-menu {
   height: 20px;
   width: 35px;
 }
-tr.summary td {
+div.summary {
+  display: block;
   height: 200px;
-}
-tr.summary td div {
-  margin: 10px;
-}
-tr.summary td img {
-  float: left;
-  padding-right: 20px;
-}
-div.hover-summary {
   position: absolute;
-  background: white;
+  top: 45px;
+  left: 0px;
   border: 10px solid black;
   border-radius: 5px;
+  background: white;
 }
-div.hover-summary img {
+div.summary div {
+  margin: 10px;
+}
+div.summary img {
   float: left;
   padding-right: 20px;
-}
-div.hover-summary div {
-  margin: 20px;
 }

@@ -411,3 +411,13 @@ div.summary img {
   float: left;
   padding-right: 20px;
 }
+div.logo-container {
+  height: 45px;
+  position:relative;
+}
+div.logo-container img {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+}

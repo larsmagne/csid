@@ -178,7 +178,7 @@ function addNavigation() {
     addDesktopLogos();
   }
 
-  addSummaries();
+  viewable();
   $("tr.date").click(function() {
     if (hasSummaries(this))
       hideSummaries(this);
@@ -695,8 +695,8 @@ function addDesktopLogos() {
       focus = true;
       image.onload = function() {
 	if (focus) {
-	  td.innerHTML = "";
-	  td.appendChild(image);
+	  td.innerHTML = "<div class='logo-container'></div>";
+	  td.firstChild.appendChild(image);
 	}
       };
       image.setAttribute("srcset", "logos/thumb/" + fixName(venue) + "x2.png 2x");
@@ -1336,9 +1336,11 @@ function insertSummary(id, url, data) {
   var td = tr.firstChild;
   var div = document.createElement("div");
   div.className = "summary";
-  var image = document.createElement("img");
-  image.src = data.image;
-  div.appendChild(image);
+  if (data.image) {
+    var image = document.createElement("img");
+    image.src = data.image;
+    div.appendChild(image);
+  }
   var text = document.createElement("div");
   text.innerHTML = data.summary;
   div.style.width = $(tr).width() + "px";

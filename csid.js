@@ -176,21 +176,20 @@ function addNavigation() {
     }
   } else {
     addDesktopLogos();
+    viewable();
+    $("tr.date").click(function() {
+      if (hasSummaries(this))
+	hideSummaries(this);
+      else
+	showSummaries(this);
+    });
+    $(window).scroll(function() {
+      clearTimeout($.data(this, 'scrollTimer'));
+      $.data(this, 'scrollTimer', setTimeout(function() {
+	viewable();
+      }, 250));
+    });
   }
-
-  viewable();
-  $("tr.date").click(function() {
-    if (hasSummaries(this))
-      hideSummaries(this);
-    else
-      showSummaries(this);
-  });
-  $(window).scroll(function() {
-    clearTimeout($.data(this, 'scrollTimer'));
-    $.data(this, 'scrollTimer', setTimeout(function() {
-      viewable();
-    }, 250));
-  });
 }
 
 function addVenue(name, deniedVenues) {

@@ -23,6 +23,7 @@ table.events tr td {
 }
 table.events tr.date td {
   vertical-align: middle;
+  font-weight: bold;
 }
 table.events tr.date td:first-letter {
   padding-top: 0px;

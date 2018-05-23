@@ -179,6 +179,12 @@ function addNavigation() {
   }
 
   addSummaries();
+  $("tr.date").click(function() {
+    if (hasSummaries(this))
+      hideSummaries(this);
+    else
+      showSummaries(this);
+  });
 }
 
 function addVenue(name, deniedVenues) {
@@ -1340,4 +1346,40 @@ function insertSummary(id, url, data) {
   $(td).click(function() {
     document.location = url;
   });
+}
+
+function hasSummaries(tr) {
+  tr = tr.nextSibling;
+  while (tr && ! $(tr).hasClass("date")) {
+    if ($(tr).find("div.summary")[0])
+      return true;
+    tr = tr.nextSibling;
+  }
+  return false;
+}
+
+function hideSummaries(tr) {
+  tr = tr.nextSibling;
+  while (tr && ! $(tr).hasClass("date")) {
+    if ($(tr).find("div.summary")) {
+      var td = tr.firstChild;
+      td.style.paddingBottom = "0px";
+      $(tr).find("div.summary").remove();
+    }
+    tr = tr.nextSibling;
+  }
+}
+
+function showSummaries(tr) {
+  var ids = [];
+  tr = tr.nextSibling;
+  while (tr && ! $(tr).hasClass("date")) {
+    var id = tr.getAttribute("id");
+    if (id || id.match("event")) {
+      var link = tr.firstChild.firstChild;
+      ids.push([id, link.href]);
+    }
+    tr = tr.nextSibling;
+  }
+  fetchSummaries(ids, 0);
 }

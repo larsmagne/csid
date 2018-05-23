@@ -1531,12 +1531,15 @@ no further processing).  URL is either a string or a parsed URL."
 
 (defun csid-write-event-summaries ()
   (csid-read-database)
+  ;; Somehow loading certain images makes Facebook return the real
+  ;; text page on subsequent accesses.
+  (eww "https://www.facebook.com/events/419122858560701/")
+  (sit-for 10)
   (loop for (nil date url nil event-id) in csid-database
 	when (and url
 		  (or (string> date (format-time-string "%F"))
 		      (equal date (format-time-string "%F")))
-		  (or (string-match "facebook" url)
-		      (not (file-exists-p (csid-summary-file url)))))
+		  (not (file-exists-p (csid-summary-file url))))
 	do (csid-write-event-summary url event-id)))    
 
 (defun csid-write-event-summary (url &optional event-id)

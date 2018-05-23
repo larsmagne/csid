@@ -1345,6 +1345,7 @@ function insertSummary(id, url, data) {
   }
   var text = document.createElement("div");
   text.innerHTML = data.summary;
+  div.style.top = $(tr).height() + 3 + "px";
   div.style.width = $(tr).width() + "px";
   var offset = $(tr).offset();
   td.style.position = "relative";

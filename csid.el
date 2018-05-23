@@ -1541,6 +1541,8 @@ no further processing).  URL is either a string or a parsed URL."
 (defun csid-write-event-summary (url &optional event-id)
   (let ((file (csid-summary-file url))
 	(dom (csid-retrieve-event-dom url)))
+    (unless (file-exists-p (file-name-directory file))
+      (make-directory (file-name-directory file) t))
     (if (not dom)
 	;; If we can't find anything, then write an empty JSON file.
 	(with-temp-buffer
@@ -1578,8 +1580,6 @@ no further processing).  URL is either a string or a parsed URL."
 		      (format "%s" event-id)
 		    "")
 		  "\"}\n")
-	  (unless (file-exists-p (file-name-directory file))
-	    (make-directory (file-name-directory file) t))
 	  (let ((coding-system-for-write 'binary))
 	    (write-region (point-min) (point-max) file))
 	  (message "%s" summary))))))
@@ -1659,7 +1659,8 @@ no further processing).  URL is either a string or a parsed URL."
 	for height = (dom-attr image 'height)
 	for src = (csid-preferred-image image)
 	when (and src
-		  (not (string-match "banner\\|progapr\\|for-print" src)))
+		  (not (string-match
+			"banner\\|progapr\\|for-print\\|svg$" src)))
 	collect (list (if (and width height)
 			  (* (string-to-number width)
 			     (string-to-number height))

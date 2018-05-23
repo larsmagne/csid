@@ -1716,7 +1716,7 @@ no further processing).  URL is either a string or a parsed URL."
 		   most-negative-fixnum))
         ;; We set a lower bound to how long we accept that the
         ;; readable portion of the page is going to be.
-        (when (and (> (length (split-string (dom-texts highest))) 100)
+        (when (and (> (length (split-string (dom-texts highest))) 40)
 		   (not (string-match "kapsler\\|cookies"
 				      (dom-texts highest))))
 	  (setq result highest))))

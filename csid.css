@@ -55,7 +55,7 @@ a {
 }
 table.events tr {
   cursor: pointer;
-  background: linear-gradient(to bottom, #F0F0F0 0%, #E0E0E0 45px);
+  background: linear-gradient(to bottom, #F0F0F0 0%, #E0E0E0 100%);
   height: 45px;
 }
 table.events tr.checked {
@@ -401,9 +401,10 @@ div.summary {
   position: absolute;
   top: 45px;
   left: 0px;
-  border: 10px solid black;
-  border-radius: 5px;
-  background: white;
+  border-left: 5px solid black;
+  border-right: 5px solid black;
+  border-bottom: 5px solid black;
+  border-radius: 3px;
 }
 div.summary div {
   margin: 10px;

@@ -1329,10 +1329,10 @@ function insertSummary(id, url, data) {
   div.appendChild(image);
   var text = document.createElement("div");
   text.innerHTML = data.summary;
-  div.style.width = $(tr).width() - 20 + "px";
+  div.style.width = $(tr).width() - 10 + "px";
   var offset = $(tr).offset();
   td.style.position = "relative";
-  td.style.paddingBottom = "235px";
+  td.style.paddingBottom = "218px";
   document.body.appendChild(div);
 
   div.appendChild(text);

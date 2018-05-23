@@ -1550,13 +1550,14 @@ no further processing).  URL is either a string or a parsed URL."
 	  (write-region (point-min) (point-max) file))
       (let ((image (csid-get-event-image dom))
 	    (summary (csid-get-event-summary dom))
-	    (url-request-extra-headers '(("Cookie" . "fr=0iznHLOd07GF3Pj78..BZ8tLB.QG.AAA.0.0.Bano-m.AWVOfML3; sb=6tlhWvzwnenK3Wm6ZmN2WUgS; noscript=1"))))
+	    (url-request-extra-headers '(("Cookie" . "fr=0iznHLOd07GF3Pj78..BZ8tLB.QG.AAA.0.0.Bano-m.AWVOfML3; sb=6tlhWvzwnenK3Wm6ZmN2WUgS; noscript=1")
+					 ("Referer" . "https://www.facebook.com/events/791343834393278/?_fb_noscript=1"))))
 	(with-temp-buffer
 	  (insert "{")
 	  (when image
 	    (insert "\"image\": \"data:image/jpeg;base64,")
 	    (insert
-	     (with-current-buffer (csid-retrieve-synchronously image)
+	     (with-current-buffer (csid-retrieve-synchronously image nil t)
 	       (goto-char (point-min))
 	       (if (not (re-search-forward "^\r?\n" nil t))
 		   ""

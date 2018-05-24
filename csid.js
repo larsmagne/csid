@@ -1316,23 +1316,6 @@ function hideLabels() {
   $(".map-marker-label").hide();
 }
 
-function addSummaries() {
-  var day = 0;
-  var ids = [];
-  $("tr").each(function(key, node) {
-    var id = node.getAttribute("id");
-    if (! id || ! id.match("event")) {
-      day++;
-      return;
-    }
-    if (day > 1)
-      return;
-    var link = node.firstChild.firstChild;
-    ids.push([id, link.href]);
-  });
-  fetchSummaries(ids, 0);
-}
-
 var summaryQuery = false;
 
 function fetchSummaries(ids, index, callback) {

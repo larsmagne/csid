@@ -1440,11 +1440,22 @@ function isVisible(node) {
 function viewable() {
   if (! autoSummaries)
     return;
-  $("tr.date").each(function(i, tr) {
-    if (isVisible(tr) && ! hasSummaries(tr)) {
-      showSummaries(tr, true);
+  var ids = [];
+  $("tr").each(function(i, tr) {
+    var id = tr.getAttribute("id");
+    if (id &&
+	id.match("event") &&
+	isVisible(tr) &&
+	! $(tr).find("div.summary")[0]) {
+      var link = tr.firstChild.firstChild;
+      if (! fetchedSummaries[link.href]) {
+	ids.push([id, link.href]);
+	fetchedSummaries[link.href] = true;
+      }
     }
   });
+  if (ids.length > 0)
+    fetchSummaries(ids, 0);
 }
 
 function sumText() {

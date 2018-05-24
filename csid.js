@@ -225,8 +225,7 @@ function addVenue(name, deniedVenues) {
     setVenueCookie();
   });
   $("#venue-" + name).bind("click", function(e) {
-    if (phoneGap || $("body").width() < 600)
-      fixPosition();
+    fixPosition();
     if (lastVenue != name) {
       hideShow(name);
       lastVenue = name;
@@ -398,6 +397,7 @@ function fixPosition() {
   if (phoneGap || $("body").width() < 600)
     return;
 
+  console.log("foo");
   $("table").each(function (key, table) {
     table.width = table.offsetWidth + "px";
     $(table).find("colgroup").children("col").each(function(key, col) {

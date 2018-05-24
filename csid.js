@@ -28,6 +28,9 @@ function setSettings(name, value) {
 var lastVenue = false;
 
 function addNavigation() {
+  if (getSettings("summariesOff") == "yes")
+    autoSummaries = false;
+
   // Default to not showing quizes.
   var defaultDenied = "Quiz";
   if (phoneGap) {
@@ -1384,15 +1387,15 @@ function insertSummary(id, url, data) {
       image.width = window.innerWidth / 2;
     div.appendChild(image);
   }
+  td.style.borderBottom = "200px solid white";
+  td.nextSibling.style.borderBottom = "200px solid white";
+  td.nextSibling.nextSibling.style.borderBottom = "200px solid white";
   var text = document.createElement("div");
   text.innerHTML = data.summary;
   div.style.top = $(tr).height() - 200 + "px";
   div.style.width = $(tr).width() + "px";
   div.style.opacity = "0";
   td.style.position = "relative";
-  td.style.borderBottom = "200px solid white";
-  td.nextSibling.style.borderBottom = "200px solid white";
-  td.nextSibling.nextSibling.style.borderBottom = "200px solid white";
   document.body.appendChild(div);
 
   div.appendChild(text);
@@ -1410,13 +1413,13 @@ function insertBlankSummary(id, url, data) {
     return;
   var td = tr.firstChild;
   var div = document.createElement("div");
-  div.className = "summary";
-  div.style.top = $(tr).height() - 200 + "px";
-  div.style.width = $(tr).width() + "px";
   td.style.position = "relative";
   td.style.borderBottom = "200px solid white";
   td.nextSibling.style.borderBottom = "200px solid white";
   td.nextSibling.nextSibling.style.borderBottom = "200px solid white";
+  div.className = "summary";
+  div.style.top = $(tr).height() - 200 + "px";
+  div.style.width = $(tr).width() + "px";
   document.body.appendChild(div);
   td.appendChild(div);
 }
@@ -1477,6 +1480,7 @@ function isVisible(node) {
 function viewable() {
   if (! autoSummaries)
     return;
+  console.log(autoSummaries);
   var ids = [];
   $("tr").each(function(i, tr) {
     var id = tr.getAttribute("id");

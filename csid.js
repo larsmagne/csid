@@ -1436,7 +1436,7 @@ function isVisible(node) {
   var offset = $(node).offset();
   var windowTop = $(window).scrollTop();
   return offset.top > windowTop &&
-    offset.top < windowTop + window.innerHeight;
+    offset.top < windowTop + window.innerHeight * 2;
 }
 
 function viewable() {

@@ -1481,6 +1481,7 @@ function viewable() {
     if (id &&
 	id.match("event") &&
 	isVisible(tr) &&
+	! $(tr).hasClass("invisible") &&
 	! $(tr).find("div.summary")[0]) {
       var link = tr.firstChild.firstChild;
       if (! fetchedSummaries[link.href]) {

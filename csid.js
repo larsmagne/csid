@@ -1348,6 +1348,7 @@ function fetchSummaries(ids, index, callback) {
     error: function(data) {
       if (data.statusText == "abort")
 	return;
+      insertBlankSummary(ids[index][0], ids[index][1], false);
       if (index + 1 < ids.length)
 	fetchSummaries(ids, index + 1);
     }
@@ -1398,6 +1399,24 @@ function insertSummary(id, url, data) {
   $(td).click(function() {
     document.location = url;
   });
+}
+
+function insertBlankSummary(id, url, data) {
+  var tr = document.getElementById(id);
+  // If there's already a summary here, then do nothing.
+  if ($(tr).find("div.summary")[0])
+    return;
+  var td = tr.firstChild;
+  var div = document.createElement("div");
+  div.className = "summary";
+  div.style.top = $(tr).height() - 200 + "px";
+  div.style.width = $(tr).width() + "px";
+  td.style.position = "relative";
+  td.style.borderBottom = "200px solid white";
+  td.nextSibling.style.borderBottom = "200px solid white";
+  td.nextSibling.nextSibling.style.borderBottom = "200px solid white";
+  document.body.appendChild(div);
+  td.appendChild(div);
 }
 
 function hasSummaries(tr) {

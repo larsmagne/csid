@@ -193,7 +193,6 @@ function addNavigation() {
   }
 
   expandForSummaries();
-  viewable();
   $("tr.date").click(function() {
     if (hasSummaries(this))
       hideSummaries(this);
@@ -207,6 +206,7 @@ function addNavigation() {
     }, 250));
   });
   addHoverSummaries();
+  window.setTimeout(viewable, 100);
 }
 
 function addVenue(name, deniedVenues) {

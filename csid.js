@@ -1480,7 +1480,6 @@ function isVisible(node) {
 function viewable() {
   if (! autoSummaries)
     return;
-  console.log(autoSummaries);
   var ids = [];
   $("tr").each(function(i, tr) {
     var id = tr.getAttribute("id");

@@ -1309,7 +1309,11 @@ no further processing).  URL is either a string or a parsed URL."
 	(now (format-time-string "%Y-%m-%d"))
 	prev-date start)
     (with-temp-file (or file "/tmp/csid.html")
-      (insert "<head><title>Crowdsourcing Is Dead</title><meta charset='utf-8'><link href='csid.css' rel='stylesheet' type='text/css'><meta name='viewport' content='width=device-width, initial-scale=1'><link href='pikaday.css' rel='stylesheet' type='text/css'><link rel='icon' href='http://csid.no/favicon.ico'><body><div id='body-container'><div id='large-heading'><img src='csid.png' id='logo'><p>(Also known as <a href='http://lars.ingebrigtsen.no/2013/09/crowdsourcing-is-dead.html'>'Konserter i Oslo'</a>.)</p></div></div><div id='small-heading'><div id='small-menu'><span class='box-shadow-menu'></span></div>Concerts in Oslo</div>")
+      (insert
+       (format
+	"<head><title>Crowdsourcing Is Dead</title><meta charset='utf-8'><link href='csid.css?ts=%s' rel='stylesheet' type='text/css'><meta name='viewport' content='width=device-width, initial-scale=1'><link href='pikaday.css' rel='stylesheet' type='text/css'><link rel='icon' href='http://csid.no/favicon.ico'><body><div id='body-container'><div id='large-heading'><img src='csid.png?ts=%s' id='logo'><p>(Also known as <a href='http://lars.ingebrigtsen.no/2013/09/crowdsourcing-is-dead.html'>'Konserter i Oslo'</a>.)</p></div></div><div id='small-heading'><div id='small-menu'><span class='box-shadow-menu'></span></div>Concerts in Oslo</div>"
+	(csid-timestamp)
+	(csid-timestamp)))
       (insert "<table class='events'><colgroup><col class='band'><col class='venue'><col class='button'></colgroup>")
       (setq start (point))
       (loop with prev-date
@@ -1340,7 +1344,20 @@ no further processing).  URL is either a string or a parsed URL."
 				 venue)))
 	    (setq prev-date date))
       (insert "</table><div id='selector'></div>")
-      (insert "<script type='text/javascript' src='jquery-1.10.2.min.js'></script><script type='text/javascript' src='jquery.cookie.js'></script><script type='text/javascript' src='jquery.colorbox-min.js'></script><script type='text/javascript' src='FileSaver.min.js'></script><script type='text/javascript' src='csid.js'></script><script type='text/javascript' src='pikaday.js'></script><script type='text/javascript' src='sha1.js'></script><script type='text/javascript'>addNavigation();</script>"))))
+      (dolist (js '("jquery-1.10.2.min.js"
+		    "jquery.cookie.js"
+		    "jquery.colorbox-min.js"
+		    "FileSaver.min.js"
+		    "csid.js"
+		    "pikaday.js"
+		    "sha1.js"))
+	(insert (format "<script type='text/javascript' src='%s?ts=%s'></script>"
+			js
+			(csid-timestamp))))
+      (insert "<script type='text/javascript'>addNavigation();</script>"))))
+
+(defun csid-timestamp ()
+  (float-time))
 
 (defun csid-latlng (venue index)
   ;; Special-case the only venue that has several sub-venues.

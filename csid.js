@@ -192,6 +192,7 @@ function addNavigation() {
     addDesktopLogos();
   }
 
+  expandForSummaries();
   viewable();
   $("tr.date").click(function() {
     if (hasSummaries(this))
@@ -1353,6 +1354,20 @@ function fetchSummaries(ids, index, callback) {
   });
 }
 
+function expandForSummaries() {
+  if (! autoSummaries)
+    return;
+  $("tr").each(function(key, tr) {
+    var id = tr.getAttribute("id");
+    if (! id || ! id.match("event"))
+      return;
+    var td = tr.firstChild;
+    td.style.borderBottom = "200px solid white";
+    td.nextSibling.style.borderBottom = "200px solid white";
+    td.nextSibling.nextSibling.style.borderBottom = "200px solid white";
+  });
+}
+
 function insertSummary(id, url, data) {
   var tr = document.getElementById(id);
   // If there's already a summary here, then do nothing.
@@ -1370,9 +1385,8 @@ function insertSummary(id, url, data) {
   }
   var text = document.createElement("div");
   text.innerHTML = data.summary;
-  div.style.top = $(tr).height() + "px";
+  div.style.top = $(tr).height() - 200 + "px";
   div.style.width = $(tr).width() + "px";
-  var offset = $(tr).offset();
   td.style.position = "relative";
   td.style.borderBottom = "200px solid white";
   td.nextSibling.style.borderBottom = "200px solid white";
@@ -1435,7 +1449,7 @@ function showSummaries(tr, noRepeat) {
 function isVisible(node) {
   var offset = $(node).offset();
   var windowTop = $(window).scrollTop();
-  return offset.top > windowTop &&
+  return offset.top + 245 > windowTop &&
     offset.top < windowTop + window.innerHeight * 2;
 }
 

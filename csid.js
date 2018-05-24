@@ -116,11 +116,7 @@ function addNavigation() {
     viewable();
     if (! autoSummaries) {
       setSettings("summariesOff", "yes");
-      $("tr.date").each(function(key, node) {
-	if (hasSummaries(node))
-	  hideSummaries(node);
-      });
-      fetchedSummaries = [];
+      hideAllSummaries();
     } else
       setSettings("summariesOff", "no");
     this.innerHTML = sumText();
@@ -1323,7 +1319,7 @@ function addSummaries() {
 
 var summaryQuery = false;
 
-function fetchSummaries(ids, index) {
+function fetchSummaries(ids, index, callback) {
   var hash = sha1(ids[index][1]);
   var url = "summaries";
   for (var i = 0; i < 4; i++) {
@@ -1341,6 +1337,8 @@ function fetchSummaries(ids, index) {
     },
     success: function(data) {
       var json = $.parseJSON(data);
+      if (callback)
+	callback();
       insertSummary(ids[index][0], ids[index][1], json);
       if (index + 1 < ids.length)
 	fetchSummaries(ids, index + 1);
@@ -1476,3 +1474,10 @@ function addHoverSummaries() {
   });
 }
 
+function hideAllSummaries() {
+  $("tr.date").each(function(key, node) {
+    if (hasSummaries(node))
+      hideSummaries(node);
+  });
+  fetchedSummaries = [];
+}

@@ -1388,6 +1388,7 @@ function insertSummary(id, url, data) {
   text.innerHTML = data.summary;
   div.style.top = $(tr).height() - 200 + "px";
   div.style.width = $(tr).width() + "px";
+  div.style.opacity = "0";
   td.style.position = "relative";
   td.style.borderBottom = "200px solid white";
   td.nextSibling.style.borderBottom = "200px solid white";
@@ -1396,6 +1397,7 @@ function insertSummary(id, url, data) {
 
   div.appendChild(text);
   td.appendChild(div);
+  $(div).animate({ opacity: 1 });
   $(td).click(function() {
     document.location = url;
   });

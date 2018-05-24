@@ -245,6 +245,7 @@ div#small-heading {
   padding-bottom: 35px;
   text-align: center;
   background: #105010;
+  z-index: 2000;
 }
 .event-lightbox a {
   text-align: center;
@@ -310,7 +311,7 @@ div#small-heading {
 }
 table.events td.thumb-logo {
   text-align: center;
-  vertical-align: top;
+  vertical-align: middle;
 }
 td.thumb-logo img {
   padding-top: 3px;

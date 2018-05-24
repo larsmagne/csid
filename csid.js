@@ -801,6 +801,9 @@ function miscMenu() {
   var restoreString = "";
   if (limitedDisplay)
     restoreString = "<a href='#' id='restore'>Restore Events</a>";
+  var summaryString = "<a href='#' id='menu-summaries'>Load Summaries</a>";
+  if (autoSummaries)
+    summaryString = "<a href='#' id='menu-summaries'>Don't Load Summaries</a>";
   var goingString = "";
   $.map(getSettings("shows"), function(id) {
     if ($("#event-" + id).length)
@@ -817,6 +820,7 @@ function miscMenu() {
 	   "<a href='#' id='list-new'>List New Events</a><a href='#' id='export-calendar'>Export Calendar</a><a href='#' id='sort-method'>" +
 	   sortString +
 	   "</a><a href='#' id='choose-date'>Choose Date</a><a href='#' id='search'>Search</a>" +
+	   summaryString +
 	   restoreString +
 	   goingString +
 	   pgString +
@@ -924,6 +928,18 @@ function miscMenu() {
     restoreTable();
     closeColorbox();
     limitedDisplay = false;
+    return false;
+  });
+  $("#menu-summaries").bind("click", function() {
+    restoreTable();
+    closeColorbox();
+    autoSummaries = ! autoSummaries;
+    viewable();
+    if (! autoSummaries) {
+      setSettings("summariesOff", "yes");
+      hideAllSummaries();
+    } else
+      setSettings("summariesOff", "no");
     return false;
   });
   var func = function() {
@@ -1373,9 +1389,9 @@ function insertSummary(id, url, data) {
   div.style.width = $(tr).width() + "px";
   var offset = $(tr).offset();
   td.style.position = "relative";
-  td.style.borderBottom = "201px solid white";
-  td.nextSibling.style.borderBottom = "201px solid white";
-  td.nextSibling.nextSibling.style.borderBottom = "201px solid white";
+  td.style.borderBottom = "200px solid white";
+  td.nextSibling.style.borderBottom = "200px solid white";
+  td.nextSibling.nextSibling.style.borderBottom = "200px solid white";
   document.body.appendChild(div);
 
   div.appendChild(text);

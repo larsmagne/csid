@@ -48,7 +48,7 @@ a {
 }
 table.events tr {
   cursor: pointer;
-  background: linear-gradient(to bottom, #F0F0F0 0%, #E0E0E0 100%);
+  background: linear-gradient(to bottom, #F0F0F0 0%, #E0E0E0 45px);
 }
 table.events tr.checked {
   vertical-align: middle;
@@ -392,7 +392,7 @@ div.summary {
   position: absolute;
   left: 0px;
   overflow: hidden;
-  background: linear-gradient(to bottom, #F0F0F0 0%, #E0E0E0 100%);
+  background: linear-gradient(to bottom, #E0E0E0 0%, #D0D0D0 100%);
 }
 div.summary div {
   margin: 10px;

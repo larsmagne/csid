@@ -391,6 +391,7 @@ div.summary {
   position: absolute;
   left: 0px;
   overflow: hidden;
+  background: linear-gradient(to bottom, #F0F0F0 0%, #E0E0E0 100%);
 }
 div.summary div {
   margin: 10px;

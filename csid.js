@@ -1371,13 +1371,13 @@ function insertSummary(id, url, data) {
   }
   var text = document.createElement("div");
   text.innerHTML = data.summary;
-  div.style.top = $(tr).height() + 3 + "px";
+  div.style.top = $(tr).height() + "px";
   div.style.width = $(tr).width() + "px";
   var offset = $(tr).offset();
   td.style.position = "relative";
-  td.style.borderBottom = "212px solid white";
-  td.nextSibling.style.borderBottom = "212px solid white";
-  td.nextSibling.nextSibling.style.borderBottom = "212px solid white";
+  td.style.borderBottom = "201px solid white";
+  td.nextSibling.style.borderBottom = "201px solid white";
+  td.nextSibling.nextSibling.style.borderBottom = "201px solid white";
   document.body.appendChild(div);
 
   div.appendChild(text);

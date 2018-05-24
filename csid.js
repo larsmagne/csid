@@ -345,7 +345,9 @@ function hideShow(onlyVenue, onlyAfterTimestamp, onlyEvent,
     }, 2000);
     doneGotoShow = true;
   }
-  
+
+  viewable();
+
   return blankTable;
 }
 

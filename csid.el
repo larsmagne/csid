@@ -259,6 +259,7 @@ no further processing).  URL is either a string or a parsed URL."
         ;; package.
         nil
       (let ((proc (get-buffer-process asynch-buffer)))
+	(set-process-query-on-exit-flag proc nil)
 	;; If the access method was synchronous, `retrieval-done' should
 	;; hopefully already be set to t.  If it is nil, and `proc' is also
 	;; nil, it implies that the async process is not running in

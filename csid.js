@@ -680,12 +680,12 @@ function addLogos() {
     td.className = "thumb-logo";
 
     if (phoneGap && ! existingLogos[fixName(venue)]) {
-      td.innerHTML = "<div class='logo-container'><img src='http://csid.no/logos/thumb/" +
+      td.innerHTML = "<img src='http://csid.no/logos/thumb/" +
 	fixName(venue) + ".png' srcset='http://csid.no/logos/thumb/" +
 	fixName(venue) + "x2.png 2x'></td>";
     } else {
-      td.innerHTML = "<div class='logo-container'><img src='logos/thumb/" + fixName(venue) +
-	".png' srcset='logos/thumb/" + fixName(venue) + "x2.png 2x'></div>";
+      td.innerHTML = "<img src='logos/thumb/" + fixName(venue) +
+	".png' srcset='logos/thumb/" + fixName(venue) + "x2.png 2x'>";
     }
   });
 }
@@ -714,8 +714,8 @@ function addDesktopLogos() {
       focus = true;
       image.onload = function() {
 	if (focus) {
-	  td.innerHTML = "<div class='logo-container'></div>";
-	  td.firstChild.appendChild(image);
+	  td.innerHTML = "";
+	  td.appendChild(image);
 	}
       };
       image.setAttribute("srcset", "logos/thumb/" + fixName(venue) + "x2.png 2x");
@@ -735,9 +735,9 @@ function loadLogo(mobilep, venues, index) {
     $("tr[name=" + venue + "]").each(function(key, node) {
       var td = node.childNodes[1];
       td.title = td.innerHTML;
-      td.innerHTML = "<div class='logo-container'></div>";
+      td.innerHTML = "";
       td.className = "thumb-logo";
-      td.firstChild.appendChild(image.cloneNode());
+      td.appendChild(image.cloneNode());
     });
     if (index < (venues.length - 1))
       loadLogo(mobilep, venues, index + 1);
@@ -1375,7 +1375,9 @@ function insertSummary(id, url, data) {
   div.style.width = $(tr).width() + "px";
   var offset = $(tr).offset();
   td.style.position = "relative";
-  td.style.paddingBottom = "212px";
+  td.style.borderBottom = "212px solid white";
+  td.nextSibling.style.borderBottom = "212px solid white";
+  td.nextSibling.nextSibling.style.borderBottom = "212px solid white";
   document.body.appendChild(div);
 
   div.appendChild(text);
@@ -1402,7 +1404,9 @@ function hideSummaries(tr) {
   while (tr && ! $(tr).hasClass("date")) {
     if ($(tr).find("div.summary")) {
       var td = tr.firstChild;
-      td.style.paddingBottom = "0px";
+      td.style.borderBottom = "0px";
+      td.nextSibling.style.borderBottom = "0px";
+      td.nextSibling.nextSibling.style.borderBottom = "0px";
       $(tr).find("div.summary").remove();
     }
     tr = tr.nextSibling;

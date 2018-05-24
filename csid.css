@@ -8,7 +8,8 @@ div#body-container {
   overflow: hidden;
 }
 table.events {
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0px;
   max-width: 800px;
   float: left;
 }
@@ -19,28 +20,19 @@ div#selector {
   float: right;
 }
 table.events tr td {
-  vertical-align: top;
+  vertical-align: middle;
 }
 table.events tr.date td {
   vertical-align: middle;
   font-weight: bold;
 }
-table.events tr.date td:first-letter {
-  padding-top: 0px;
-}
 table.events tr td a {
-  padding-top: 15px;
-}
-table.events tr td:first-letter {
-  padding-top: 30px;
-}
-table.events tr td input {
-  margin-top: 12px;
+  padding: 8px;
 }
 p {
 }
 table.events td {
-  padding: 0px;
+  padding: 10px;
   vertical-align: middle;
 }
 img#logo {
@@ -87,6 +79,8 @@ table.events tr td:first-child {
 }
 table.events tr td:nth-child(2) {
   white-space: nowrap;
+  padding-top: 0px;
+  padding-bottom: 0px;
   padding-left: 10px;
   font-weight: bold;
   overflow: hidden;
@@ -127,7 +121,7 @@ span.venue {
 table.events td.show {
   padding-left: 15px;
   padding-right: 10px;
-  vertical-align: top;
+  vertical-align: middle;
 }
 div.export {
   padding-top: 10px;
@@ -404,15 +398,4 @@ div.summary div {
 div.summary img {
   float: left;
   padding-right: 20px;
-}
-div.logo-container {
-  height: 45px;
-  position: relative;
-  text-align: left;
-}
-div.logo-container img {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  margin: auto;
 }

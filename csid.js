@@ -1326,11 +1326,9 @@ var summaryQuery = false;
 
 function fetchSummaries(ids, index, callback) {
   var hash = sha1(ids[index][1]);
-  var url = "summaries";
-  for (var i = 0; i < 4; i++) {
-    url += "/" + hash.substring(i * 10, (i + 1) * 10);
-  }
-  url += "-data.json";
+  var url = "summaries/" +
+	hash.substring(0, 3) + "/" + hash.substring(3) +
+	"-data.json";
   summaryQuery = $.ajax({
     url: url,
     dataType: "text",

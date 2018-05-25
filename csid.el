@@ -1298,7 +1298,7 @@ no further processing).  URL is either a string or a parsed URL."
 	for i from 1
 	collect (append elem (list i))))
 
-(defun csid-generate-html (&optional file)
+(defun csid-generate-html (&optional file summaries)
   (let ((data
 	 ;; Sort by dates, and then names.
 	 (sort (sort (csid-number-database)
@@ -1342,7 +1342,11 @@ no further processing).  URL is either a string or a parsed URL."
 				  (if (> (length name) 1000)
 				      (substring name 0 1000)
 				    name))
-				 venue)))
+				 venue))
+		 (when (and summaries
+			    url)
+		   (insert (format "<tr><td colspan=3>%s</td></tr>"
+				   (or (csid-summary-text url))))))
 	    (setq prev-date date))
       (insert "</table><div id='selector'></div>")
       (dolist (js '("jquery-1.10.2.min.js"
@@ -1356,6 +1360,14 @@ no further processing).  URL is either a string or a parsed URL."
 			js
 			(csid-timestamp))))
       (insert "<script type='text/javascript'>addNavigation();</script>"))))
+
+(defun csid-summary-text (url)
+  (let ((file (csid-summary-file url)))
+    (when (file-exists-p file)
+    (with-temp-buffer
+      (insert-file-contents file)
+      (let ((json (json-read)))
+	(cdr (assq 'summary json)))))))
 
 (defun csid-timestamp ()
   (float-time))
@@ -1570,32 +1582,41 @@ no further processing).  URL is either a string or a parsed URL."
 	(with-temp-buffer
 	  (insert "{}")
 	  (write-region (point-min) (point-max) file))
-      (let ((image (csid-get-event-image dom))
+      (let ((image (csid-get-event-image dom url))
 	    (summary (csid-get-event-summary dom))
 	    (url-request-extra-headers '(("Cookie" . "fr=0iznHLOd07GF3Pj78..BZ8tLB.QG.AAA.0.0.Bano-m.AWVOfML3; sb=6tlhWvzwnenK3Wm6ZmN2WUgS; noscript=1")
 					 ("Referer" . "https://www.facebook.com/events/791343834393278/?_fb_noscript=1"))))
 	(with-temp-buffer
 	  (insert "{")
 	  (when image
-	    (insert "\"image\": \"data:image/jpeg;base64,")
-	    (insert
-	     (with-current-buffer (csid-retrieve-synchronously image nil t)
-	       (goto-char (point-min))
-	       (if (not (re-search-forward "^\r?\n" nil t))
-		   ""
-		 (delete-region (point-min) (point))
-		 (call-process-region (point) (point-max)
-				      "convert"
-				      t t nil
-				      "-resize" "300x200>" "-" "jpg:-")
-		 (base64-encode-region (point-min) (point-max))
-		 (goto-char (point-min))
-		 (while (search-forward "\n" nil t)
-		   (replace-match ""))
-		 (prog1
-		     (buffer-string)
-		   (kill-buffer (current-buffer))))))
-	    (insert "\", "))
+	    (let ((base64
+		   (with-current-buffer
+		       (csid-retrieve-synchronously image nil t)
+		     (goto-char (point-min))
+		     (if (not (re-search-forward "^\r?\n" nil t))
+			 ""
+		       (delete-region (point-min) (point))
+		       (let ((success
+			      (call-process-region (point) (point-max)
+						   "convert"
+						   t t nil
+						   "-resize" "300x200>" "-" "jpg:-")))
+			 (if (not (zerop success))
+			     (progn
+			       (kill-buffer (current-buffer))
+			       nil)
+			   (base64-encode-region (point-min) (point-max))
+			   (goto-char (point-min))
+			   (while (search-forward "\n" nil t)
+			     (replace-match ""))
+			   (prog1
+			       (buffer-string)
+			     (kill-buffer (current-buffer)))))))))
+	      (when base64
+		;; We managed to download (and convert) the image.
+		(insert "\"image\": \"data:image/jpeg;base64,"
+			base64
+			"\", "))))
 	  (insert "\"summary\": \""
 		  (replace-regexp-in-string "\"" "" summary)
 		  "\", \"id\": \""
@@ -1611,16 +1632,15 @@ no further processing).  URL is either a string or a parsed URL."
   (with-temp-buffer
     (insert (sha1 url))
     (goto-char (point-min))
-    (forward-char 10)
-    (while (not (eobp))
-      (insert "/")
-      (forward-char 10))
+    (forward-char 3)
+    (insert "/")
+    (goto-char (point-max))
     (insert "-data.json")
     (goto-char (point-min))
     (insert csid-summary-directory "/")
     (buffer-string)))
 
-(defun csid-get-event-image (dom)
+(defun csid-get-event-image (dom url)
   (let ((images (csid-rank-images dom url)))
     (when images
       (if (> (caar images) (* 200 200))

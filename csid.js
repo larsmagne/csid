@@ -1383,8 +1383,12 @@ function insertSummary(id, url, data) {
   if (data.image) {
     var image = document.createElement("img");
     image.src = data.image;
-    if (image.width > window.innerWidth / 2)
-      image.width = window.innerWidth / 2;
+    var windowWidth = window.innerWidth;
+    // For Chrome on Mobile.
+    if (window.visualViewport)
+      windowWidth = window.visualViewport.width;
+    if (image.width > windowWidth / 2)
+      image.width = windowWidth / 2;
     div.appendChild(image);
   }
   td.style.borderBottom = "200px solid white";

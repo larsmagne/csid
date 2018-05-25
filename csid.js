@@ -1387,8 +1387,8 @@ function insertSummary(id, url, data) {
     // For Chrome on Mobile.
     if (window.visualViewport)
       windowWidth = window.visualViewport.width;
-    if (image.width > windowWidth / 2)
-      image.width = windowWidth / 2;
+    if (windowWidth)
+      image.style.maxWidth = windowWidth / 2;
     div.appendChild(image);
   }
   td.style.borderBottom = "200px solid white";

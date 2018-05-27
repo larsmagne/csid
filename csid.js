@@ -1529,8 +1529,7 @@ function addHoverSummaries() {
 
 function hideAllSummaries() {
   $("tr.date").each(function(key, node) {
-    if (hasSummaries(node))
-      hideSummaries(node);
+    hideSummaries(node);
   });
   fetchedSummaries = [];
 }

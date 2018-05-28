@@ -1314,7 +1314,7 @@ no further processing).  URL is either a string or a parsed URL."
     (with-temp-file (or file "/tmp/csid.html")
       (insert
        (format
-	"<head><title>Concerts in Oslo</title><meta charset='utf-8'><link href='csid.css?ts=%s' rel='stylesheet' type='text/css'><meta name='viewport' content='width=device-width, initial-scale=1'><link href='pikaday.css' rel='stylesheet' type='text/css'><link rel='icon' href='http://csid.no/favicon.ico'><body><div id='body-container'><div id='large-heading'><img src='csid.png?ts=%s' id='logo'><p>(Also known as <a href='http://lars.ingebrigtsen.no/2013/09/crowdsourcing-is-dead.html'>'Konserter i Oslo'</a>.)</p></div></div><div id='small-heading'><div id='small-menu'><span class='box-shadow-menu'></span></div>Concerts in Oslo</div>"
+	"<head><title>Concerts in Oslo</title><meta charset='utf-8'><link href='csid.css?ts=%s' rel='stylesheet' type='text/css'><meta name='viewport' content='width=device-width, initial-scale=1'><link href='pikaday.css' rel='stylesheet' type='text/css'><link rel='icon' href='http://csid.no/favicon.ico'><body><div id='body-container'><div id='large-heading'><img src='csid.png?ts=%s' id='logo' alt='Concerts in Oslo'><p>(Also known as <a href='http://lars.ingebrigtsen.no/2013/09/crowdsourcing-is-dead.html'>'Konserter i Oslo'</a>.)</p></div></div><div id='small-heading'><div id='small-menu'><span class='box-shadow-menu'></span></div>Concerts in Oslo</div>"
 	(csid-timestamp)
 	(csid-timestamp)))
       (insert "<table class='events'><colgroup><col class='band'><col class='venue'><col class='button'></colgroup>")

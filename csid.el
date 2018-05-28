@@ -56,7 +56,7 @@
     ("Bidrobon" "https://nb-no.facebook.com/pg/Drivhuset-musikkverksted-bidrobon-Biermannsg%C3%A5rden-202355836444/events/?ref=page_internal" facebook (59.931460 10.755416))
     ("Cosmopolite" "http://cosmopolite.no/program/cosmopolite" cosmopolite (59.936133 10.765991))
     ("Belleville" "http://cosmopolite.no/program/belleville" cosmopolite (59.936133 10.765991))
-    ;;("Vulkan" "https://vulkanarena.no/" vulkan (59.922435 10.751270))
+    ("Vulkan" "https://vulkanarena.no/" vulkan (59.922435 10.751270))
     ("Jakob" "http://jakob.no/program/" jakob (59.918090 10.754294))
     ("Ultima" "http://ultima.no/program" ultima)
     ("Blitz" "http://www.blitz.no/kalender" blitz (59.918438 10.737446))

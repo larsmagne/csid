@@ -397,7 +397,6 @@ function fixPosition() {
   if (phoneGap || $("body").width() < 600)
     return;
 
-  console.log("foo");
   $("table").each(function (key, table) {
     table.width = table.offsetWidth + "px";
     $(table).find("colgroup").children("col").each(function(key, col) {

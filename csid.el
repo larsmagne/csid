@@ -117,6 +117,7 @@
     ("Rommen scene" "https://www.rommenscene.no/program/" rommen (59.967347 10.914572))
     ("Skippergata" "https://www.facebook.com/pg/Skippergata.oslo/events/?ref=page_internal" facebook (59.910627 10.747597))
     ("Aye Aye Club" "https://www.facebook.com/pg/ayeayeclub/events/?ref=page_internal" facebook (59.913293 10.748973))
+    ("Last Train" "https://www.facebook.com/pg/lasttrainoslo/events/?ref=page_internal" facebook (59.914704 10.736528))
     ))
 
 (defvar csid-database nil)

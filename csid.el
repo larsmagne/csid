@@ -1320,6 +1320,7 @@ no further processing).  URL is either a string or a parsed URL."
       (insert "<table class='events'><colgroup><col class='band'><col class='venue'><col class='button'></colgroup>")
       (setq start (point))
       (loop with prev-date
+	    for i from 0
 	    for (venue date url name id fetch-date rank) in data
 	    unless (string< date now)
 	    do (progn
@@ -1348,8 +1349,9 @@ no further processing).  URL is either a string or a parsed URL."
 		 (when (and summaries
 			    url)
 		   (insert (format "<tr><td colspan=3>%s%s</td></tr>"
-				   (let ((img (csid-summary url 'summary)))
-				     (if (not img)
+				   (let ((img (csid-summary url 'image)))
+				     (if (or (not img)
+					     (> i 200))
 					 ""
 				       (format "<img src=%S>"
 					       img)))

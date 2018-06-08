@@ -1347,8 +1347,13 @@ no further processing).  URL is either a string or a parsed URL."
 				 venue))
 		 (when (and summaries
 			    url)
-		   (insert (format "<tr><td colspan=3>%s</td></tr>"
-				   (or (csid-summary-text url))))))
+		   (insert (format "<tr><td colspan=3>%s%s</td></tr>"
+				   (let ((img (csid-summary url 'summary)))
+				     (if (not img)
+					 ""
+				       (format "<img src=%S>"
+					       img)))
+				   (or (csid-summary url 'summary))))))
 	    (setq prev-date date))
       (insert "</table><div id='selector'></div>")
       (dolist (js '("jquery-1.10.2.min.js"
@@ -1363,13 +1368,13 @@ no further processing).  URL is either a string or a parsed URL."
 			(csid-timestamp))))
       (insert "<script type='text/javascript'>addNavigation();</script>"))))
 
-(defun csid-summary-text (url)
+(defun csid-summary (url type)
   (let ((file (csid-summary-file url)))
     (when (file-exists-p file)
     (with-temp-buffer
       (insert-file-contents file)
       (let ((json (json-read)))
-	(cdr (assq 'summary json)))))))
+	(cdr (assq type json)))))))
 
 (defun csid-timestamp ()
   (float-time))

@@ -1320,7 +1320,7 @@ no further processing).  URL is either a string or a parsed URL."
       (insert "<table class='events'><colgroup><col class='band'><col class='venue'><col class='button'></colgroup>")
       (setq start (point))
       (loop with prev-date
-	    for i from 0
+	    with i = 0
 	    for (venue date url name id fetch-date rank) in data
 	    unless (string< date now)
 	    do (progn
@@ -1353,8 +1353,8 @@ no further processing).  URL is either a string or a parsed URL."
 				     (if (or (not img)
 					     (> i 200))
 					 ""
-				       (format "<img src=%S>"
-					       img)))
+				       (incf i)
+				       (format "<img src=%S>" img)))
 				   (or (csid-summary url 'summary))))))
 	    (setq prev-date date))
       (insert "</table><div id='selector'></div>")

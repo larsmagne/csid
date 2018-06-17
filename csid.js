@@ -410,7 +410,7 @@ function exportShows() {
   var visible = [];
   $.map(shows, function(elem) {
     var id = "#event-" + elem;
-    if ($(id)[0] && $(id).is(":visible") )
+    if ($(id)[0] && $(id).is(":visible"))
       visible.push(elem);
   });
   window.location.href = window.location.href.replace(/[?].*/, "") +

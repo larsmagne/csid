@@ -1665,12 +1665,29 @@ no further processing).  URL is either a string or a parsed URL."
 
 (defun csid-retrieve-event-dom (url)
   (message "%s" url)
-  (with-current-buffer (csid-retrieve-synchronously url)
-    (goto-char (point-min))
-    (when (re-search-forward "^\r?\n" nil t)
-      (prog1
-	  (libxml-parse-html-region (point) (point-max))
-	(kill-buffer (current-buffer))))))
+  (if (string-match "facebook.com" url)
+      (csid-retrieve-facebook-event-dom url)
+    (with-current-buffer (csid-retrieve-synchronously url)
+      (goto-char (point-min))
+      (when (re-search-forward "^\r?\n" nil t)
+	(prog1
+	    (libxml-parse-html-region (point) (point-max))
+	  (kill-buffer (current-buffer)))))))
+
+(defun csid-retrieve-facebook-event-dom (url)
+  (let ((html "/tmp/event.html"))
+    (when (file-exists-p html)
+      (delete-file html))
+    (with-temp-buffer
+      (insert-file-contents "~/src/csid/dump.js")
+      (search-forward "<URL>")
+      (replace-match (format "%S" url) t t)
+      (write-region (point-min) (point-max) "/tmp/dump.js" nil 'silent))
+    (call-process "phantomjs" nil nil nil "/tmp/dump.js")
+    (when (file-exists-p html)
+      (with-temp-buffer
+	(insert-file-contents html)
+	(libxml-parse-html-region (point-min) (point-max))))))
 
 (defun csid-preferred-image (dom)
   (let ((srcset (or (dom-attr dom 'srcset)

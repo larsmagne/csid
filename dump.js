@@ -7,6 +7,12 @@ page.onLoadFinished = function() {
   phantom.exit();
 };
 
+window.setTimeout(function () {
+  console.log("timed out");
+  fs.write('/tmp/event.html', page.content, 'w');
+  phantom.exit();
+}, 10000);
+
 page.open(<URL>, function() {
   page.evaluate(function() {
   });

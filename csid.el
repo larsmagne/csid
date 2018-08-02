@@ -1679,7 +1679,9 @@ no further processing).  URL is either a string or a parsed URL."
     (when (file-exists-p html)
       (delete-file html))
     (with-temp-buffer
-      (insert-file-contents "~larsi/src/csid/dump.js")
+      (insert-file-contents
+       (expand-file-name "dump.js"
+			 (file-name-directory (locate-library "csid.el"))))
       (search-forward "<URL>")
       (replace-match (format "%S" url) t t)
       (write-region (point-min) (point-max) "/tmp/dump.js" nil 'silent))

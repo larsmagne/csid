@@ -1679,12 +1679,14 @@ no further processing).  URL is either a string or a parsed URL."
 
 (defun csid-retrieve-phantom-event-dom (url)
   (let ((html "/tmp/event.html")
-	(js "dump.js"))
+	(js "/tmp/dump.js"))
     (when (file-exists-p html)
       (delete-file html))
     (with-temp-buffer
       (insert-file-contents
-       (expand-file-name js (file-name-directory (locate-library "csid.el"))))
+       (expand-file-name
+	(file-name-nondirectory js)
+	(file-name-directory (locate-library "csid.el"))))
       (search-forward "<URL>")
       (replace-match (format "%S" url) t t)
       (write-region (point-min) (point-max) js nil 'silent))

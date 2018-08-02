@@ -134,7 +134,7 @@ function addNavigation() {
     exportShows();
   });
 
-  $("#selector").append("<div class='export'><a id='sort'>List event in scan order</a></div>");
+  $("#selector").append("<div class='export'><a id='sort'>List events in scan order</a></div>");
   $("#sort").bind("click", function() {
     sortByScanOrder();
     addRestoreLink();

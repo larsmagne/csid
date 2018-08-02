@@ -1315,7 +1315,7 @@ no further processing).  URL is either a string or a parsed URL."
     (with-temp-file (or file "/tmp/csid.html")
       (insert
        (format
-	"<head><title>Concerts in Oslo</title><meta charset='utf-8'><link href='csid.css?ts=%s' rel='stylesheet' type='text/css'><meta name='viewport' content='width=device-width, initial-scale=1'><link href='pikaday.css' rel='stylesheet' type='text/css'><link rel='icon' href='http://csid.no/favicon.ico'><body><div id='body-container'><div id='large-heading'><img src='csid.png?ts=%s' id='logo' alt='Concerts in Oslo'><p>(Also known as <a href='http://lars.ingebrigtsen.no/2013/09/crowdsourcing-is-dead.html'>'Konserter i Oslo'</a>.)</p></div></div><div id='small-heading'><div id='small-menu'><span class='box-shadow-menu'></span></div>Concerts in Oslo</div>"
+	"<head><title>Concerts in Oslo</title><meta charset='utf-8'><link href='csid.css?ts=%s' rel='stylesheet' type='text/css'><meta name='viewport' content='width=device-width, initial-scale=1'><link href='pikaday.css' rel='stylesheet' type='text/css'><link rel='icon' href='https://csid.no/favicon.ico'><body><div id='body-container'><div id='large-heading'><img src='csid.png?ts=%s' id='logo' alt='Concerts in Oslo'><p>(Also known as <a href='https://lars.ingebrigtsen.no/2013/09/crowdsourcing-is-dead.html'>'Konserter i Oslo'</a>.)</p></div></div><div id='small-heading'><div id='small-menu'><span class='box-shadow-menu'></span></div>Concerts in Oslo</div>"
 	(csid-timestamp)
 	(csid-timestamp)))
       (insert "<table class='events'><colgroup><col class='band'><col class='venue'><col class='button'></colgroup>")
@@ -1437,7 +1437,7 @@ no further processing).  URL is either a string or a parsed URL."
 
 (defun csid-write-atom (file)
   (csid-read-database)
-  (let ((feed (atom-create "Concerts in Oslo" "http://csid.no/"))
+  (let ((feed (atom-create "Concerts in Oslo" "https://csid.no/"))
 	(database (sort (copy-sequence csid-database)
 			(lambda (e1 e2)
 			  (string< (nth 1 e1)
@@ -1451,14 +1451,14 @@ no further processing).  URL is either a string or a parsed URL."
 			  (string-match this-date scan-time))
 		collect (format "%s: <a href=\"%s\">%s</a> at %s"
 				date
-				(format "http://csid.no/?goto=%s" id)
+				(format "https://csid.no/?goto=%s" id)
 				name
 				venue))
 	  when events
 	  do (atom-add-html-entry
 	      feed
 	      (format "Concerts Registered on %s" this-date)
-	      (format "http://csid.no/scan-date=%s" this-date)
+	      (format "https://csid.no/scan-date=%s" this-date)
 	      (mapconcat 'identity events
 			 "<br />"))
 	  do (setq time (time-subtract time (list 0 (* 25 60 60)))))
@@ -1477,7 +1477,7 @@ no further processing).  URL is either a string or a parsed URL."
     (with-temp-buffer
       (insert
        (format
-	"<head><title>Crowdsourcing Is Dead</title><meta charset='utf-8'><link href='http://csid.no/csid.css' rel='stylesheet' type='text/css'><meta name='viewport' content='width=device-width, initial-scale=1'><link href='http://csid.no/pikaday.css' rel='stylesheet' type='text/css'><link rel='icon' href='http://csid.no/favicon.ico'><body><div id='body-container'><div id='large-heading'><a href=\"http://csid.no/\"><img src='http://csid.no/csid.png' id='logo'></a><p>(Also known as <a href='http://lars.ingebrigtsen.no/2013/09/crowdsourcing-is-dead.html'>'Concerts In Oslo' or 'Konserter i Oslo'</a> on %s.)</p></div><div id='small-heading'><span class='box-shadow-menu' id='small-menu'></span></div>Crowdsourcing Is Dead</div>"
+	"<head><title>Crowdsourcing Is Dead</title><meta charset='utf-8'><link href='https://csid.no/csid.css' rel='stylesheet' type='text/css'><meta name='viewport' content='width=device-width, initial-scale=1'><link href='https://csid.no/pikaday.css' rel='stylesheet' type='text/css'><link rel='icon' href='https://csid.no/favicon.ico'><body><div id='body-container'><div id='large-heading'><a href=\"https://csid.no/\"><img src='https://csid.no/csid.png' id='logo'></a><p>(Also known as <a href='https://lars.ingebrigtsen.no/2013/09/crowdsourcing-is-dead.html'>'Concerts In Oslo' or 'Konserter i Oslo'</a> on %s.)</p></div><div id='small-heading'><span class='box-shadow-menu' id='small-menu'></span></div>Crowdsourcing Is Dead</div>"
 	(csid-add-weekday this-date t)))
       (insert "<table class='events'>")
       (loop for (venue date url name id scan-time) in

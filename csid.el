@@ -1684,10 +1684,14 @@ no further processing).  URL is either a string or a parsed URL."
       (replace-match (format "%S" url) t t)
       (write-region (point-min) (point-max) "/tmp/dump.js" nil 'silent))
     (call-process "phantomjs" nil nil nil "/tmp/dump.js")
-    (when (file-exists-p html)
-      (with-temp-buffer
-	(insert-file-contents html)
-	(libxml-parse-html-region (point-min) (point-max))))))
+    (prog1
+	(when (file-exists-p html)
+	  (with-temp-buffer
+	    (insert-file-contents html)
+	    (libxml-parse-html-region (point-min) (point-max))))
+      (when (file-exists-p html)
+	(delete-file html))
+      (delete-file "/tmp/dump.js"))))
 
 (defun csid-preferred-image (dom)
   (let ((srcset (or (dom-attr dom 'srcset)

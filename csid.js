@@ -156,7 +156,7 @@ function addNavigation() {
   $("#selector").append("<div class='export'><a id='rss' href='csid.atom'>Atom/\RSS feed</a><p><a href='https://itunes.apple.com/us/app/csid-concerts-in-oslo/id1037896784?mt=8&ign-mpt=uo%3D4'><img src='assets/apple.png'></a><p><a href='https://play.google.com/store/apps/details?id=no.ingebrigtsen.csid'><img src='assets/google.png'></a><p><a href='https://www.microsoft.com/en-us/store/apps/concerts-in-oslo/9nblggh6c4lv'><img src='assets/windows.png'></a></div></div>");
 
   $("img#logo").bind("click", function() {
-    window.location.href = "http://csid.no/";
+    window.location.href = "https://csid.no/";
   });
 
   $('a#help').bind("click", function() {
@@ -487,7 +487,7 @@ function insertAfter(newNode, referenceNode) {
 }
 
 function addRestoreLink() {
-  $("#selector").append("<div class='export'><a href='http://csid.no/'>Restore list</a></div>");
+  $("#selector").append("<div class='export'><a href='https://csid.no/'>Restore list</a></div>");
 }
 
 function exportCalendar() {
@@ -541,7 +541,7 @@ function actionEventMenu(node, venue) {
       exportString = "<a href='#' id='export-event'>Export Event to Calendar</a>";
     exportString += "<a href='#' id='share-event'>Share Event</a>";
     if (! existingLogos[fixName(venue)])
-      logo = "http://csid.no/logos/larger/" + fixName(venue);
+      logo = "https://csid.no/logos/larger/" + fixName(venue);
   }
   colorbox("<div class='outer-venue-logo'><img src='" + logo +
 	   ".png' srcset='" + logo +
@@ -593,7 +593,7 @@ function actionVenueMenu(name) {
   var logo = "logos/larger/" + fixName(name);
   if (phoneGap) {
     if (! existingLogos[fixName(name)])
-      logo = "http://csid.no/logos/larger/" + fixName(name);
+      logo = "https://csid.no/logos/larger/" + fixName(name);
   }
   colorbox("<div class='outer-venue-logo'><img src='" + logo +
 	   ".png' srcset='" + logo +
@@ -681,8 +681,8 @@ function addLogos() {
     td.className = "thumb-logo";
 
     if (phoneGap && ! existingLogos[fixName(venue)]) {
-      td.innerHTML = "<img src='http://csid.no/logos/thumb/" +
-	fixName(venue) + ".png' srcset='http://csid.no/logos/thumb/" +
+      td.innerHTML = "<img src='https://csid.no/logos/thumb/" +
+	fixName(venue) + ".png' srcset='https://csid.no/logos/thumb/" +
 	fixName(venue) + "x2.png 2x'></td>";
     } else {
       td.innerHTML = "<img src='logos/thumb/" + fixName(venue) +
@@ -1110,7 +1110,7 @@ function shareEvent(id) {
    new Date(date[0], date[1] - 1, date[2], 19, 00, 0, 0, 0).toDateString() +
    ".",
    title,
-   //"http://csid.no/logos/larger/" + fixName(venue) + ".png",
+   //"https://csid.no/logos/larger/" + fixName(venue) + ".png",
    null,
    url);
 }

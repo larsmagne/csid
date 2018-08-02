@@ -1666,26 +1666,29 @@ no further processing).  URL is either a string or a parsed URL."
 (defun csid-retrieve-event-dom (url)
   (message "%s" url)
   (if (string-match "facebook.com" url)
-      (csid-retrieve-facebook-event-dom url)
-    (with-current-buffer (csid-retrieve-synchronously url)
-      (goto-char (point-min))
-      (when (re-search-forward "^\r?\n" nil t)
-	(prog1
-	    (libxml-parse-html-region (point) (point-max))
-	  (kill-buffer (current-buffer)))))))
+      (csid-retrieve-phantom-event-dom url)
+    (csid-retrieve-direct-event-dom url)))
 
-(defun csid-retrieve-facebook-event-dom (url)
-  (let ((html "/tmp/event.html"))
+(defun csid-retrieve-direct-event-dom (url)
+  (with-current-buffer (csid-retrieve-synchronously url)
+    (goto-char (point-min))
+    (when (re-search-forward "^\r?\n" nil t)
+      (prog1
+	  (libxml-parse-html-region (point) (point-max))
+	(kill-buffer (current-buffer))))))
+
+(defun csid-retrieve-phantom-event-dom (url)
+  (let ((html "/tmp/event.html")
+	(js "dump.js"))
     (when (file-exists-p html)
       (delete-file html))
     (with-temp-buffer
       (insert-file-contents
-       (expand-file-name "dump.js"
-			 (file-name-directory (locate-library "csid.el"))))
+       (expand-file-name js (file-name-directory (locate-library "csid.el"))))
       (search-forward "<URL>")
       (replace-match (format "%S" url) t t)
-      (write-region (point-min) (point-max) "/tmp/dump.js" nil 'silent))
-    (call-process "phantomjs" nil nil nil "/tmp/dump.js")
+      (write-region (point-min) (point-max) js nil 'silent))
+    (call-process "phantomjs" nil nil nil js)
     (prog1
 	(when (file-exists-p html)
 	  (with-temp-buffer
@@ -1693,7 +1696,7 @@ no further processing).  URL is either a string or a parsed URL."
 	    (libxml-parse-html-region (point-min) (point-max))))
       (when (file-exists-p html)
 	(delete-file html))
-      (delete-file "/tmp/dump.js"))))
+      (delete-file js))))
 
 (defun csid-preferred-image (dom)
   (let ((srcset (or (dom-attr dom 'srcset)

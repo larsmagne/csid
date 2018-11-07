@@ -1392,7 +1392,7 @@ function insertSummary(id, url, data) {
   td.nextSibling.style.borderBottom = "200px solid white";
   td.nextSibling.nextSibling.style.borderBottom = "200px solid white";
   var text = document.createElement("div");
-  text.innerHTML = data.summary.replace(/<meta/, "");
+  text.innerHTML = htmlEntities(data.summary);
   div.style.top = $(tr).height() - 200 + "px";
   div.style.width = $(tr).width() + "px";
   div.style.opacity = "0";
@@ -1405,6 +1405,10 @@ function insertSummary(id, url, data) {
   $(td).click(function() {
     document.location = url;
   });
+}
+
+function htmlEntities(str) {
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
 function insertBlankSummary(id, url, data) {

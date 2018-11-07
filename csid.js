@@ -1392,7 +1392,7 @@ function insertSummary(id, url, data) {
   td.nextSibling.style.borderBottom = "200px solid white";
   td.nextSibling.nextSibling.style.borderBottom = "200px solid white";
   var text = document.createElement("div");
-  text.innerHTML = data.summary;
+  text.innerHTML = data.summary.replace(/<meta/, "");
   div.style.top = $(tr).height() - 200 + "px";
   div.style.width = $(tr).width() + "px";
   div.style.opacity = "0";

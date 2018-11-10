@@ -1490,67 +1490,6 @@ no further processing).  URL is either a string or a parsed URL."
       (write-region (point-min) (point-max)
 		    (expand-file-name (format "%s.html" this-date) dir)))))
 
-(defun csid-get-facebook-events (id)
-  (with-current-buffer
-      (csid-retrieve-synchronously
-       (format
-	"https://graph.facebook.com/v3.0/%s/events?access_token=%s"
-	id csid-facebook-access-token))
-    (goto-char (point-min))
-    (prog1
-	(when (re-search-forward "^$" nil t)
-	  (ignore-errors (json-read)))
-      (kill-buffer (current-buffer)))))
-
-(defvar csid-app-id nil)
-(defvar csid-app-secret nil)
-
-(defun csid-get-long-token ()
-  (with-current-buffer
-      (csid-retrieve-synchronously
-       (format
-	"https://graph.facebook.com/v2.9/oauth/access_token?grant_type=fb_exchange_token&client_id=%s&client_secret=%s&fb_exchange_token=%s"
-	csid-app-id
-	csid-app-secret
-	csid-facebook-access-token))
-    (goto-char (point-min))
-    (when (re-search-forward "^$" nil t)
-      (ignore-errors (json-read)))))
-
-(defun csid-update-long-token ()
-  (let* ((json (csid-get-long-token))
-	 (token (cdr (assq 'access_token json))))
-    (when token
-      (setq csid-facebook-access-token token))
-    json))
-
-(defun csid-get-access-token (code)
-  (with-current-buffer
-      (csid-retrieve-synchronously
-       (format
-	"https://graph.facebook.com/v2.8/oauth/access_token?client_id=%s&redirect_uri=%s&client_secret=%s&code=%s"
-	csid-app-id
-	"http://quimby.gnus.org/cicrus/token.php"
-	csid-app-secret
-	code))
-    (goto-char (point-min))
-    (when (re-search-forward "^$" nil t)
-      (ignore-errors (json-read)))))
-
-(defun csid-make-oauth-url ()
-  (with-temp-buffer
-    (insert (format "https://www.facebook.com/v2.9/dialog/oauth?client_id=%s&redirect_uri=http://quimby.gnus.org/cicrus/token.php"
-		    csid-app-id))
-    (copy-region-as-kill (point-min) (point-max))))
-
-;; To get a token, run (csid-make-oauth-url) and then open the URL in
-;; Firefox.  Then log in and copy the CODE part of the 404 URL from
-;; quimby. Then run
-;; (csid-get-access-token code), and then set csid-facebook-access-token to thoe access_token
-;; (csid-get-long-token) and set the token
-;; again.
-;; This should be streamlined.
-
 (defun csid-get-facebook-events-public (id &optional cursor)
   (let* ((url-request-method "POST")
 	 (boundary (mml-compute-boundary '()))

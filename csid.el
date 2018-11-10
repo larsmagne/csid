@@ -1744,7 +1744,7 @@ no further processing).  URL is either a string or a parsed URL."
     result))
 
 (defun csid-get-event-summary (dom)
-  (dolist (tag '(style script comment))
+  (dolist (tag '(style script comment noscript))
     (loop for comment in (dom-by-tag dom tag)
 	  do (dom-remove-node dom comment)))
   (eww-score-readability dom)

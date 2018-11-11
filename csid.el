@@ -120,6 +120,8 @@
     ("Last Train" "https://www.facebook.com/pg/lasttrainoslo/events/?ref=page_internal" facebook (59.914704 10.736528))
     ("Elefant" "https://www.facebook.com/pg/elefantoslo/events/?ref=page_internal" facebook (59.910894 10.737074))
     ("Ensjø" "https://www.facebook.com/pg/EnsjoMusikkscene/events/?ref=page_internal" facebook (59.913104 10.788831))
+    ("Ly" "https://www.facebook.com/pg/LyLokka/events/?ref=page_internal" facebook (59.924335 10.761052))
+    ("Grünerløkka brygghus" "https://www.facebook.com/pg/grunerlokkabrygghus/events/?ref=page_internal" facebook (59.925014 10.759393))
     ))
 
 (defvar csid-database nil)

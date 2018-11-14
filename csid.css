@@ -402,3 +402,22 @@ div.summary img {
   float: left;
   padding-right: 20px;
 }
+
+div#event-summary {
+  width: 100%;
+  background-color: white;
+}
+
+div#event-summary table {
+  padding: 0px;
+  margin: 0px;
+  border-collapse: collapse;
+}
+
+div#event-summary table td#event-text {
+  padding: 20px;
+}
+
+div#event-summary table td {
+  margin: 0px;
+}

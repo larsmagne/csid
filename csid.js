@@ -547,14 +547,12 @@ function actionEventMenu(node, venue) {
     if (! existingLogos[fixName(venue)])
       logo = "https://csid.no/logos/larger/" + fixName(venue);
   }
-  colorbox("<div class='outer-venue-logo'><img src='" + logo +
-	   ".png' srcset='" + logo +
-	   "x2.png 2x'></div><div class='event-text'><div>" +
-	   $(node).find("a")[0].innerHTML +
-	   "</div></div><a id='event-link' href='" + link +
+  colorbox("<div id='event-summary'><table><tr><td id='event-image'><td id='event-text'></table></div><a id='event-link' href='" + link +
 	   "'>Display the event web page</a><a href='#' id='mark-event'>" +
 	   type + "</a>" + exportString +
-	   "<a href='#' id='csid-close'>Close</a>");
+	   "<a href='#' id='csid-close'>Close</a><div class='outer-venue-logo'><img src='" + logo +
+	   ".png' srcset='" + logo +
+	   "x2.png 2x'></div>");
   $("#mark-event").bind("click", function() {
     toggleShow(id, $.inArray(id, shows) == -1);
     closeColorbox();
@@ -575,6 +573,7 @@ function actionEventMenu(node, venue) {
     followLink(this.href);
     return false;
   });
+  fetchEventSummary(link);
 }
 
 function followLink(src) {
@@ -1539,4 +1538,38 @@ function hideAllSummaries() {
     hideSummaries(node);
   });
   fetchedSummaries = [];
+}
+
+function fetchEventSummary(evUrl) {
+  var hash = sha1(evUrl);
+  var url = "https://csid.no/summaries/" +
+	hash.substring(0, 3) + "/" + hash.substring(3) +
+	"-data.json";
+  summaryQuery = $.ajax({
+    url: url,
+    dataType: "text",
+    beforeSend: function(xhr){
+      if (xhr.overrideMimeType) {
+	xhr.overrideMimeType("application/json");
+      }
+    },
+    success: function(data) {
+      var json = $.parseJSON(data);
+      if (json.image) {
+	var image = document.createElement("img");
+	image.src = json.image;
+	var windowWidth = window.innerWidth;
+	// For Chrome on Mobile.
+	if (window.visualViewport)
+	  windowWidth = window.visualViewport.width;
+	if (windowWidth)
+	  image.style.maxWidth = windowWidth / 2;
+	$("#event-image").append(image);
+      }
+      $("#event-text").append(json.summary);
+    },
+    error: function(data) {
+      console.log(data);
+    }
+  });
 }

@@ -45,6 +45,9 @@ function addNavigation() {
   var deniedVenues = getSettings("deniedVenues");
   var shows = getSettings("shows");
 
+  if (mobilep)
+    autoSummaries = false;
+  
   $("#selector").append("<div class='explanation'>Everything in <a id='help' href='help.html?1'><b>bold</b></a> is clickable</div>");
 
   $("tr").each(function(key, node) {
@@ -208,7 +211,8 @@ function addNavigation() {
       viewable();
     }, 250));
   });
-  addHoverSummaries();
+  if (! mobilep)
+    addHoverSummaries();
   window.setTimeout(viewable, 100);
 }
 

@@ -1265,7 +1265,7 @@ function initMap() {
   if (herePos && map.getBounds().contains(hereMarker.getPosition()))
     map.setCenter(herePos);
   else
-    map.setCenter(startPos);
+    map.setCenter({lat: startPos[0], lng: startPos[1]});
   // Rescale the map to display all the events.
   map.fitBounds(bounds);
 }

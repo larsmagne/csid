@@ -547,7 +547,7 @@ function actionEventMenu(node, venue) {
     if (! existingLogos[fixName(venue)])
       logo = "https://csid.no/logos/larger/" + fixName(venue);
   }
-  colorbox("<div id='event-summary'><table><tr><td id='event-image'><td id='event-text'></table></div><a id='event-link' href='" + link +
+  colorbox("<div id='event-summary'><table><tr><td id='event-image'><tr><td id='event-text'></table></div><a id='event-link' href='" + link +
 	   "'>Display the event web page</a><a href='#' id='mark-event'>" +
 	   type + "</a>" + exportString +
 	   "<a href='#' id='csid-close'>Close</a><div class='outer-venue-logo'><img src='" + logo +
@@ -1542,7 +1542,7 @@ function hideAllSummaries() {
 
 function fetchEventSummary(evUrl) {
   var hash = sha1(evUrl);
-  var url = "https://csid.no/summaries/" +
+  var url = "/summaries/" +
 	hash.substring(0, 3) + "/" + hash.substring(3) +
 	"-data.json";
   summaryQuery = $.ajax({
@@ -1569,7 +1569,6 @@ function fetchEventSummary(evUrl) {
       $("#event-text").append(json.summary);
     },
     error: function(data) {
-      console.log(data);
     }
   });
 }

@@ -83,7 +83,7 @@
     ;;("Per på hjørnet" "http://www.pph.oslo.no/" pph :date)
     ("The Villa" "http://www.thevilla.no/program/" villa (59.915832 10.748751))
     ("Dattera" "http://www.dattera.no/nb/pages/6-Kalender" dattera (59.913291 10.760122))
-    ("Internasjonalen" "http://www.internasjonalen.no/program/" internasjonalen (59.914558 10.749595))
+    ("Internasjonalen" "https://www.facebook.com/pg/internasjonalenbar/events/?ref=page_internal" facebook (59.914558 10.749595))
     ("Jæger" "http://jaegeroslo.no/program/" jaeger (59.913957 10.743499))
     ("Union" "https://www.facebook.com/pg/UnionScene/events/?ref=page_internal" facebook (59.743974 10.192263) :nobound)
     ("Musikkflekken" "https://www.facebook.com/Musikkflekken/events" facebook (59.890424 10.524722) :nobound)
@@ -179,7 +179,7 @@
    (t
     :html)))
 
-(defun csid-parse-sources (&optional type)
+(defun csid-parse-sources (&optional type debug)
   ;; When calling interactively, clear out the list for easier debugging.
   (when type
     (setq csid-database nil))
@@ -197,7 +197,8 @@
 			 (if type
 			     (csid-parse-source
 			      url
-			      (if (fboundp function)
+			      (if (and (not debug)
+				       (fboundp function))
 				  function
 				'csid-parse-new)
 			      (csid-source-type source))
@@ -213,7 +214,10 @@
 		   (loop for result in results
 			 unless (memq :multi source)
 			 do (push name result)
-			 collect (csid-add-id result (memq :date source))))))))
+			 collect (csid-add-id result (memq :date source)))))))
+  (format "%s" (with-temp-buffer
+		 (insert-file-contents csid-database-file-name)
+		 (buffer-string))))
 
 (defun csid-add-id (elem datep)
   (let ((found nil))
@@ -725,13 +729,14 @@ no further processing).  URL is either a string or a parsed URL."
 
 (defun csid-parse-konsertforeninga (dom)
   (loop for elem in (dom-by-class dom "eventon_list_event")
-	for time = (loop for time in (dom-by-tag elem 'time)
-			 when (equal (dom-attr time 'itemprop) "startDate")
-			 return (dom-attr time 'datetime))
+	for time = (dom-by-class elem "evcal_cblock")
+	for year = (dom-attr time 'data-syr)
+	for month = (dom-attr time 'data-smon)
+	for day = (dom-text (dom-by-class time "^date$"))
 	for link = (dom-by-tag elem 'a)
 	for title = (dom-texts (dom-by-class elem "evcal_event_title"))
-	when time
-	collect (list (csid-parse-sloppy-iso8601 time)
+	collect (list (csid-parse-month-date-with-year
+		       (format "%s %s %s" month day year))
 		      (dom-attr link 'href)
 		      title)))
 
@@ -1106,21 +1111,6 @@ no further processing).  URL is either a string or a parsed URL."
 				   (shr-expand-url
 				    (dom-attr (dom-by-tag event 'a) 'href))
 				   text))))
-
-(defun csid-parse-internasjonalen (dom)
-  (loop for event in (dom-by-class dom "^event$")
-	for date-node = (loop with prev = event
-			      do (setq prev (dom-previous-sibling dom prev))
-			      while (or (stringp prev)
-					(not (eq (dom-tag prev) 'h3)))
-			      finally (return prev))
-	for link = (dom-by-tag (dom-by-tag event 'h2) 'a)
-	for date = (csid-parse-month-date-window (dom-texts date-node))
-	while (not (string< date (format-time-string "%Y-%m-%d")))
-	when (csid-date-likely-p date)
-	collect (list date
-		      (dom-attr link 'href)
-		      (dom-text link))))
 
 (defun csid-parse-jaeger (dom)
   (loop for event in (dom-by-class dom "program_right")

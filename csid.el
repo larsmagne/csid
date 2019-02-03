@@ -101,7 +101,7 @@
     ("Ingensteds" "https://www.facebook.com/pg/ingenstedsoslo/events/?ref=page_internal" facebook (59.919991 10.752761))
     ("Enga" "https://www.facebook.com/Enga-419256284860268/events?ref=page_internal" facebook (59.907470 10.783760))
     ("Big Dipper" "https://www.facebook.com/Platebutikken-Big-Dipper-428305525645/events?ref=page_internal" facebook (59.913707 10.745384))
-    ("Krøsset" "https://www.facebook.com/krxsset/events?ref=page_internal" facebook (59.921141 10.751589))
+    ;;("Krøsset" "https://www.facebook.com/krxsset/events?ref=page_internal" facebook (59.921141 10.751589))
     ("Kafé hærverk" "https://www.facebook.com/pg/kafehaerverk/events/?ref=page_internal" facebook (59.919202 10.751920))
     ("Cappelens forslag" "https://www.facebook.com/pg/CappelensForslag/events/?ref=page_internal" facebook (59.915077 10.753527))
     ;;("Barrikaden" "http://vestbredden.net/barrikaden/" barrikaden :date)

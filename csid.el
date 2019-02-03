@@ -95,7 +95,7 @@
     ;;("Mr Pizza" "http://www.mrpizza.no/" pizza :date)
     ("Sub Scene" "http://www.subscene.no/" subscene (59.912176 10.736554))
     ("Vigeland" "https://www.facebook.com/emanuelvigeland/events" facebook (59.947077 10.692663))
-    ("Josefine" "http://josefinevise.no/" josefine (59.923494 10.727687))
+    ("Josefine" "https://www.facebook.com/pg/JosefineVisescene/events/?ref=page_internal" facebook (59.923494 10.727687))
     ("Izakaya" "https://www.facebook.com/Izakaya-343430575679537/events?ref=page_internal" facebook (59.918220 10.741845))
     ("Sentralen" "http://www.sentralen.no/arrangementer" sentralen (59.911146 10.740328))
     ("Ingensteds" "https://www.facebook.com/pg/ingenstedsoslo/events/?ref=page_internal" facebook (59.919991 10.752761))
@@ -1155,15 +1155,6 @@ no further processing).  URL is either a string or a parsed URL."
 	collect (list (csid-parse-month-date (dom-texts (dom-by-tag event 'p)))
 		      (dom-attr link 'href)
 		      (dom-texts (dom-by-tag event 'h1)))))
-
-(defun csid-parse-josefine (dom)
-  (loop for event in (dom-by-tag (dom-by-id dom "^northsidebar$") 'a)
-	for text = (dom-texts event)
-	for date = (csid-parse-month-date text)
-	when (csid-valid-date-p date)
-	collect (list date
-		      (dom-attr event 'href)
-		      (replace-regexp-in-string "^[^:]+: +" "" text))))
 
 (defun csid-parse-ticketco (dom)
   (loop for event in (dom-by-class dom "tc-events-list--details")

@@ -1555,7 +1555,7 @@ no further processing).  URL is either a string or a parsed URL."
 		       (csid-retrieve-synchronously image nil t)
 		     (goto-char (point-min))
 		     (if (not (re-search-forward "^\r?\n" nil t))
-			 ""
+			 nil
 		       (delete-region (point-min) (point))
 		       (let ((success
 			      (call-process-region (point) (point-max)

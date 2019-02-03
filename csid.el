@@ -85,7 +85,7 @@
     ("Dattera" "http://www.dattera.no/nb/pages/6-Kalender" dattera (59.913291 10.760122))
     ("Internasjonalen" "http://www.internasjonalen.no/program/" internasjonalen (59.914558 10.749595))
     ("Jæger" "http://jaegeroslo.no/program/" jaeger (59.913957 10.743499))
-    ("Union" "http://unionscene.no/program/" union (59.743974 10.192263) :nobound)
+    ("Union" "https://www.facebook.com/pg/UnionScene/events/?ref=page_internal" facebook (59.743974 10.192263) :nobound)
     ("Musikkflekken" "https://www.facebook.com/Musikkflekken/events" facebook (59.890424 10.524722) :nobound)
     ("Smelteverket" "https://www.facebook.com/Smelteverket/events" facebook (59.921999 10.752267))
     ;;("Skuret" "https://www.facebook.com/skuret/events" facebook)
@@ -1127,26 +1127,6 @@ no further processing).  URL is either a string or a parsed URL."
 	for link = (dom-by-tag (dom-by-tag event 'h1) 'a)
 	for date = (csid-parse-english-month-date
 		    (dom-texts (dom-by-tag event 'h7)))
-	when (and (csid-valid-date-p date)
-		  (csid-date-likely-p date))
-	collect (list date
-		      (dom-attr link 'href)
-		      (dom-text link))))
-
-(defun csid-parse-union (dom)
-  (append
-   (csid-parse-union-1 dom)
-   (loop for i from 15 upto 100 by 15
-	 append (csid-parse-source
-		 (format "http://unionscene.no/program/P%d" i)
-		 'csid-parse-union-1
-		 'html))))
-
-(defun csid-parse-union-1 (dom)
-  (loop for event in (dom-by-class dom "listitem")
-	for link = (dom-by-tag (dom-by-tag event 'h2) 'a)
-	for date = (csid-parse-month-date
-		    (dom-text (dom-by-class event "date")))
 	when (and (csid-valid-date-p date)
 		  (csid-date-likely-p date))
 	collect (list date

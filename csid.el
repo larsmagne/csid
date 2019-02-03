@@ -1515,14 +1515,23 @@ no further processing).  URL is either a string or a parsed URL."
   (csid-read-database)
   ;; Somehow loading certain images makes Facebook return the real
   ;; text page on subsequent accesses.
-  (eww "https://www.facebook.com/events/419122858560701/")
-  (sit-for 10)
+  ;; (eww "https://www.facebook.com/events/419122858560701/")
+  ;; (sit-for 10)
   (loop for (nil date url nil event-id) in csid-database
 	when (and url
 		  (or (string> date (format-time-string "%F"))
 		      (equal date (format-time-string "%F")))
 		  (not (file-exists-p (csid-summary-file url))))
 	do (csid-write-event-summary url event-id)))    
+
+(defun csid-get-event-summary-loop (dom)
+  ;; Facebook will return no text other than the cookie warning,
+  ;; sometimes, so check for that and repeat.
+  (loop repeat 5
+	for summary = (csid-get-event-summary dom)
+	unless (string-match "cookies.*Facebook" summary)
+	return summary
+	finally (return summary)))
 
 (defun csid-write-event-summary (url &optional event-id)
   (let ((file (csid-summary-file url))
@@ -1535,7 +1544,7 @@ no further processing).  URL is either a string or a parsed URL."
 	  (insert "{}")
 	  (write-region (point-min) (point-max) file))
       (let ((image (csid-get-event-image dom url))
-	    (summary (csid-get-event-summary dom))
+	    (summary (csid-get-event-summary-loop dom))
 	    (url-request-extra-headers '(("Cookie" . "fr=0iznHLOd07GF3Pj78..BZ8tLB.QG.AAA.0.0.Bano-m.AWVOfML3; sb=6tlhWvzwnenK3Wm6ZmN2WUgS; noscript=1")
 					 ("Referer" . "https://www.facebook.com/events/791343834393278/?_fb_noscript=1"))))
 	(with-temp-buffer

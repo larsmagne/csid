@@ -48,7 +48,7 @@
     ("Mir" "http://www.lufthavna.no/" mir (59.921667 10.761053))
     ("Victoria" "http://nasjonaljazzscene.no/arrangement/" victoria (59.915514 10.737868))
     ("Rockefeller" "http://rockefeller.no/index.html" rockefeller :multi (59.916125 10.750050))
-    ("Mono" "http://www.cafemono.no/program/" mono (59.913942 10.749326))
+    ;;("Mono" "http://www.cafemono.no/program/" mono (59.913942 10.749326))
     ("Parkteateret" "http://parkteatret.no/program/" parkteateret (59.923515 10.758537))
     ("Konsertforeninga" "http://www.konsertforeninga.no/event-directory/" konsertforeninga)
     ;;("Maksitaksi" "https://www.facebook.com/maksitaksii/events?ref=page_internal" facebook (59.918278 10.737577))

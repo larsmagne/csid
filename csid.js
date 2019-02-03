@@ -4,7 +4,6 @@ var sortOrder = "date";
 var savedTable = false;
 var sentrum = [59.915430, 10.751862];
 var homePos = sentrum;
-var autoSummaries = true;
 
 var mapKey = "AIzaSyDOzwQi0pHvnJ1hW__DTC2H4f2qPCr3pWw";
 
@@ -28,9 +27,6 @@ function setSettings(name, value) {
 var lastVenue = false;
 
 function addNavigation() {
-  if (getSettings("summariesOff") == "yes")
-    autoSummaries = false;
-
   // Default to not showing quizes.
   var defaultDenied = "Quiz";
   if (phoneGap) {
@@ -45,9 +41,6 @@ function addNavigation() {
   var deniedVenues = getSettings("deniedVenues");
   var shows = getSettings("shows");
 
-  if (mobilep)
-    autoSummaries = false;
-  
   $("#selector").append("<div class='explanation'>Everything in <a id='help' href='help.html?1'><b>bold</b></a> is clickable</div>");
 
   $("tr").each(function(key, node) {
@@ -58,17 +51,26 @@ function addNavigation() {
     if (! document.getElementById(name))
       addVenue(name, deniedVenues);
 
-    $(node).children("td").first().bind("click", function(e) {
+    var linkClick = function(e) {
       if (! e.ctrlKey) {
+	var link = $(node).find("a");
+	if (! $(link).attr("showSummary")) {
+	  $(link).attr("showSummary", "true");
+	  showSummary(node.getAttribute("id"), $(link).attr("href"));
+	  return false;
+	}
 	if (mobilep) {
 	  actionEventMenu(node, name);
 	  return false;
 	} else
-	  top.location.href = $(node).find("a").attr("href");
+	  top.location.href = $(link).attr("href");
       }
       return true;
-    });
+    };
     
+    $(node).children("td").first().bind("click", linkClick);
+    $(node).find("a").first().bind("click", linkClick);
+
     if (mobilep) {
       $(node).children("td").last().bind("click", function() {
 	actionVenueMenu(name);
@@ -114,19 +116,6 @@ function addNavigation() {
     .appendTo("#selector");
 
   hideShow();
-
-  $("#selector").append("<div id='summaries' class='export " + visible + 
-			"'><a class='summaries'>" + sumText() + "</a></div>");
-  $("a.summaries").bind("click", function(e) {
-    autoSummaries = ! autoSummaries;
-    viewable();
-    if (! autoSummaries) {
-      setSettings("summariesOff", "yes");
-      hideAllSummaries();
-    } else
-      setSettings("summariesOff", "no");
-    this.innerHTML = sumText();
-  });
 
   var visible = "invisible";
   if ($("tr.checked").length > 0 || window.location.href.match("shows="))
@@ -198,22 +187,12 @@ function addNavigation() {
     addDesktopLogos();
   }
 
-  expandForSummaries();
   $("tr.date").click(function() {
     if (hasSummaries(this))
       hideSummaries(this);
     else
       showSummaries(this);
   });
-  $(window).scroll(function() {
-    clearTimeout($.data(this, 'scrollTimer'));
-    $.data(this, 'scrollTimer', setTimeout(function() {
-      viewable();
-    }, 250));
-  });
-  if (! mobilep)
-    addHoverSummaries();
-  window.setTimeout(viewable, 100);
 }
 
 function addVenue(name, deniedVenues) {
@@ -352,8 +331,6 @@ function hideShow(onlyVenue, onlyAfterTimestamp, onlyEvent,
     }, 2000);
     doneGotoShow = true;
   }
-
-  viewable();
 
   return blankTable;
 }
@@ -810,8 +787,6 @@ function miscMenu() {
   if (limitedDisplay)
     restoreString = "<a href='#' id='restore'>Restore Events</a>";
   var summaryString = "<a href='#' id='menu-summaries'>Load Summaries</a>";
-  if (autoSummaries)
-    summaryString = "<a href='#' id='menu-summaries'>Don't Load Summaries</a>";
   var goingString = "";
   $.map(getSettings("shows"), function(id) {
     if ($("#event-" + id).length)
@@ -936,18 +911,6 @@ function miscMenu() {
     restoreTable();
     closeColorbox();
     limitedDisplay = false;
-    return false;
-  });
-  $("#menu-summaries").bind("click", function() {
-    restoreTable();
-    closeColorbox();
-    autoSummaries = ! autoSummaries;
-    viewable();
-    if (! autoSummaries) {
-      setSettings("summariesOff", "yes");
-      hideAllSummaries();
-    } else
-      setSettings("summariesOff", "no");
     return false;
   });
   var func = function() {
@@ -1358,20 +1321,6 @@ function fetchSummaries(ids, index, callback) {
   });
 }
 
-function expandForSummaries() {
-  if (! autoSummaries)
-    return;
-  $("tr").each(function(key, tr) {
-    var id = tr.getAttribute("id");
-    if (! id || ! id.match("event"))
-      return;
-    var td = tr.firstChild;
-    td.style.borderBottom = "200px solid white";
-    td.nextSibling.style.borderBottom = "200px solid white";
-    td.nextSibling.nextSibling.style.borderBottom = "200px solid white";
-  });
-}
-
 function insertSummary(id, url, data) {
   var tr = document.getElementById(id);
   // If there's already a summary here, then do nothing.
@@ -1458,6 +1407,12 @@ function hideSummaries(tr) {
   }
 }
 
+function showSummary(id, href) {
+  var ids = [];
+  ids.push([id, href]);
+  fetchSummaries(ids, 0);
+}
+
 var fetchedSummaries = [];
 
 function showSummaries(tr, noRepeat) {
@@ -1483,54 +1438,6 @@ function isVisible(node) {
   var windowTop = $(window).scrollTop();
   return offset.top + 245 > windowTop &&
     offset.top < windowTop + window.innerHeight * 2;
-}
-
-function viewable() {
-  if (! autoSummaries)
-    return;
-  var ids = [];
-  $("tr").each(function(i, tr) {
-    var id = tr.getAttribute("id");
-    if (id &&
-	id.match("event") &&
-	isVisible(tr) &&
-	! $(tr).hasClass("invisible") &&
-	! $(tr).find("div.summary")[0]) {
-      var link = tr.firstChild.firstChild;
-      if (! fetchedSummaries[link.href]) {
-	ids.push([id, link.href]);
-	fetchedSummaries[link.href] = true;
-      }
-    }
-  });
-  if (ids.length > 0)
-    fetchSummaries(ids, 0);
-}
-
-function sumText() {
-  if (getSettings("summariesOff") == "yes")
-    autoSummaries = false;
-  var sumText = "Summaries are loaded automatically";
-  if (! autoSummaries)
-    sumText = "Summaries are displayed when hovering";
-  return sumText;
-}
-
-function addHoverSummaries() {
-  $("tr").each(function(key, node) {
-    var hover;
-    var id = node.getAttribute("id");
-    if (! id || ! id.match("event"))
-      return;
-    $(node).hover(function() {
-      if (autoSummaries)
-	return;
-      var link = node.firstChild.firstChild.href;
-      var ids = [];
-      ids.push([id, link]);
-      fetchSummaries(ids, 0);
-    });
-  });
 }
 
 function hideAllSummaries() {

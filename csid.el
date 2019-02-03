@@ -122,6 +122,7 @@
     ("Ensjø" "https://www.facebook.com/pg/EnsjoMusikkscene/events/?ref=page_internal" facebook (59.913104 10.788831) :nobound)
     ("Ly" "https://www.facebook.com/pg/LyLokka/events/?ref=page_internal" facebook (59.924335 10.761052))
     ("Grünerløkka brygghus" "https://www.facebook.com/pg/grunerlokkabrygghus/events/?ref=page_internal" facebook (59.925014 10.759393))
+    ("Parksalongen" "https://www.facebook.com/pg/ParksalongenBar/events/?ref=page_internal" facebook (59.923052 10.739031))
     ))
 
 (defvar csid-database nil)

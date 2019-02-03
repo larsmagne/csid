@@ -783,7 +783,7 @@ no further processing).  URL is either a string or a parsed URL."
 (defun csid-parse-vulkan (dom)
   (loop for elem in (dom-by-class dom "event_container")
 	collect (list (csid-parse-short-yearless-month
-			(dom-texts (dom-by-class elem "^date$")))
+			(dom-texts (dom-by-class elem "^date\\b")))
 		      (dom-attr (dom-by-tag elem 'a) 'href)
 		      (dom-texts (dom-by-class elem "event_title")))))
 

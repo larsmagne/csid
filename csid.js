@@ -736,7 +736,10 @@ function addDesktopLogos() {
 	if (focus) {
 	  if (getCookie("dark") == "enabled") {
 	    td.innerHTML = "<div class='logo-background'></div>";
-	    $(td.childNodes[0]).css({width: image.width});
+	    var ratio = window.devicePixelRatio;
+	    if (! ratio)
+	      ratio = 1;
+	    $(td.childNodes[0]).css({width: image.width / ratio + "px"});
 	    td.childNodes[0].appendChild(image);
 	  } else {
 	    td.innerHTML = "";

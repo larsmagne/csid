@@ -117,7 +117,7 @@ function addNavigation() {
     $(node).append("<td class=show><label class='cbcontainer'><input type=checkbox id='show-" + id + 
 		   "' " + 
 		   ($.inArray(id, shows) == -1? "": "checked") +
-		   "><span class='checkmark dark-mark'></span></label>");
+		   "><span class='checkmark' title=\"I'm going\"></span></label>");
     if ($.inArray(id, shows) != -1)
       $("#event-" + id).addClass("checked");
     $("#show-" + id).bind("click", function(e) {

@@ -54,17 +54,18 @@ function addNavigation() {
     var linkClick = function(e) {
       if (! e.ctrlKey) {
 	var link = $(node).find("a");
-	if (! $(link).attr("showSummary")) {
-	  $(link).attr("showSummary", "true");
-	  $(link).blur();
-	  showSummary(node.getAttribute("id"), $(link).attr("href"));
-	  return false;
-	}
 	if (mobilep) {
 	  actionEventMenu(node, name);
 	  return false;
-	} else
+	} else {
+	  if (! $(link).attr("showSummary")) {
+	    $(link).attr("showSummary", "true");
+	    $(link).blur();
+	    showSummary(node.getAttribute("id"), $(link).attr("href"));
+	    return false;
+	  }
 	  top.location.href = $(link).attr("href");
+	}
       }
       return true;
     };

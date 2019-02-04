@@ -149,6 +149,9 @@ div.export a {
   cursor: pointer;
 }
 
+input#dark {
+  margin-top: 10px;
+}
 span.dark-name {
   position: relative;
   top: -3px;

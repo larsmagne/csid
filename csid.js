@@ -1427,6 +1427,7 @@ function showSummaries(tr, noRepeat) {
     if (id || id.match("event")) {
       var link = tr.firstChild.firstChild;
       if (! noRepeat || ! fetchedSummaries[link.href]) {
+	$(link).attr("showSummary", "true");
 	ids.push([id, link.href]);
 	fetchedSummaries[link.href] = true;
       }

@@ -56,6 +56,7 @@ function addNavigation() {
 	var link = $(node).find("a");
 	if (! $(link).attr("showSummary")) {
 	  $(link).attr("showSummary", "true");
+	  $(link).blur();
 	  showSummary(node.getAttribute("id"), $(link).attr("href"));
 	  return false;
 	}

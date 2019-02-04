@@ -1413,6 +1413,7 @@ function hideSummaries(tr) {
       td.nextSibling.style.borderBottom = "0px";
       td.nextSibling.nextSibling.style.borderBottom = "0px";
       $(tr).find("div.summary").remove();
+      $(td).find("a").attr("showSummary", "");
     }
     tr = tr.nextSibling;
   }

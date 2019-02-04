@@ -1281,7 +1281,7 @@ no further processing).  URL is either a string or a parsed URL."
     (with-temp-file (or file "/tmp/csid.html")
       (insert
        (format
-	"<head><title>Concerts in Oslo</title><meta charset='utf-8'><link href='csid.css?ts=%s' rel='stylesheet' type='text/css'><meta name='viewport' content='width=device-width, initial-scale=1'><link href='pikaday.css' rel='stylesheet' type='text/css'><link rel='icon' href='https://csid.no/favicon.ico'><body><div id='body-container'><div id='large-heading'><img src='csid.png?ts=%s' id='logo' alt='Concerts in Oslo'><p>(Also known as <a href='https://lars.ingebrigtsen.no/2013/09/crowdsourcing-is-dead.html'>'Konserter i Oslo'</a>.)</p></div></div><div id='small-heading'><div id='small-menu'><span class='box-shadow-menu'></span></div>Concerts in Oslo</div>"
+	"<head><title>Concerts in Oslo</title><meta charset='utf-8'><link href='csid.css?ts=%s' rel='stylesheet' type='text/css'><meta name='viewport' content='width=device-width, initial-scale=1'><link href='pikaday.css' rel='stylesheet' type='text/css'><link rel='icon' href='https://csid.no/favicon.ico'><link href="https://fonts.googleapis.com/css?family=Passion+One" rel="stylesheet"><div id='large-heading'><div class="title">Concerts in Oslo</div><div class="subtitle">Konserter i Oslo</div></div><div id='body-container'><div id='small-heading'><div id='small-menu'><span class='box-shadow-menu'></span></div>Concerts in Oslo</div>"
 	(csid-timestamp)
 	(csid-timestamp)))
       (insert "<table class='events'><colgroup><col class='band'><col class='venue'><col class='button'></colgroup>")
@@ -1324,7 +1324,7 @@ no further processing).  URL is either a string or a parsed URL."
 				       (format "<img src=%S>" img)))
 				   (or (csid-summary url 'summary))))))
 	    (setq prev-date date))
-      (insert "</table><div id='selector'></div>")
+      (insert "</table><div id='selector'></div></div>")
       (dolist (js '("jquery-3.3.1.min.js"
 		    "jquery.cookie.js"
 		    "jquery.colorbox-min.js"

@@ -2,10 +2,12 @@ body {
   background: white;
   text: black;
   font-family: arial, sans-serif;
-  max-width: 1000px;
 }
 div#body-container {
   overflow: hidden;
+  max-width: 960px;
+  margin-left: auto;
+  margin-right: auto;
 }
 table.events {
   border-collapse: separate;
@@ -144,26 +146,38 @@ div.export a {
 }
 
 /* Center everything */
-html, body {
-  height: 100%;
-}
-html {
-  display: table;
-  margin: auto;
-}
-body {
-  display: table-cell;
-}
 span.venue-name {
   cursor: pointer;
   font-weight: bold;
 }
 div.explanation {
   margin-bottom: 10px;
+  margin-top: 10px;
 }
 
 div#small-heading {
   display: none;
+}
+
+div#large-heading {
+  border: 0px solid black;
+  text-align: center;
+  width: 100%;
+  height: 200px;
+  background-image: url("splash-back1x.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  color: red;
+}
+
+div#large-heading div.title {
+  padding-top: 30px;
+  font-family: 'Passion One', cursive;
+  font-size: 100px;
+}
+
+div#large-heading div.subtitle {
+  font-size: 20px;
 }
 
 @media only screen and (max-width: 600px) {
@@ -432,4 +446,12 @@ div#event-summary table td#event-text {
 
 div#event-summary table td {
   margin: 0px;
+}
+
+body {
+  width: 100%;
+  margin: 0px;
+}
+
+html {
 }

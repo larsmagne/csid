@@ -1375,7 +1375,7 @@ function insertSummary(id, url, data) {
   $.map([td, td.nextSibling, td.nextSibling.nextSibling],
 	function(elem) {
 	  $(elem).css({
-	    "border-bottom": "200px solid black",
+	    "border-bottom": "200px solid #a0a0a0",
 	    transition: "border-width 0.3s"
 	  });
 	});
@@ -1445,7 +1445,7 @@ function hideSummary(tr) {
     $.map([td, td.nextSibling, td.nextSibling.nextSibling],
 	  function(elem) {
 	    $(elem).css({
-	      "border-bottom": "0px solid black",
+	      "border-bottom": "0px solid #a0a0a0",
 	      transition: "border-width 0.4s"
 	    });
 	  });

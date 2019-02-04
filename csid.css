@@ -154,7 +154,7 @@ input#dark {
 }
 span.dark-name {
   position: relative;
-  top: -3px;
+  top: -2px;
 }
 span.venue-name {
   cursor: pointer;

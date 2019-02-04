@@ -41,7 +41,7 @@ function addNavigation() {
   var deniedVenues = getSettings("deniedVenues");
   var shows = getSettings("shows");
 
-  $("#selector").append("<input type=checkbox id='dark'><span class='dark-name'>Dark Mode</span><div class='explanation'>Everything in <a id='help' href='help.html?1'><b>bold</b></a> is clickable</div>");
+  $("#selector").append("<div><input type=checkbox id='dark'><span class='dark-name'>Dark Mode</span></div><div class='explanation'>Everything in <a id='help' href='help.html?1'><b>bold</b></a> is clickable</div>");
 
   $("#dark").click(function() {
     var css = document.getElementById("dark-css");
@@ -54,7 +54,7 @@ function addNavigation() {
     }
   });
 
-  if (getCookie("dark") != "enabled") {
+  if (! getCookie("dark") || getCookie("dark") != "enabled") {
     var css = document.getElementById("dark-css");
     css.disabled = true;
   } else {
@@ -785,7 +785,11 @@ function fixName(name) {
 }
 
 function getCookie(c_name) {
-  return localStorage.getItem(c_name);
+  try {
+    return localStorage.getItem(c_name);
+  } catch(error) {
+    return false;
+  }
 }
 
 function setCookie(c_name, value, expiredays) {

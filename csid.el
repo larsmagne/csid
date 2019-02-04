@@ -1325,7 +1325,7 @@ no further processing).  URL is either a string or a parsed URL."
 				   (or (csid-summary url 'summary))))))
 	    (setq prev-date date))
       (insert "</table><div id='selector'></div>")
-      (dolist (js '("jquery-1.10.2.min.js"
+      (dolist (js '("jquery-3.3.1.min.js"
 		    "jquery.cookie.js"
 		    "jquery.colorbox-min.js"
 		    "FileSaver.min.js"

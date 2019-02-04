@@ -267,6 +267,8 @@ function hideShow(onlyVenue, onlyAfterTimestamp, onlyEvent,
   var maxTimestamp = "";
   var blankTable = true;
 
+  removeAllSummaries();
+  
   // We've gotten an URL with a show list from somebody.
   if (onlyShowsArray)
     onlyShows = onlyShowsArray;
@@ -1469,6 +1471,13 @@ function hideSummary(tr) {
 				      });
     $(td).find("a").attr("showSummary", "");
   }
+}
+
+function removeAllSummaries() {
+  $("div.summary").each(function(key, node) {
+    $(node.parentNode.parentNode).find("td").css({"border-bottom": "0px"});
+    $(node).remove();
+  });
 }
 
 function showSummary(id, href) {

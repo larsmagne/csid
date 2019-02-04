@@ -66,6 +66,22 @@ table.events tr.date {
   background: #800000;
   color: white;
   height: 30px;
+  background-repeat: no-repeat;
+  background-position: 10px 0px;
+}
+.expand {
+  background-image: url("expand1x.png") !important;
+}
+.collapse {
+  background-image: url("collapse1x.png") !important;
+}
+@media only screen and (-webkit-min-device-pixel-ratio: 2), (min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .expand {
+    background-image: url("expand2x.png");
+  }
+  .collapse {
+    background-image: url("collapse2x.png");
+  }
 }
 table.events tr.date td {
   text-align: right;

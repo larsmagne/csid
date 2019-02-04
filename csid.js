@@ -189,11 +189,18 @@ function addNavigation() {
   }
 
   $("tr.date").click(function() {
-    if (hasSummaries(this))
+    if (hasSummaries(this)) {
       hideSummaries(this);
-    else
+      $(this).removeClass("collapse");
+      $(this).addClass("expand");
+    } else {
       showSummaries(this);
+      $(this).removeClass("expand");
+      $(this).addClass("collapse");
+    }
   });
+
+  $("tr.date").addClass("expand");
 }
 
 function addVenue(name, deniedVenues) {

@@ -5,7 +5,7 @@ body {
 }
 div#body-container {
   overflow: hidden;
-  max-width: 960px;
+  max-width: 1000px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -19,7 +19,7 @@ div#selector {
   padding-bottom: 10px;
   padding-left: 10px;
   padding-right: 10px;
-  width: 140px;
+  width: 180px;
   display: inline-block;
   background: #c0c0c0;
 }
@@ -130,7 +130,7 @@ div.help a {
 
 
 span.venue {
-  width: 120px;
+  width: 160px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

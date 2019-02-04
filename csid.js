@@ -41,7 +41,7 @@ function addNavigation() {
   var deniedVenues = getSettings("deniedVenues");
   var shows = getSettings("shows");
 
-  $("#selector").append("<div><input type=checkbox id='dark'><span class='dark-name'>Dark Mode</span></div><div class='explanation'>Everything in <a id='help' href='help.html?1'><b>bold</b></a> is clickable</div>");
+  $("#selector").append("<div class='dark-wrap'><input type=checkbox id='dark'><span class='dark-name'>Dark Mode</span></div><div class='explanation'>Everything in <a id='help' href='help.html?1'><b>bold</b></a> is clickable</div>");
 
   $("#dark").click(function() {
     var css = document.getElementById("dark-css");
@@ -54,11 +54,12 @@ function addNavigation() {
     }
   });
 
-  if (! getCookie("dark") || getCookie("dark") != "enabled") {
-    var css = document.getElementById("dark-css");
+  var css = document.getElementById("dark-css");
+  if (! getCookie("dark") || getCookie("dark") == "disabled") {
     css.disabled = true;
   } else {
     $("#dark").prop("checked", true);
+    css.disabled = false;
   }
   
   $("tr").each(function(key, node) {
@@ -724,8 +725,14 @@ function addDesktopLogos() {
       focus = true;
       image.onload = function() {
 	if (focus) {
-	  td.innerHTML = "";
-	  td.appendChild(image);
+	  if (getCookie("dark") == "enabled") {
+	    td.innerHTML = "<div class='logo-background'></div>";
+	    $(td.childNodes[0]).css({width: image.width});
+	    td.childNodes[0].appendChild(image);
+	  } else {
+	    td.innerHTML = "";
+	    td.appendChild(image);
+	  }
 	}
       };
       image.setAttribute("srcset", "logos/thumb/" + fixName(venue) + "x2.png 2x");

@@ -136,6 +136,9 @@ span.venue {
   white-space: nowrap;
   display: block;
 }
+span.venue input {
+  vertical-align: middle;
+}
 table.events td.show {
   padding-left: 15px;
   padding-right: 10px;
@@ -150,17 +153,17 @@ div.export a {
 }
 
 input#dark {
-  margin-top: 10px;
+  vertical-align: middle;
 }
 span.dark-name {
-  position: relative;
-  top: -2px;
+}
+div.dark-wrap {
+  margin-top: 10px;
 }
 span.venue-name {
   cursor: pointer;
   font-weight: bold;
-  position: relative;
-  top: -3px;
+  vertical-align: middle;
 }
 div.explanation {
   margin-bottom: 10px;
@@ -469,3 +472,7 @@ body {
 html {
 }
 
+div.logo-background {
+  background-color: white;
+  box-shadow: 0px 0px 10px 10px white;
+}

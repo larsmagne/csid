@@ -17,9 +17,11 @@ table.events {
 }
 div#selector {
   padding-bottom: 10px;
-  margin-left: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
   width: 140px;
-  float: right;
+  display: inline-block;
+  background: #c0c0c0;
 }
 table.events tr td {
   vertical-align: middle;
@@ -128,7 +130,9 @@ div.help a {
 
 
 span.venue {
-  padding-right: 10px;
+  width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
   display: block;
 }
@@ -149,6 +153,8 @@ div.export a {
 span.venue-name {
   cursor: pointer;
   font-weight: bold;
+  position: relative;
+  top: -3px;
 }
 div.explanation {
   margin-bottom: 10px;

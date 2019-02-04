@@ -104,30 +104,26 @@ table.events tr td:nth-child(2) {
   max-width: 100px;
   min-width: 100px;
 }
+div.wrapper {
+  width: 100%;
+  text-align: center;
+}
 div.help {
+  display: inline-block;
   max-width: 500px;
-  background: white;
+  background: linear-gradient(to bottom, #F0F0F0 0%, #a0a0a0 100%);
+  padding: 10px;
+  border-radius: 5px;
 }
 div.help a {
   display: inline;
   color: black;
   text-decoration: none;
   font-weight: bold;
-  background: white;
+  background: transparent !important;
   padding: 0px;
 }
 
-div.help {
-  max-width: 500px;
-  background: white;
-}
-div.help a {
-  display: inline;
-  color: black;
-  text-decoration: none;
-  font-weight: bold;
-  background: white;
-}
 
 span.venue {
   padding-right: 10px;

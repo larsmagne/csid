@@ -157,7 +157,7 @@ function addNavigation() {
       url: "help.html",
       dataType: "text",
       success: function(data) {
-	colorbox("<div class='help'>" + data + "</div>" +
+	colorbox("<div class='help-wrapper'><div class='help'>" + data + "</div></div>" +
 		 "<a href='#' id='csid-close'>Close</a>");
       }
     });

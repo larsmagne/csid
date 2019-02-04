@@ -1,7 +1,7 @@
 body {
   background: white;
   color: black;
-  font-family: arial, sans-serif;
+  font-family: 'Roboto', sans-serif;
 }
 div#body-container {
   overflow: hidden;
@@ -308,7 +308,7 @@ div#large-heading div.subtitle {
   color: white;
   font: inherit;
   font-weight: bold;
-  font-family: arial, sans-serif;
+  font-family: Roboto, sans-serif;
 }
 .event-lightbox div.search {
   display: block;
@@ -326,7 +326,7 @@ div#large-heading div.subtitle {
   border: 0px;
   color: white;
   font-weight: bold;
-  font-family: arial, sans-serif;
+  font-family: Roboto, sans-serif;
   font-size: inherit;
 }
 .event-lightbox div.venue-top {

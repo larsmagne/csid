@@ -41,8 +41,26 @@ function addNavigation() {
   var deniedVenues = getSettings("deniedVenues");
   var shows = getSettings("shows");
 
-  $("#selector").append("<div class='explanation'>Everything in <a id='help' href='help.html?1'><b>bold</b></a> is clickable</div>");
+  $("#selector").append("<input type=checkbox id='dark'><span class='dark-name'>Dark Mode</span><div class='explanation'>Everything in <a id='help' href='help.html?1'><b>bold</b></a> is clickable</div>");
 
+  $("#dark").click(function() {
+    var css = document.getElementById("dark-css");
+    if (css.disabled) {
+      css.disabled = false;
+      localStorage.setItem("dark", "enabled");
+    } else {
+      css.disabled = true;
+      localStorage.setItem("dark", "disabled");
+    }
+  });
+
+  if (getCookie("dark") != "enabled") {
+    var css = document.getElementById("dark-css");
+    css.disabled = true;
+  } else {
+    $("#dark").prop("checked", true);
+  }
+  
   $("tr").each(function(key, node) {
     var name = node.getAttribute("name");
     if (! name)
@@ -1353,7 +1371,7 @@ function insertSummary(id, url, data) {
   $.map([td, td.nextSibling, td.nextSibling.nextSibling],
 	function(elem) {
 	  $(elem).css({
-	    "border-bottom": "200px solid #a0a0a0",
+	    "border-bottom": "200px solid black",
 	    transition: "border-width 0.3s"
 	  });
 	});
@@ -1423,7 +1441,7 @@ function hideSummary(tr) {
     $.map([td, td.nextSibling, td.nextSibling.nextSibling],
 	  function(elem) {
 	    $(elem).css({
-	      "border-bottom": "0px solid #a0a0a0",
+	      "border-bottom": "0px solid black",
 	      transition: "border-width 0.4s"
 	    });
 	  });

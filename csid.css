@@ -1,6 +1,6 @@
 body {
   background: white;
-  text: black;
+  color: black;
   font-family: arial, sans-serif;
 }
 div#body-container {
@@ -149,7 +149,10 @@ div.export a {
   cursor: pointer;
 }
 
-/* Center everything */
+span.dark-name {
+  position: relative;
+  top: -3px;
+}
 span.venue-name {
   cursor: pointer;
   font-weight: bold;
@@ -462,3 +465,4 @@ body {
 
 html {
 }
+

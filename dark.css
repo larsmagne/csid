@@ -1,0 +1,25 @@
+body {
+  background: black !important;
+  color: #e0e0e0;
+}
+
+div#selector {
+  background: #202020;
+}
+
+a {
+  color: #e0e0e0;
+}
+
+table.events tr {
+  cursor: pointer;
+  background: linear-gradient(to bottom, #303030 0%, #404040 45px);
+}
+
+div.help a {
+  color: black;
+}
+
+div.summary {
+  background: linear-gradient(to bottom, #404040 0%, #202020 100%);
+}

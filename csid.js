@@ -63,8 +63,10 @@ function addNavigation() {
 	    $(link).blur();
 	    showSummary(node.getAttribute("id"), $(link).attr("href"));
 	    return false;
+	  } else {
+	    hideSummary(node);
+	    return false;
 	  }
-	  top.location.href = $(link).attr("href");
 	}
       }
       return true;
@@ -147,7 +149,7 @@ function addNavigation() {
     });
   }
 
-  $("#selector").append("<div class='export'><a id='rss' href='csid.atom'>Atom/\RSS feed</a><p><a href='https://itunes.apple.com/us/app/csid-concerts-in-oslo/id1037896784?mt=8&ign-mpt=uo%3D4'><img src='assets/apple.png'></a><p><a href='https://play.google.com/store/apps/details?id=no.ingebrigtsen.csid'><img src='assets/google.png'></a><p><a href='https://www.microsoft.com/en-us/store/apps/concerts-in-oslo/9nblggh6c4lv'><img src='assets/windows.png'></a></div></div>");
+  $("#selector").append("<div class='export'><a id='rss' href='csid.atom'>Atom/\RSS feed</a><p><a href='https://itunes.apple.com/us/app/csid-concerts-in-oslo/id1037896784?mt=8&ign-mpt=uo%3D4'><img src='assets/apple.png'></a><p><a href='https://play.google.com/store/apps/details?id=no.ingebrigtsen.csid'><img src='assets/google.png'></a></div></div>");
 
   $("img#logo").bind("click", function() {
     window.location.href = "https://csid.no/";
@@ -1364,10 +1366,12 @@ function insertSummary(id, url, data) {
   document.body.appendChild(div);
 
   div.appendChild(text);
+  $(div).append("<p><a href=\"" + url + "\">Go to the event page</a>");
   td.appendChild(div);
   $(div).animate({ opacity: 1 });
-  $(td).click(function() {
+  $(div).click(function() {
     document.location = url;
+    return false;
   });
 }
 
@@ -1408,15 +1412,26 @@ function hideSummaries(tr) {
     summaryQuery.abort();
   tr = tr.nextSibling;
   while (tr && ! $(tr).hasClass("date")) {
-    if ($(tr).find("div.summary")) {
-      var td = tr.firstChild;
-      td.style.borderBottom = "0px";
-      td.nextSibling.style.borderBottom = "0px";
-      td.nextSibling.nextSibling.style.borderBottom = "0px";
-      $(tr).find("div.summary").remove();
-      $(td).find("a").attr("showSummary", "");
-    }
+    hideSummary(tr);
     tr = tr.nextSibling;
+  }
+}
+
+function hideSummary(tr) {
+  if ($(tr).find("div.summary")) {
+    var td = tr.firstChild;
+    $.map([td, td.nextSibling, td.nextSibling.nextSibling],
+	  function(elem) {
+	    $(elem).css({
+	      "border-bottom": "0px solid #a0a0a0",
+	      transition: "border-width 0.4s"
+	    });
+	  });
+    $(tr).find("div.summary").animate({ height: "0px"}, 400, "swing",
+				      function() {
+					$(tr).find("div.summary").remove();
+				      });
+    $(td).find("a").attr("showSummary", "");
   }
 }
 

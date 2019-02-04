@@ -175,6 +175,7 @@ div#large-heading {
   background-size: cover;
   color: red;
   font-family: 'Passion One', cursive;
+  text-shadow: 0px 0px 5px black, 0px 0px 10px black, 0px 0px 20px black;
 }
 
 div#large-heading div.title {

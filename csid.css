@@ -491,6 +491,10 @@ div.logo-background {
   user-select: none;
 }
 
+td.show .cbcontainer {
+  height: 5px;
+}
+
 /* Hide the browser's default checkbox */
 .cbcontainer input {
   position: absolute;

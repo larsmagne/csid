@@ -41,7 +41,7 @@ function addNavigation() {
   var deniedVenues = getSettings("deniedVenues");
   var shows = getSettings("shows");
 
-  $("#selector").append("<div class='dark-wrap'><input type=checkbox id='dark'><span class='dark-name'>Dark Mode</span></div><div class='explanation'>Everything in <a id='help' href='help.html?1'><b>bold</b></a> is clickable</div>");
+  $("#selector").append("<label class='dark-wrap cbcontainer'><input type=checkbox id='dark'><span class='dark-name'>Dark Mode</span><span class='checkmark dark-mark'></span></label><div class='explanation'>Everything in <a id='help' href='help.html?1'><b>bold</b></a> is clickable</div>");
 
   $("#dark").click(function() {
     var css = document.getElementById("dark-css");
@@ -114,10 +114,10 @@ function addNavigation() {
     }
 
     var id = node.id.replace("event-", "");
-    $(node).append("<td class=show><input type=checkbox id='show-" + id + 
+    $(node).append("<td class=show><label class='cbcontainer'><input type=checkbox id='show-" + id + 
 		   "' " + 
 		   ($.inArray(id, shows) == -1? "": "checked") +
-		   ">");
+		   "><span class='checkmark dark-mark'></span></label>");
     if ($.inArray(id, shows) != -1)
       $("#event-" + id).addClass("checked");
     $("#show-" + id).bind("click", function(e) {
@@ -128,12 +128,19 @@ function addNavigation() {
   // Add a virtual "quiz" venue.
   addVenue("Quiz", deniedVenues);
 
+  $(".venue-checkmark").click(function() {
+    var checkbox = $(this.parentNode).find("input")[0];
+    checkbox.checked = !checkbox.checked;
+    hideShow();
+    setVenueCookie();
+  });
+  
   // Sort all the venues.
   $("#selector")
-    .children("span")
+    .children("span.venue")
     .sort(function(a, b) {
-      return $(a).find("span").attr("id")
-	.localeCompare($(b).find("span").attr("id"));
+      return $(a).find("span.venue-name").attr("id")
+	.localeCompare($(b).find("span.venue-name").attr("id"));
     })
     .detach()
     .appendTo("#selector");
@@ -229,8 +236,8 @@ function addVenue(name, deniedVenues) {
   var checked = "";
   if ($.inArray(name, deniedVenues) == -1)
     checked = "checked";
-  $("#selector").append("<span class='venue'><input type=checkbox " + 
-			checked + " id='" + name + "'><span id='venue-" +
+  $("#selector").append("<span class='venue cbcontainer'><input type=checkbox " + 
+			checked + " id='" + name + "'><span class='checkmark venue-checkmark'></span><span id='venue-" +
 			name + "' class='venue-name'>" +
 			name.replace(/_/g, " ") + "</span></span>");
   $("#" + name).bind("click", function(e) {

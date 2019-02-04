@@ -168,11 +168,11 @@ div#large-heading {
   background-repeat: no-repeat;
   background-size: cover;
   color: red;
+  font-family: 'Passion One', cursive;
 }
 
 div#large-heading div.title {
   padding-top: 30px;
-  font-family: 'Passion One', cursive;
   font-size: 100px;
 }
 

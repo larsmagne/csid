@@ -1,6 +1,6 @@
 deploy:
 	rsync -av logos assets csid.css csid.js sha1.js \
-	*.png splash-*.jpg \
+	*.png splash-*.jpg jquery* \
 	www@quimby:html/circus/csid/
 
 images:

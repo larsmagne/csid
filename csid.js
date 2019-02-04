@@ -1298,8 +1298,7 @@ function fetchSummaries(ids, index, callback) {
     url: url,
     dataType: "text",
     beforeSend: function(xhr){
-      if (xhr.overrideMimeType)
-      {
+      if (xhr.overrideMimeType) {
 	xhr.overrideMimeType("application/json");
       }
     },
@@ -1340,12 +1339,16 @@ function insertSummary(id, url, data) {
       image.style.maxWidth = windowWidth / 2;
     div.appendChild(image);
   }
-  td.style.borderBottom = "200px solid white";
-  td.nextSibling.style.borderBottom = "200px solid white";
-  td.nextSibling.nextSibling.style.borderBottom = "200px solid white";
+  $.map([td, td.nextSibling, td.nextSibling.nextSibling],
+	function(elem) {
+	  $(elem).css({
+	    "border-bottom": "200px solid #a0a0a0",
+	    transition: "border-width 0.3s"
+	  });
+	});
   var text = document.createElement("div");
   text.innerHTML = htmlEntities(data.summary);
-  div.style.top = $(tr).height() - 200 + "px";
+  div.style.top = $(tr).height() + "px";
   div.style.width = $(tr).width() + "px";
   div.style.opacity = "0";
   td.style.position = "relative";

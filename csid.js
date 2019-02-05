@@ -1587,6 +1587,9 @@ function doAd(id, margin) {
     function(data) {
       var json = $.parseJSON(data);
       var width = $(margin).width();
+      // Give up if the margins are too narrow.
+      if (width < 100)
+	return;
       var $wrap = $("<div class='margin-wrap'><div class='margin-header'>Today:</div></div>");
       $wrap.css({width: width});
       if (json.image) {

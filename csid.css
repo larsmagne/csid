@@ -631,3 +631,9 @@ div.margin-header {
   font-weight: bold;
   border-bottom: 1px solid black;
 }
+div.margin-image-wrap {
+  text-align: center;
+  width: 100%;
+  padding: 5px;
+  background: linear-gradient(to bottom, #E0E0E0 0%, #b0b0b0 100%);
+}

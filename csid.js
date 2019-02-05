@@ -1580,7 +1580,7 @@ function updateExpansion(node) {
   }
 }
 
-function doAd(id, margin) {
+function doAd(id, venue, margin) {
   var url = $("#event-" + id).find("a").attr("href");
   fetchEventSummary(
     url,
@@ -1592,6 +1592,12 @@ function doAd(id, margin) {
 	return;
       var $wrap = $("<div class='margin-wrap'><div class='margin-header'>Today:</div></div>");
       $wrap.css({width: width});
+      var $img = $("<img src='logos/larger/" + fixName(venue) + ".png'>");
+      $img.css({"max-width": width - 10});
+      var $imgwrap = $("<div class='margin-image-wrap'></div>");
+      $imgwrap.append($img);
+      $imgwrap.css({width: width - 10});
+      $wrap.append($imgwrap);
       if (json.image) {
 	var image = document.createElement("img");
 	image.src = json.image;
@@ -1623,7 +1629,7 @@ function pickAd(margin) {
   if (margin == "#rightmargin")
     picks = events;
   var event = picks[Math.floor(Math.random() * picks.length)];
-  doAd(event.id.replace(/event-/, ""), margin);
+  doAd(event.id.replace(/event-/, ""), event.getAttribute("name"), margin);
 }
 
 function todaysEvents() {

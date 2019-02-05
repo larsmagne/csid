@@ -300,7 +300,13 @@ div#large-heading div.subtitle {
 }
 
 .event-lightbox {
-  padding-top: 0px;
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  display: block;
+  background: #105010;
+  color: black;
+  padding: 0px;
   padding-bottom: 35px;
   text-align: center;
   background: #105010;

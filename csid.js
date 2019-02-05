@@ -1009,17 +1009,13 @@ function colorbox(html) {
     box = false;
   }
   box = document.createElement("div");
-  box.style.position = "fixed";
-  box.style.left = "0px";
-  box.style.top = "0px";
   box.style.height = window.innerHeight + "px";
   box.style.width = window.innerWidth + "px";
-  box.style.display = "block";
-  box.style.background = "#105010";
-  box.style.color = "black";
-  box.style.padding = "0px";
   box.className = "event-lightbox";
-  box.innerHTML = html;
+  var inner = document.createElement("div");
+  inner.className = "event-inner";
+  inner.innerHTML = html;
+  box.appendChild(inner);
   var func = function() {
     closeColorbox();
     return false;

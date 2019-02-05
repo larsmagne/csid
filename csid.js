@@ -1407,7 +1407,7 @@ function insertSummary(id, url, data) {
   document.body.appendChild(div);
 
   $(text).append("<p><a href=\"" + url + "\">Go to the event page</a>");
-  if (image.width) {
+  if (image && image.width) {
     var space = image.width + 10;
     text.style.width = $(tr).width() - space - 20 + "px";
     text.style.paddingLeft = space + "px";

@@ -46,7 +46,7 @@
   '(("Revolver" "https://revolveroslo.ticketco.no/" ticketco (59.917146 10.749779))
     ("Blå" "http://www.blaaoslo.no/" blaa (59.920284 10.752836))
     ("Mir" "http://www.lufthavna.no/" mir (59.921667 10.761053))
-    ("Victoria" "http://nasjonaljazzscene.no/arrangement/" victoria (59.915514 10.737868))
+    ("Victoria" "http://nasjonaljazzscene.no/arrangement/" victoria (59.914109 10.738198))
     ("Rockefeller" "http://rockefeller.no/index.html" rockefeller :multi (59.916125 10.750050))
     ;;("Mono" "http://www.cafemono.no/program/" mono (59.913942 10.749326))
     ("Parkteateret" "http://parkteatret.no/program/" parkteateret (59.923515 10.758537))

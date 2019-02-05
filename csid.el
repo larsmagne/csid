@@ -117,7 +117,7 @@
     ("Rommen scene" "https://www.rommenscene.no/program/" rommen (59.967347 10.914572) :nobound)
     ("Skippergata" "https://www.facebook.com/pg/Skippergata.oslo/events/?ref=page_internal" facebook (59.910627 10.747597))
     ("Aye Aye Club" "https://www.facebook.com/pg/ayeayeclub/events/?ref=page_internal" facebook (59.913293 10.748973))
-    ("Last Train" "https://www.facebook.com/pg/lasttrainoslo/events/?ref=page_internal" facebook (59.914704 10.736528))
+    ("Last Train" "https://www.facebook.com/pg/lasttrainoslo/events/?ref=page_internal" facebook (59.914852 10.736654))
     ("Elefant" "https://www.facebook.com/pg/elefantoslo/events/?ref=page_internal" facebook (59.910894 10.737074))
     ("Ensjø" "https://www.facebook.com/pg/EnsjoMusikkscene/events/?ref=page_internal" facebook (59.913104 10.788831) :nobound)
     ("Ly" "https://www.facebook.com/pg/LyLokka/events/?ref=page_internal" facebook (59.924335 10.761052))
@@ -1361,7 +1361,7 @@ no further processing).  URL is either a string or a parsed URL."
 			     (numberp (cadr elem)))
 		   return elem)))
     ;; Default to the middle of the world, which is Sentrum Scene.
-    (elt (or pos '(59.913074 10.751834)) index)))
+    (elt (or pos '(59.915440 10.751550)) index)))
 
 (defun csid-make-text-breakable (string)
   (mapconcat

@@ -85,9 +85,11 @@ function addNavigation() {
 	    $(link).attr("showSummary", "true");
 	    $(link).blur();
 	    showSummary(node.getAttribute("id"), $(link).attr("href"));
+	    updateExpansion(node);
 	    return false;
 	  } else {
 	    hideSummary(node);
+	    updateExpansion(node);
 	    return false;
 	  }
 	}
@@ -1569,4 +1571,20 @@ function fetchEventSummary(evUrl) {
     error: function(data) {
     }
   });
+}
+
+function updateExpansion(node) {
+  while (node && ! $(node).hasClass("date"))
+    node = node.previousSibling;
+
+  console.log(node);
+  if (node) {
+    if (hasSummaries(node)) {
+      $(node).removeClass("collapse");
+      $(node).addClass("expand");
+    } else {
+      $(node).removeClass("expand");
+      $(node).addClass("collapse");
+    }
+  }
 }

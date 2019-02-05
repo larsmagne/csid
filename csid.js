@@ -1585,6 +1585,7 @@ function doAd(id, venue, margin) {
   fetchEventSummary(
     url,
     function(data) {
+      $(margin).empty();
       var json = $.parseJSON(data);
       var width = $(margin).width();
       // Give up if the margins are too narrow.

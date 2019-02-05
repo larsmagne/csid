@@ -6,14 +6,14 @@ body {
 
 div#body-container {
   overflow: hidden;
-  max-width: 1000px;
+  width: 1000px;
   margin-left: auto;
   margin-right: auto;
 }
 table.events {
   border-collapse: separate;
   border-spacing: 0px;
-  max-width: 800px;
+  width: 800px;
   float: left;
 }
 div#selector {
@@ -225,6 +225,9 @@ div#large-heading div.subtitle {
     width: 100%;
     display: block;
     margin: 0px;
+  }
+  div#body-container {
+    width: auto;
   }
   table.events {
     width: 100%;

@@ -109,7 +109,6 @@ function addNavigation() {
       });
     } else {
       $(node).children("td").last().bind("click", function() {
-	fixPosition();
 	if (lastVenue != name) {
 	  hideShow(name);
 	  lastVenue = name;
@@ -255,7 +254,6 @@ function addVenue(name, deniedVenues) {
     setVenueCookie();
   });
   $("#venue-" + name).bind("click", function(e) {
-    fixPosition();
     if (lastVenue != name) {
       hideShow(name);
       lastVenue = name;
@@ -358,7 +356,6 @@ function hideShow(onlyVenue, onlyAfterTimestamp, onlyEvent,
 	     ! document.getElementById("new")) {
       $("#selector").append("<div class='export'><a id='new'>Display events arrived since last time</a></div>");
       $("#new").bind("click", function() {
-	fixPosition();
 	hideShow(false, $.cookie("timestamp"));
 	$.cookie("timestamp", maxTimestamp, { expires: 10000 });
 	addRestoreLink();
@@ -421,18 +418,6 @@ function setVenueCookie() {
       venues[i++] = node.id;
   });
   setSettings("deniedVenues", venues.join());
-}
-
-function fixPosition() {
-  if (phoneGap || $("body").width() < 600)
-    return;
-
-  $("table").each(function (key, table) {
-    table.width = table.offsetWidth + "px";
-    $(table).find("colgroup").children("col").each(function(key, col) {
-      col.width = col.offsetWidth + "px";
-    });
-  });
 }
 
 function exportShows() {

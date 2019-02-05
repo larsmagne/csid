@@ -168,6 +168,9 @@ function addNavigation() {
     exportCalendar();
   });
 
+  $("#selector").append("<div class='export'><a id='dshow-map'>Show today's events on a map</a></div>");
+  $("#dshow-map").bind("click", showMap);
+  
   if (window.location.href.match("shows=")) {
     $("#export").append(" - <a class='clear'>Clear the event list</a>");
     $("a.clear").bind("click", function(e) {

@@ -84,12 +84,13 @@ function addNavigation() {
 	  if (! $(link).attr("showSummary")) {
 	    $(link).attr("showSummary", "true");
 	    $(link).blur();
-	    showSummary(node.getAttribute("id"), $(link).attr("href"));
-	    updateExpansion(node);
+	    showSummary(node.getAttribute("id"), $(link).attr("href"),
+			function() {
+			  updateExpansion(node);
+			});
 	    return false;
 	  } else {
-	    hideSummary(node);
-	    updateExpansion(node);
+	    hideSummary(node, true);
 	    return false;
 	  }
 	}
@@ -1367,9 +1368,9 @@ function fetchSummaries(ids, index, callback) {
     },
     success: function(data) {
       var json = $.parseJSON(data);
+      insertSummary(ids[index][0], ids[index][1], json);
       if (callback)
 	callback();
-      insertSummary(ids[index][0], ids[index][1], json);
       if (index + 1 < ids.length)
 	fetchSummaries(ids, index + 1);
     },
@@ -1474,7 +1475,7 @@ function hideSummaries(tr) {
   }
 }
 
-function hideSummary(tr) {
+function hideSummary(tr, updateExp) {
   if ($(tr).find("div.summary")) {
     var td = tr.firstChild;
     $.map([td, td.nextSibling, td.nextSibling.nextSibling],
@@ -1487,6 +1488,8 @@ function hideSummary(tr) {
     $(tr).find("div.summary").animate({ height: "0px"}, 400, "swing",
 				      function() {
 					$(tr).find("div.summary").remove();
+					if (updateExp)
+					  updateExpansion(tr);
 				      });
     $(td).find("a").attr("showSummary", "");
   }
@@ -1499,10 +1502,10 @@ function removeAllSummaries() {
   });
 }
 
-function showSummary(id, href) {
+function showSummary(id, href, callback) {
   var ids = [];
   ids.push([id, href]);
-  fetchSummaries(ids, 0);
+  fetchSummaries(ids, 0, callback);
 }
 
 var fetchedSummaries = [];
@@ -1577,14 +1580,13 @@ function updateExpansion(node) {
   while (node && ! $(node).hasClass("date"))
     node = node.previousSibling;
 
-  console.log(node);
   if (node) {
     if (hasSummaries(node)) {
-      $(node).removeClass("collapse");
-      $(node).addClass("expand");
-    } else {
       $(node).removeClass("expand");
       $(node).addClass("collapse");
+    } else {
+      $(node).removeClass("collapse");
+      $(node).addClass("expand");
     }
   }
 }

@@ -741,11 +741,15 @@ function addDesktopLogos() {
       image.onload = function() {
 	if (focus) {
 	  if (getCookie("dark") == "enabled") {
+	    var pos = $(td).offset();
 	    td.innerHTML = "<div class='logo-background'></div>";
 	    var ratio = window.devicePixelRatio;
 	    if (! ratio)
 	      ratio = 1;
-	    $(td.childNodes[0]).css({width: image.width / ratio + "px"});
+	    $(td.childNodes[0]).css({width: image.width / ratio + "px",
+				     top: pos.top + 25 -
+				     (image.height / ratio / 2) + "px",
+				     left: pos.left + 10 + "px"});
 	    td.childNodes[0].appendChild(image);
 	  } else {
 	    td.innerHTML = "";

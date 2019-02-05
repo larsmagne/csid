@@ -747,7 +747,7 @@ function addDesktopLogos() {
 	    if (! ratio)
 	      ratio = 1;
 	    $(td.childNodes[0]).css({width: image.width / ratio + "px",
-				     top: pos.top + 25 -
+				     top: pos.top + 28 -
 				     (image.height / ratio / 2) + "px",
 				     left: pos.left + 10 + "px"});
 	    td.childNodes[0].appendChild(image);

@@ -4,20 +4,6 @@ body {
   font-family: 'Roboto', sans-serif;
 }
 
-body::before {
-  background-image: url("splash-back1x.jpg");
-  background-size: 100% 3000px;
-  content: "";
-  display: block;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100000px;
-  z-index: -2;
-  opacity: 0.1;
-}
-
 div#body-container {
   overflow: hidden;
   max-width: 1000px;

@@ -1406,8 +1406,13 @@ function insertSummary(id, url, data) {
   td.style.position = "relative";
   document.body.appendChild(div);
 
+  $(text).append("<p><a href=\"" + url + "\">Go to the event page</a>");
+  if (image.width) {
+    var space = image.width + 10;
+    text.style.width = $(tr).width() - space - 10 + "px";
+    text.style.paddingLeft = space + "px";
+  }
   div.appendChild(text);
-  $(div).append("<p><a href=\"" + url + "\">Go to the event page</a>");
   td.appendChild(div);
   $(div).animate({ opacity: 1 });
   $(div).click(function() {

@@ -173,6 +173,7 @@ input#dark {
   vertical-align: middle;
 }
 span.dark-name {
+  font-weight: bold;
 }
 label.dark-wrap {
   margin-top: 10px;

@@ -291,6 +291,9 @@ div#large-heading div.subtitle {
     font-weight: bold;
     width: 100%;
   }
+  td.event-text, td#event-image {
+    text-align: center;
+  }
   div.event-text div {
     padding: 20px;
   }

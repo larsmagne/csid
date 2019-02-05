@@ -160,6 +160,10 @@ div.export {
   padding-top: 10px;
   margin-left: 3px;
 }
+div.select-elem {
+  padding-top: 5px;
+  padding-bottom: 20px;
+}
 div.export a {
   cursor: pointer;
 }

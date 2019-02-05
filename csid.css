@@ -10,7 +10,7 @@ div#body-container {
   margin-right: auto;
 }
 table.events {
-  border-collapse: separate;
+  border-collapse: collapse;
   border-spacing: 0px;
   max-width: 800px;
   float: left;

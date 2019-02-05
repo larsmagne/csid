@@ -1534,7 +1534,7 @@ function hideAllSummaries() {
 
 function fetchEventSummary(evUrl) {
   var hash = sha1(evUrl);
-  var url = "/summaries/" +
+  var url = "summaries/" +
 	hash.substring(0, 3) + "/" + hash.substring(3) +
 	"-data.json";
   summaryQuery = $.ajax({

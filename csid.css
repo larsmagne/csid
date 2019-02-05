@@ -610,15 +610,11 @@ div#body-wrap {
 div#leftmargin {
   display: flex;
   flex: 1;
-  height: 100%;
-  overflow: hidden;
 }
 div#rightmargin {
   display: flex;
   flex: 1;
-  background: blue;
-  border: 1px solid green;
-  height: 100%;
+  overflow: hidden;
 }
 div.margin-text {
   display: block;

@@ -239,7 +239,8 @@ function addNavigation() {
   $("tr.date").addClass("expand");
 
   //eventMenu("event-41714");
-  //doAd("40496");
+  pickAd("#leftmargin");
+  pickAd("#rightmargin");
 }
 
 function addVenue(name, deniedVenues) {
@@ -1579,28 +1580,56 @@ function updateExpansion(node) {
   }
 }
 
-function doAd(id) {
+function doAd(id, margin) {
   var url = $("#event-" + id).find("a").attr("href");
   fetchEventSummary(
     url,
     function(data) {
       var json = $.parseJSON(data);
-      var width = $("#leftmargin").width();
+      var width = $(margin).width();
       var $wrap = $("<div class='margin-wrap'><div class='margin-header'>Today:</div></div>");
       $wrap.css({width: width});
       if (json.image) {
 	var image = document.createElement("img");
 	image.src = json.image;
-	image.width = width;
+	image.width = width + 1;
 	$wrap.append(image);
       }
       var $text = $("<div class='margin-text'>" + json.summary + "</div>");
       $text.append("<p><a href=\"" + url + "\">Go to the event page</a>");
       $wrap.append($text);
-      $("#leftmargin").append($wrap);
+      $(margin).append($wrap);
       $wrap.click(function() {
 	document.location = url;
 	return false;
       });
     });
+}
+
+function pickAd(margin) {
+  var events = todaysEvents();
+  var picks = [];
+  $.map(events, function(node) {
+    var venue = node.getAttribute("name");
+    if (venue == "Kafé_hærverk" ||
+	venue == "Konsertforeninga")
+      picks.push(node);
+  });
+  if (picks.length == 0)
+    picks = events;
+  if (margin == "#rightmargin")
+    picks = events;
+  var event = picks[Math.floor(Math.random() * picks.length)];
+  doAd(event.id.replace(/event-/, ""), margin);
+}
+
+function todaysEvents() {
+  var today = new Date().toISOString().substring(0, 10);
+  var events = [];
+  $("tr").each(function(key, node) {
+    var dat = node.getAttribute("date");
+    if (dat && dat == today)
+      events.push(node);
+  });
+  return events;
 }

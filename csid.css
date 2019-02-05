@@ -573,3 +573,23 @@ td.show .cbcontainer {
   -ms-transform: rotate(45deg);
   transform: rotate(45deg);
 } 
+
+div.event-desktop {
+  background: #303030;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+ }
+div.event-desktop > div {
+  background: linear-gradient(to bottom, #E0E0E0 0%, #b0b0b0 100%);
+  max-width: 400px;
+  padding: 30px;
+}
+div.event-desktop > div table tr td {
+  text-align: center;
+  color: black;
+}
+div.event-desktop .outer-venue-logo {
+  margin-top: 20px;
+}

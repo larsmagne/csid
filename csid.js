@@ -4,6 +4,7 @@ var sortOrder = "date";
 var savedTable = false;
 var sentrum = [59.915430, 10.751862];
 var homePos = sentrum;
+var mobilep;
 
 var mapKey = "AIzaSyDOzwQi0pHvnJ1hW__DTC2H4f2qPCr3pWw";
 
@@ -37,7 +38,7 @@ function addNavigation() {
       setSettings("deniedVenues", defaultDenied);
   }
 
-  var mobilep = phoneGap || $("body").width() < 600;
+  mobilep = phoneGap || $("body").width() < 600;
   var deniedVenues = getSettings("deniedVenues");
   var shows = getSettings("shows");
 
@@ -233,6 +234,8 @@ function addNavigation() {
   });
 
   $("tr.date").addClass("expand");
+
+  //eventMenu("event-41714");
 }
 
 function addVenue(name, deniedVenues) {
@@ -1011,9 +1014,12 @@ function colorbox(html) {
   box = document.createElement("div");
   box.style.height = window.innerHeight + "px";
   box.style.width = window.innerWidth + "px";
-  box.className = "event-lightbox";
+  if (mobilep)
+    box.className = "event-lightbox";
+  else
+    box.className = "event-lightbox event-desktop";
   var inner = document.createElement("div");
-  inner.className = "event-inner";
+  inner.className = "lightbox-inner";
   inner.innerHTML = html;
   box.appendChild(inner);
   var func = function() {

@@ -239,6 +239,7 @@ function addNavigation() {
   $("tr.date").addClass("expand");
 
   //eventMenu("event-41714");
+  //doAd("40496");
 }
 
 function addVenue(name, deniedVenues) {
@@ -584,7 +585,23 @@ function actionEventMenu(node, venue) {
     followLink(this.href);
     return false;
   });
-  fetchEventSummary(link);
+  fetchEventSummary(
+    link,
+    function(data) {
+      var json = $.parseJSON(data);
+      if (json.image) {
+	var image = document.createElement("img");
+	image.src = json.image;
+	var windowWidth = window.innerWidth;
+	// For Chrome on Mobile.
+	if (window.visualViewport)
+	  windowWidth = window.visualViewport.width;
+	if (windowWidth)
+	  image.style.maxWidth = windowWidth / 2;
+	$("#event-image").append(image);
+      }
+      $("#event-text").append(json.summary);
+    });
 }
 
 function followLink(src) {
@@ -1529,11 +1546,10 @@ function hideAllSummaries() {
   fetchedSummaries = [];
 }
 
-function fetchEventSummary(evUrl) {
+function fetchEventSummary(evUrl, callback) {
   var hash = sha1(evUrl);
   var url = "summaries/" +
-	hash.substring(0, 3) + "/" + hash.substring(3) +
-	"-data.json";
+	hash.substring(0, 3) + "/" + hash.substring(3) + "-data.json";
   summaryQuery = $.ajax({
     url: url,
     dataType: "text",
@@ -1542,21 +1558,7 @@ function fetchEventSummary(evUrl) {
 	xhr.overrideMimeType("application/json");
       }
     },
-    success: function(data) {
-      var json = $.parseJSON(data);
-      if (json.image) {
-	var image = document.createElement("img");
-	image.src = json.image;
-	var windowWidth = window.innerWidth;
-	// For Chrome on Mobile.
-	if (window.visualViewport)
-	  windowWidth = window.visualViewport.width;
-	if (windowWidth)
-	  image.style.maxWidth = windowWidth / 2;
-	$("#event-image").append(image);
-      }
-      $("#event-text").append(json.summary);
-    },
+    success: callback,
     error: function(data) {
     }
   });
@@ -1575,4 +1577,30 @@ function updateExpansion(node) {
       $(node).addClass("expand");
     }
   }
+}
+
+function doAd(id) {
+  var url = $("#event-" + id).find("a").attr("href");
+  fetchEventSummary(
+    url,
+    function(data) {
+      var json = $.parseJSON(data);
+      var width = $("#leftmargin").width();
+      var $wrap = $("<div class='margin-wrap'><div class='margin-header'>Today:</div></div>");
+      $wrap.css({width: width});
+      if (json.image) {
+	var image = document.createElement("img");
+	image.src = json.image;
+	image.width = width;
+	$wrap.append(image);
+      }
+      var $text = $("<div class='margin-text'>" + json.summary + "</div>");
+      $text.append("<p><a href=\"" + url + "\">Go to the event page</a>");
+      $wrap.append($text);
+      $("#leftmargin").append($wrap);
+      $wrap.click(function() {
+	document.location = url;
+	return false;
+      });
+    });
 }

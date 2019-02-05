@@ -5,10 +5,11 @@ body {
 }
 
 div#body-container {
-  overflow: hidden;
   width: 1000px;
   margin-left: auto;
   margin-right: auto;
+  display: flex;
+  flex: 1;
 }
 table.events {
   border-collapse: separate;
@@ -228,6 +229,9 @@ div#large-heading div.subtitle {
   }
   div#body-container {
     width: auto;
+  }
+  div#leftmargin, div#rightmargin {
+    display: none !important;
   }
   table.events {
     width: 100%;
@@ -598,4 +602,36 @@ div.event-desktop > div table tr td {
 }
 div.event-desktop .outer-venue-logo {
   margin-top: 20px;
+}
+
+div#body-wrap {
+  display: flex;
+}
+div#leftmargin {
+  display: flex;
+  flex: 1;
+  height: 100%;
+  overflow: hidden;
+}
+div#rightmargin {
+  display: flex;
+  flex: 1;
+  background: blue;
+  border: 1px solid green;
+  height: 100%;
+}
+div.margin-text {
+  display: block;
+  padding: 5px;
+}
+div.margin-wrap {
+  display: block;
+  cursor: pointer;
+}
+div.margin-header {
+  padding: 5px;
+  background: #808080;
+  color: white;
+  font-weight: bold;
+  border-bottom: 1px solid black;
 }

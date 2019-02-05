@@ -1326,7 +1326,7 @@ no further processing).  URL is either a string or a parsed URL."
 				       (format "<img src=%S>" img)))
 				   (or (csid-summary url 'summary))))))
 	    (setq prev-date date))
-      (insert "</table><div id='selector'></div></div><div class='rightmargin'></div></div>")
+      (insert "</table><div id='selector'></div></div><div id='rightmargin'></div></div>")
       (dolist (js '("jquery-3.3.1.min.js"
 		    "jquery.cookie.js"
 		    "jquery.colorbox-min.js"

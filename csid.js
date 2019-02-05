@@ -1592,12 +1592,6 @@ function doAd(id, venue, margin) {
 	return;
       var $wrap = $("<div class='margin-wrap'><div class='margin-header'>Today:</div></div>");
       $wrap.css({width: width});
-      var $img = $("<img src='logos/larger/" + fixName(venue) + ".png'>");
-      $img.css({"max-width": width - 10});
-      var $imgwrap = $("<div class='margin-image-wrap'></div>");
-      $imgwrap.append($img);
-      $imgwrap.css({width: width - 10});
-      $wrap.append($imgwrap);
       if (json.image) {
 	var image = document.createElement("img");
 	image.src = json.image;
@@ -1607,6 +1601,14 @@ function doAd(id, venue, margin) {
       var $text = $("<div class='margin-text'>" + json.summary + "</div>");
       $text.append("<p><a href=\"" + url + "\">Go to the event page</a>");
       $wrap.append($text);
+
+      var $img = $("<img src='logos/larger/" + fixName(venue) + ".png'>");
+      $img.css({"max-width": width - 10});
+      var $imgwrap = $("<div class='margin-image-wrap'></div>");
+      $imgwrap.append($img);
+      $imgwrap.css({width: width - 10});
+      $wrap.append($imgwrap);
+
       $(margin).append($wrap);
       $wrap.click(function() {
 	document.location = url;

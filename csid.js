@@ -91,6 +91,7 @@ function addNavigation() {
 	    return false;
 	  } else {
 	    hideSummary(node, true);
+	    $(link).blur();
 	    return false;
 	  }
 	}

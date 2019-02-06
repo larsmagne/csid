@@ -1603,7 +1603,8 @@ function doAd(id, venue, margin) {
       $text.append("<p><a href=\"" + url + "\">Go to the event page</a>");
       $wrap.append($text);
 
-      var $img = $("<img src='logos/larger/" + fixName(venue) + ".png'>");
+      var $img = $("<img src='logos/larger/" + fixName(venue) +
+		   ".png' srcset='" + fixName(venue) + "x2.png 2x'>");
       $img.css({"max-width": width - 10});
       var $imgwrap = $("<div class='margin-image-wrap'></div>");
       $imgwrap.append($img);

@@ -1600,7 +1600,8 @@ function doAd(id, venue, margin) {
 	slide = true;
       }
       var json = $.parseJSON(data);
-      var $ewrap = $("<div class='margin-event-wrap'></div>");
+      var $ewrap = $("<div class='margin-event-wrap' id='margin-event-" + id +
+		     "'></div>");
       $ewrap.css({width: width});
       if (json.image) {
 	var image = document.createElement("img");
@@ -1651,7 +1652,15 @@ function pickAd(margin) {
     picks = events;
   if (margin == "#rightmargin")
     picks = events;
-  var event = picks[Math.floor(Math.random() * picks.length)];
+  if (picks.length == 1)
+    var event = picks[0];
+  else {
+    for (var i = 0; i < 10; i++) {
+      event = picks[Math.floor(Math.random() * picks.length)];
+      if ($("#margin-" + event.id).length == 0)
+	break;
+    }
+  }
   doAd(event.id.replace(/event-/, ""), event.getAttribute("name"), margin);
 }
 

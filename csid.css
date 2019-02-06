@@ -9,7 +9,6 @@ div#body-container {
   flex-basis: 1000px;
   flex-grow: 0;
   flex-shrink: 0;
-  border: 10px solid black;
 }
 table.events {
   border-collapse: separate;

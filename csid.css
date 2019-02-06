@@ -6,19 +6,16 @@ body {
 
 div#body-container {
   width: 1000px;
-  flex: 1;
   flex-basis: 1000px;
   flex-grow: 0;
   flex-shrink: 0;
+  border: 10px solid black;
 }
 table.events {
   border-collapse: separate;
   border-spacing: 0px;
   width: 800px;
-  float: left;
-  flex-basis: 800px;
-  flex-grow: 0;
-  flex-shrink: 0;
+  display: inline-block;
 }
 div#selector {
   padding-bottom: 10px;
@@ -27,9 +24,8 @@ div#selector {
   width: 180px;
   display: inline-block;
   background: #c0c0c0;
-  flex-basis: 200px;
-  flex-grow: 0;
-  flex-shrink: 0;
+  height: 100%;
+  vertical-align: top;
 }
 table.events tr td {
   vertical-align: middle;

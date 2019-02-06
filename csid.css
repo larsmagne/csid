@@ -229,6 +229,9 @@ div#large-heading div.subtitle {
   }
   div#body-container {
     width: auto;
+    flex-basis: initial;
+    flex-grow: initial;
+    flex-shrink: initial;
   }
   div#leftmargin, div#rightmargin {
     display: none !important;

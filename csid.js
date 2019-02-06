@@ -1585,23 +1585,34 @@ function doAd(id, venue, margin) {
   fetchEventSummary(
     url,
     function(data) {
-      $(margin).empty();
-      var json = $.parseJSON(data);
+      var slide = false;
       var width = $(margin).width();
       // Give up if the margins are too narrow.
       if (width < 100)
 	return;
-      var $wrap = $("<div class='margin-wrap'><div class='margin-header'>Today:</div></div>");
-      $wrap.css({width: width});
+
+      var $wrap = $(margin).find(".margin-wrap");
+      if ($wrap.length == 0) {
+	console.log("empty");
+	$(margin).empty();
+	$wrap = $("<div class='margin-wrap'><div class='margin-header'>Today:</div></div>");
+	$wrap.css({width: width});
+      } else {
+	console.log("not empty");
+	slide = true;
+      }
+      var json = $.parseJSON(data);
+      var $ewrap = $("<div class='margin-event-wrap'></div>");
+      $ewrap.css({width: width});
       if (json.image) {
 	var image = document.createElement("img");
 	image.src = json.image;
 	image.width = width + 1;
-	$wrap.append(image);
+	$ewrap.append(image);
       }
       var $text = $("<div class='margin-text'>" + json.summary + "</div>");
       $text.append("<p><a href=\"" + url + "\">Go to the event page</a>");
-      $wrap.append($text);
+      $ewrap.append($text);
 
       var $img = $("<img src='logos/larger/" + fixName(venue) +
 		   ".png' srcset='" + fixName(venue) + "x2.png 2x'>");
@@ -1609,13 +1620,22 @@ function doAd(id, venue, margin) {
       var $imgwrap = $("<div class='margin-image-wrap'></div>");
       $imgwrap.append($img);
       $imgwrap.css({width: width - 10});
-      $wrap.append($imgwrap);
+      $ewrap.append($imgwrap);
 
+      $wrap.append($ewrap);
       $(margin).append($wrap);
       $wrap.click(function() {
 	document.location = url;
 	return false;
       });
+      if (margin == "#rightmargin") {
+	if (slide)
+	  slideAd(margin);
+	setTimeout(function() {
+	  pickAd(margin);
+	},
+		   2000);
+      }
     });
 }
 
@@ -1645,4 +1665,24 @@ function todaysEvents() {
       events.push(node);
   });
   return events;
+}
+
+function slideAd(margin) {
+  $($(margin + " .margin-event-wrap").get().reverse()).each(function (key, node) {
+    var $elem = $(node);
+    var pos = $elem.offset();
+    console.log(pos);
+    $elem.css({position: "absolute",
+	       top: pos.top + "px",
+	       left: pos.left + "px",
+	       "z-index": -1});
+    return;
+    $elem.animate({left: pos.left - $elem.width() - 1 + "px"},
+		  1000, "linear", function() {
+		    if (key == 1)
+		      $elem.remove();
+		    else
+		      $elem.css({position: "static"});
+		  });
+  });
 }

@@ -638,9 +638,10 @@ div.margin-text {
   padding: 5px;
 }
 div.margin-wrap {
-  display: block;
   cursor: pointer;
   font-size: 12px;
+  overflow: hidden;
+  white-space: nowrap;
 }
 div.margin-header {
   padding: 5px;
@@ -656,4 +657,9 @@ div.margin-image-wrap {
   padding-top: 20px;
   padding-bottom: 20px;
   background: linear-gradient(to bottom, #b0b0b0 0%, #ffffff 100%);
+}
+div.margin-event-wrap {
+  white-space: normal;
+  display: inline-block;
+  vertical-align: top;
 }

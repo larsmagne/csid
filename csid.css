@@ -23,7 +23,6 @@ div#selector {
   width: 180px;
   display: inline-block;
   background: #c0c0c0;
-  height: 100%;
   vertical-align: top;
 }
 table.events tr td {

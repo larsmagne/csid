@@ -6,16 +6,19 @@ body {
 
 div#body-container {
   width: 1000px;
-  margin-left: auto;
-  margin-right: auto;
-  display: flex;
   flex: 1;
+  flex-basis: 1000px;
+  flex-grow: 0;
+  flex-shrink: 0;
 }
 table.events {
   border-collapse: separate;
   border-spacing: 0px;
   width: 800px;
   float: left;
+  flex-basis: 800px;
+  flex-grow: 0;
+  flex-shrink: 0;
 }
 div#selector {
   padding-bottom: 10px;
@@ -24,6 +27,9 @@ div#selector {
   width: 180px;
   display: inline-block;
   background: #c0c0c0;
+  flex-basis: 200px;
+  flex-grow: 0;
+  flex-shrink: 0;
 }
 table.events tr td {
   vertical-align: middle;
@@ -610,6 +616,7 @@ div#body-wrap {
 div#leftmargin {
   display: flex;
   flex: 1;
+  overflow: hidden;
 }
 div#rightmargin {
   display: flex;

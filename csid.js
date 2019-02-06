@@ -1622,7 +1622,7 @@ function doAd(id, venue, margin) {
 
       $wrap.append($ewrap);
       $(margin).append($wrap);
-      $wrap.click(function() {
+      $ewrap.click(function() {
 	document.location = url;
 	return false;
       });

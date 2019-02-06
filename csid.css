@@ -642,13 +642,13 @@ div.margin-wrap {
   font-size: 12px;
   overflow: hidden;
   white-space: nowrap;
+  position: relative;
 }
 div.margin-header {
   padding: 5px;
   background: #808080;
   color: white;
   font-weight: bold;
-  border-bottom: 1px solid black;
 }
 div.margin-image-wrap {
   text-align: center;

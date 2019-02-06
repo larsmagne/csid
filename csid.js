@@ -1593,12 +1593,10 @@ function doAd(id, venue, margin) {
 
       var $wrap = $(margin).find(".margin-wrap");
       if ($wrap.length == 0) {
-	console.log("empty");
 	$(margin).empty();
 	$wrap = $("<div class='margin-wrap'><div class='margin-header'>Today:</div></div>");
 	$wrap.css({width: width});
       } else {
-	console.log("not empty");
 	slide = true;
       }
       var json = $.parseJSON(data);
@@ -1634,7 +1632,7 @@ function doAd(id, venue, margin) {
 	setTimeout(function() {
 	  pickAd(margin);
 	},
-		   2000);
+		   10000);
       }
     });
 }
@@ -1670,13 +1668,10 @@ function todaysEvents() {
 function slideAd(margin) {
   $($(margin + " .margin-event-wrap").get().reverse()).each(function (key, node) {
     var $elem = $(node);
-    var pos = $elem.offset();
-    console.log(pos);
+    var pos = $elem.position();
     $elem.css({position: "absolute",
 	       top: pos.top + "px",
-	       left: pos.left + "px",
-	       "z-index": -1});
-    return;
+	       left: pos.left + "px"});
     $elem.animate({left: pos.left - $elem.width() - 1 + "px"},
 		  1000, "linear", function() {
 		    if (key == 1)

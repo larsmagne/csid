@@ -15,6 +15,16 @@ table.events {
   border-spacing: 0px;
   width: 800px;
   display: inline-block;
+  table-layout: fixed;
+}
+col.band {
+  width: 600px;
+}
+col.venue {
+  width: 140px;
+}
+col.button {
+  width: 60px;
 }
 div#selector {
   padding-bottom: 10px;
@@ -240,6 +250,9 @@ div#large-heading div.subtitle {
     width: 100%;
     float: none;
     margin-top: 38px;
+  }
+  col.button {
+    display: none;
   }
   div#large-heading {
     display: none;

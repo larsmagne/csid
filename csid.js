@@ -1163,6 +1163,7 @@ var startPos = homePos;
 var herePos = false;
 
 function showMap() {
+  hideAllSummaries();
   var box = document.createElement("div");
   box.style.position = "fixed";
   box.style.left = "0px";
@@ -1590,6 +1591,8 @@ function doAd(id, venue, margin) {
       // Give up if the margins are too narrow.
       if (width < 100)
 	return;
+      if (width > 200)
+	width = 200;
 
       var $wrap = $(margin).find(".margin-wrap");
       if ($wrap.length == 0) {
@@ -1679,8 +1682,9 @@ function slideAd(margin) {
   $($(margin + " .margin-event-wrap").get().reverse()).each(function (key, node) {
     var $elem = $(node);
     var pos = $elem.position();
-    $elem.css({position: "absolute",
-	       top: pos.top + "px",
+    var headHeight = $elem.find(".margin-header").height();
+    $elem.css({position: (key == 1? "absolute": "relative"),
+	       top: pos.top + (key == 0? -headHeight: 0) + "px",
 	       left: pos.left + "px"});
     $elem.animate({left: pos.left - $elem.width() - 1 + "px"},
 		  1000, "linear", function() {

@@ -632,10 +632,16 @@ div#rightmargin {
   display: flex;
   flex: 1;
   overflow: hidden;
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
 }
 div.margin-text {
   display: block;
   padding: 5px;
+}
+div#leftmargin > div {
+  margin-left: auto;
 }
 div.margin-wrap {
   cursor: pointer;
@@ -643,6 +649,9 @@ div.margin-wrap {
   overflow: hidden;
   white-space: nowrap;
   position: relative;
+  align-self: auto;
+  height: 1000px;
+  max-width: 200px;
 }
 div.margin-header {
   padding: 5px;

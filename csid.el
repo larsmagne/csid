@@ -359,6 +359,8 @@ no further processing).  URL is either a string or a parsed URL."
 			   (vcalendar-parse-region (point) (point-max))))
 			(t
 			 (libxml-parse-html-region (point) (point-max))))))))
+      (when (get-buffer-process (current-buffer))
+	(delete-process (get-buffer-process (current-buffer))))
       (kill-buffer (current-buffer)))))
 
 (defun csid-parse-blaa (dom)

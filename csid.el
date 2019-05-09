@@ -68,7 +68,7 @@
     ("Konserthuset" "http://www.oslokonserthus.no/program/json/all" konserthuset :json (59.913270 10.729669))
     ("Riksscenen" "http://www.riksscenen.no/program.95415.no.html" riksscenen (59.919877 10.761074))
     ("Olsen" "http://shop.olsenbar.no/program/" olsen (59.907644 10.818268))
-    ("Verkstedet" "https://www.facebook.com/pg/verkstedetbar/events/?ref=page_internal" facebook (59.917728 10.754123))
+    ("Verkstedet" "https://www.facebook.com/verkstedetbar/events/?ref=page_internal" facebook (59.917728 10.754123))
     ("Gamla" "https://www.gamla.no/" gamla (59.913654 10.745297))
     ;;("Sawol" "http://www.sawol.no/category/program/" sawol)
     ;;("Buckleys" "http://www.buckleys.no/konserter.html" buckleys :date)
@@ -184,6 +184,8 @@
     :html)))
 
 (defun csid-parse-sources (&optional type debug)
+  ;; Hack to work around problem with Facebook gzip chunks.
+  (setq url-mime-encoding-string nil)
   ;; When calling interactively, clear out the list for easier debugging.
   (when type
     (setq csid-database nil))

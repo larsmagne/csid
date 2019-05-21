@@ -737,16 +737,14 @@ no further processing).  URL is either a string or a parsed URL."
 
 (defun csid-parse-konsertforeninga (dom)
   (loop for elem in (dom-by-class dom "eventon_list_event")
-	for time = (dom-by-class elem "evcal_cblock")
-	for year = (dom-attr time 'data-syr)
-	for month = (dom-attr time 'data-smon)
-	for day = (dom-text (dom-by-class time "^date$"))
-	for link = (dom-by-tag elem 'a)
-	for title = (dom-texts (dom-by-class elem "evcal_event_title"))
-	collect (list (csid-parse-month-date-with-year
-		       (format "%s %s %s" month day year))
-		      (dom-attr link 'href)
-		      title)))
+	for date = (loop for meta in (dom-by-tag elem 'meta)
+			 when (equal (dom-attr meta 'itemprop)
+				     "startDate")
+			 return (dom-attr meta 'content))
+	when date
+	collect (list (csid-parse-sloppy-iso8601 date)
+		      (dom-attr (dom-by-tag elem 'a) 'href)
+		      (dom-texts (dom-by-tag elem 'span)))))
 
 (defun csid-parse-betong (dom)
   (loop for elem in (dom-by-tag

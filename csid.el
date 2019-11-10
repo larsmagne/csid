@@ -44,6 +44,7 @@
 
 (defvar csid-sources
   '(("Revolver" "https://revolveroslo.ticketco.no/" ticketco (59.917146 10.749779))
+    ("Kafé hærverk" "https://www.facebook.com/pg/kafehaerverk/events/?ref=page_internal" facebook (59.919202 10.751920))
     ("Blå" "http://www.blaaoslo.no/" blaa (59.920284 10.752836))
     ("Mir" "http://www.lufthavna.no/" mir (59.921667 10.761053))
     ("Victoria" "http://nasjonaljazzscene.no/arrangement/" victoria (59.914109 10.738198))
@@ -102,7 +103,6 @@
     ("Enga" "https://www.facebook.com/Enga-419256284860268/events?ref=page_internal" facebook (59.907470 10.783760))
     ("Big Dipper" "https://www.facebook.com/Platebutikken-Big-Dipper-428305525645/events?ref=page_internal" facebook (59.913707 10.745384))
     ;;("Krøsset" "https://www.facebook.com/krxsset/events?ref=page_internal" facebook (59.921141 10.751589))
-    ("Kafé hærverk" "https://www.facebook.com/pg/kafehaerverk/events/?ref=page_internal" facebook (59.919202 10.751920))
     ("Cappelens forslag" "https://www.facebook.com/pg/CappelensForslag/events/?ref=page_internal" facebook (59.915077 10.753527))
     ;;("Barrikaden" "http://vestbredden.net/barrikaden/" barrikaden :date)
     ("Henie Onstad" "http://hok.no/kalender" henie-onstad :date (59.888617 10.553501) :nobound)

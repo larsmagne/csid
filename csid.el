@@ -1598,6 +1598,8 @@ no further processing).  URL is either a string or a parsed URL."
 (defun csid-retrieve-phantom-event-dom (url)
   (let ((html "/tmp/event.html")
 	(js "/tmp/dump.js"))
+    ;; Ensure that phantomjs doesn't talk to the X server.
+    (setenv "QT_QPA_PLATFORM" "offscreen")
     (when (file-exists-p html)
       (delete-file html))
     (with-temp-buffer

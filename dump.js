@@ -3,8 +3,8 @@ var fs = require('fs');
 
 page.onLoadFinished = function() {
   console.log("page load finished");
-  // We don't exit on page loads, because there'll be a bunch of
-  // redirects.  Instead we wait for the timeout these days.
+  fs.write('/tmp/event.html', page.content, 'w');
+  phantom.exit();
 };
 
 window.setTimeout(function () {

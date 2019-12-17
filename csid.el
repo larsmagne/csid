@@ -1459,6 +1459,8 @@ no further processing).  URL is either a string or a parsed URL."
       (write-region (point-min) (point-max)
 		    (expand-file-name (format "%s.html" this-date) dir)))))
 
+;; (dolist (elem (cdar json)) (insert (format "&%s=%s" (car elem) (cdr elem))))
+
 (defun csid-get-facebook-events-public (id &optional cursor)
   (let* ((url-request-method "POST")
 	 (boundary (mml-compute-boundary '()))

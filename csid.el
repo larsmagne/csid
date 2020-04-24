@@ -126,6 +126,7 @@
     ("Brewgata" "https://www.facebook.com/pg/Brewgata-157539921600511/events/?ref=page_internal" facebook (59.914066 10.755094))
     ("Sagene" "https://www.facebook.com/pg/onsdagsjazzen/events/?ref=page_internal" facebook (59.937541 10.756546))
     ("Rock In" "https://www.facebook.com/pg/rockinoslo/events/?ref=page_internal" facebook (59.913002 10.761144))
+    ("Brakkesyke" "https://www.facebook.com/pg/brakkesyke2020/events/?ref=page_internal" facebook (59.913002 10.761144))
     ))
 
 (defvar csid-database nil)

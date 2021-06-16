@@ -42,6 +42,7 @@ driver.find_element_by_id("email").send_keys(user)
 driver.find_element_by_id("pass").send_keys(passwd)
 driver.find_element_by_name("login").click()
 
+# Reload the main page -- it seems to like this.
 driver.get("http://www.facebook.com")
 
 # Fetch and dump all the URLs

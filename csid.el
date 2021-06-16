@@ -334,6 +334,7 @@ no further processing).  URL is either a string or a parsed URL."
 		   (format "/tmp/face-%s.html"
 			   (cdr (assoc name csid-facebook-files)))))
 	      (when (file-exists-p file)
+		(insert "\n\n")
 		(insert-file-contents file))
 	      (current-buffer)))
 	(csid-retrieve-synchronously url t t))
@@ -674,13 +675,15 @@ no further processing).  URL is either a string or a parsed URL."
 		      (dom-texts link))))
 
 (defun csid-parse-facebook (dom)
-  (with-temp-buffer
-    (dom-print dom)
-    (goto-char (point-min))
-    (when (and (search-forward "upcoming_events" nil t)
-	       (search-backward "{\"complete\"" nil t))
-      (csid-parse-facebook-public-1 (json-read)))))
-
+  (cl-loop for event in (dom-by-tag dom 'a)
+	   when (equal (dom-attr event 'aria-label) "event photo url")
+	   collect (let* ((parent (dom-parent dom (dom-parent dom event)))
+			  (time (dom-texts (dom-by-tag parent 'span)))
+			  (link (cdr (dom-by-tag parent 'a))))
+		     (list (csid-parse-facebook-time time)
+			   (dom-texts link)
+			   (dom-attr link 'href)))))
+	   
 (defun csid-parse-facebook-time (time)
   (or (csid-parse-shortish-month time)
       (csid-parse-short-yearless-month time)
@@ -698,17 +701,6 @@ no further processing).  URL is either a string or a parsed URL."
 			    day-num))
 	       (cl-incf start (* 60 60 24)))
 	     (format-time-string "%F" start)))))
-
-(defun csid-parse-facebook-public-1 (json)
-  (loop for event across (cdr (assq 'edges
-				    (cdr (assq 'upcoming_events
-					       (cdr (assq 'page (cdr (assq 'data (cdr (assq 'result json))))))))))
-	for elem = (cdr (assq 'node event))
-	for time = (cdr (assq 'day_time_sentence elem))
-	collect (list (csid-parse-facebook-time time)
-		      (format "https://www.facebook.com/events/%s/"
-			      (cdr (assq 'id elem)))
-		      (cdr (assq 'name elem)))))
 
 (defun csid-parse-victoria (dom)
   (loop for elem in (dom-by-class dom "event-entry")

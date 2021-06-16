@@ -1746,8 +1746,7 @@ no further processing).  URL is either a string or a parsed URL."
 	     (insert (format "%d %s\n" i (nth 1 source)))
 	     (push (cons (nth 0 source) i) csid-facebook-files))
     (write-region (point-min) (point-max) "/tmp/faceurls.txt"))
-  ;;(call-process "./faceget.py")
-  )
+  (call-process "./faceget.py"))
 
 (provide 'csid)
 

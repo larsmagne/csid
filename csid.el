@@ -96,7 +96,7 @@
     ("Sub Scene" "http://www.subscene.no/" subscene (59.912176 10.736554))
     ("Vigeland" "https://www.facebook.com/emanuelvigeland/events" facebook (59.947077 10.692663))
     ("Josefine" "https://www.facebook.com/pg/JosefineVisescene/events/?ref=page_internal" facebook (59.923494 10.727687))
-    ("Izakaya" "https://www.facebook.com/Izakaya-343430575679537/events?ref=page_internal" facebook (59.918220 10.741845))
+    ;;("Izakaya" "https://www.facebook.com/Izakaya-343430575679537/events?ref=page_internal" facebook (59.918220 10.741845))
     ("Sentralen" "http://www.sentralen.no/arrangementer" sentralen (59.911146 10.740328))
     ("Ingensteds" "https://www.facebook.com/pg/ingenstedsoslo/events/?ref=page_internal" facebook (59.919991 10.752761))
     ("Enga" "https://www.facebook.com/Enga-419256284860268/events?ref=page_internal" facebook (59.907470 10.783760))

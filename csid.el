@@ -1475,7 +1475,7 @@ no further processing).  URL is either a string or a parsed URL."
 	       for i from 1000
 	       when (string-match "facebook.com" url)
 	       do
-	       (insert "%d %s\n" i url)
+	       (insert (format "%d %s\n" i url))
 	       (push (cons url i) csid-facebook-event-files))
       (write-region (point-min) (point-max) "/tmp/faceurls.txt"))
     (call-process "./faceget.py")

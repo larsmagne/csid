@@ -51,11 +51,11 @@
     ("Rockefeller" "http://rockefeller.no/index.html" rockefeller :multi (59.916125 10.750050))
     ;;("Mono" "http://www.cafemono.no/program/" mono (59.913942 10.749326))
     ("Parkteateret" "http://parkteatret.no/program/" parkteateret (59.923515 10.758537))
-    ("Konsertforeninga" "http://www.konsertforeninga.no/event-directory/" konsertforeninga)
+    ("Konsertforeninga" "https://www.facebook.com/Konsertforeninga/events/?ref=page_internal" facebook)
     ;;("Maksitaksi" "https://www.facebook.com/maksitaksii/events?ref=page_internal" facebook (59.918278 10.737577))
     ("Betong" "https://www.facebook.com/betongoslo/events" facebook (59.932264 10.712854))
     ("Bidrobon" "https://nb-no.facebook.com/pg/Drivhuset-musikkverksted-bidrobon-Biermannsg%C3%A5rden-202355836444/events/?ref=page_internal" facebook (59.931460 10.755416))
-    ("Cosmopolite" "http://cosmopolite.no/program/cosmopolite" cosmopolite (59.936133 10.765991))
+    ("Cosmopolite" "https://cosmopolite.no/program" cosmopolite (59.936133 10.765991))
     ("Belleville" "http://cosmopolite.no/program/belleville" cosmopolite (59.936133 10.765991))
     ("Vulkan" "https://vulkanarena.no/" vulkan (59.922435 10.751270))
     ("Jakob" "http://jakob.no/program/" jakob (59.918090 10.754294))
@@ -219,7 +219,7 @@
 			      (csid-source-type source)
 			      name)))))
 		   (unless results
-		     (message "No results for type %s" name))
+		     (message "No results for type %s %s" name url))
 		   (loop for result in results
 			 unless (memq :multi source)
 			 do (push name result)
@@ -332,14 +332,16 @@ no further processing).  URL is either a string or a parsed URL."
       asynch-buffer)))
 
 (defun csid-parse-source (url function data-type name)
-  (with-current-buffer (if (eq function 'csid-parse-facebook)
-			   (progn
-			     (with-current-buffer (generate-new-buffer "face")
-			       (insert-file-contents
-				(format "/tmp/face-%d.html"
-					(cdr (assoc name csid-facebook-files))))
-			       (current-buffer)))
-			 (csid-retrieve-synchronously url t t))
+  (with-current-buffer
+      (if (eq function 'csid-parse-facebook)
+	  (with-current-buffer (generate-new-buffer "face")
+	    (let ((file 
+		   (format "/tmp/face-%s.html"
+			   (cdr (assoc name csid-facebook-files)))))
+	      (when (file-exists-p file)
+		(insert-file-contents file))
+	      (current-buffer)))
+	(csid-retrieve-synchronously url t t))
     (goto-char (point-min))
     (prog1
 	(when (search-forward "\n\n" nil t)
@@ -788,13 +790,34 @@ no further processing).  URL is either a string or a parsed URL."
 			    (replace-regexp-in-string "[\r\n\t ]+" " " string)))
 
 (defun csid-parse-cosmopolite (dom)
-  (loop for elem in (dom-by-class dom "concert-item")
-	for day = (dom-text (dom-by-class elem "day-of-the-month"))
-	for month = (dom-text (dom-by-class elem "^month$"))
-	collect (list (csid-parse-short-yearless-month
-		       (format "%s %s" day month))
-		      (shr-expand-url (dom-attr (dom-by-tag elem 'a) 'href))
-		      (csid-clean-string (dom-texts (dom-by-tag elem 'h2))))))
+  (let* ((url-request-method "POST")
+	 (boundary (mml-compute-boundary '()))
+	 (url-request-extra-headers '(("Content-Type" . "application/x-www-form-urlencoded")))
+	 (url-request-data
+	  "view_name=events&view_display_id=page_1&view_args=&view_path=%2Fprogram&view_base_path=program&view_dom_id=4e285d54286047ecb3656969a128c2bdd8b1880b3f455afe4349965e15bf87b8&pager_element=0&page=1&_drupal_ajax=1&ajax_page_state%5Btheme%5D=cosmo&ajax_page_state%5Btheme_token%5D=&ajax_page_state%5Blibraries%5D=better_exposed_filters%2Fauto_submit%2Cbetter_exposed_filters%2Fgeneral%2Cbetter_exposed_filters%2Fselect_all_none%2Ccosmo%2Fglobal%2Cextlink%2Fdrupal.extlink%2Cgoogle_analytics%2Fgoogle_analytics%2Csystem%2Fbase%2Cviews%2Fviews.module%2Cviews_infinite_scroll%2Fviews-infinite-scroll%2Czurb_foundation%2Fglobal"))
+    (with-current-buffer (csid-retrieve-synchronously
+			  "https://cosmopolite.no/views/ajax?_wrapper_format=drupal_ajax")
+      (goto-char (point-min))
+      (when (re-search-forward "^\r?\n" nil t)
+	(prog1
+	    (csid-parse-cosmopolite-1 (ignore-errors (json-read)))
+	  (kill-buffer (current-buffer)))))))
+
+(defun csid-parse-cosmopolite-1 (json)
+  (cl-loop for elem across json
+	   when (equal (cdr (assq 'command elem)) "insert")
+	   return (csid-parse-cosmopolite-2
+		   (with-temp-buffer
+		     (insert (cdr (assq 'data elem)))
+		     (libxml-parse-html-region (point-min) (point-max))))))
+
+(defun csid-parse-cosmopolite-2 (dom)
+  (cl-loop for elem in (dom-by-tag dom 'li)
+	   collect (list (csid-parse-month-date
+			  (dom-texts (dom-by-class elem "bottom-row")))
+			 (shr-expand-url
+			  (dom-attr (dom-by-tag elem 'a) 'href))
+			 (dom-texts (dom-by-class elem "views-field-title")))))
 
 (defun csid-parse-vulkan (dom)
   (loop for elem in (dom-by-class dom "event_container")

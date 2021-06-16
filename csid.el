@@ -56,7 +56,6 @@
     ("Betong" "https://www.facebook.com/betongoslo/events" facebook (59.932264 10.712854))
     ("Bidrobon" "https://nb-no.facebook.com/pg/Drivhuset-musikkverksted-bidrobon-Biermannsg%C3%A5rden-202355836444/events/?ref=page_internal" facebook (59.931460 10.755416))
     ("Cosmopolite" "https://cosmopolite.no/program" cosmopolite (59.936133 10.765991))
-    ("Belleville" "http://cosmopolite.no/program/belleville" cosmopolite (59.936133 10.765991))
     ("Vulkan" "https://vulkanarena.no/" vulkan (59.922435 10.751270))
     ("Jakob" "http://jakob.no/program/" jakob (59.918090 10.754294))
     ("Ultima" "http://ultima.no/program" ultima)
@@ -909,21 +908,11 @@ no further processing).  URL is either a string or a parsed URL."
     (nreverse result)))
 
 (defun csid-parse-nilsen (dom)
-  (loop for row in (dom-by-class dom "program3sp")
-	append (loop with date
-		     for elem in (dom-non-text-children row)
-		     when (and (eq (car elem) 'p)
-			       (equal (dom-attr elem 'class) "arrdato"))
-		     do (setq date
-			      (csid-parse-full-numeric-date (dom-text elem)))
-		     when (and (eq (car elem) 'p)
-			       (equal (dom-attr elem 'class) "arrheading")
-			       (csid-date-likely-p date))
-		     collect (list
-			      date
-			      (shr-expand-url
-			       (dom-attr (dom-by-tag elem 'a) 'href))
-			      (dom-text (dom-by-tag elem 'a))))))
+  (cl-loop for elem in (dom-by-class dom "listeblokk")
+	   collect (list (csid-parse-full-numeric-date
+			  (dom-texts (dom-by-class elem "arrdato")))
+			 (shr-expand-url (dom-attr (dom-by-tag elem 'a) 'href))
+			 (dom-texts (dom-by-tag elem 'h2)))))
 
 (defun csid-date-likely-p (date)
   (time-less-p

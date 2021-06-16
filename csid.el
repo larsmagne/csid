@@ -1501,10 +1501,14 @@ no further processing).  URL is either a string or a parsed URL."
 	(with-temp-buffer
 	  (insert "{}")
 	  (write-region (point-min) (point-max) file))
-      (let ((image (csid-get-event-image dom url))
+      (let ((image (and (not (string-match "facebook.com" url))
+			(csid-get-event-image dom url)))
 	    (summary (csid-get-event-summary-loop dom))
 	    (url-request-extra-headers '(("Cookie" . "fr=0iznHLOd07GF3Pj78..BZ8tLB.QG.AAA.0.0.Bano-m.AWVOfML3; sb=6tlhWvzwnenK3Wm6ZmN2WUgS; noscript=1")
 					 ("Referer" . "https://www.facebook.com/events/791343834393278/?_fb_noscript=1"))))
+	;; Remove Facebook data.
+	(setq summary (replace-regexp-in-string
+		       "^.*dem til som venner............." "" summary))
 	(with-temp-buffer
 	  (insert "{")
 	  (when image

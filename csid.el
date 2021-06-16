@@ -43,7 +43,7 @@
 (defvar csid-sequence 0)
 
 (defvar csid-sources
-  '(("Revolver" "https://revolveroslo.ticketco.no/" ticketco (59.917146 10.749779))
+  '(("Revolver" "https://www.facebook.com/revolveroslo/events/?ref=page_internal" facebook (59.917146 10.749779))
     ("Kafé hærverk" "https://www.facebook.com/pg/kafehaerverk/events/?ref=page_internal" facebook (59.919202 10.751920))
     ("Blå" "http://www.blaaoslo.no/" blaa (59.920284 10.752836))
     ("Mir" "http://www.lufthavna.no/" mir (59.921667 10.761053))
@@ -208,14 +208,16 @@
 				       (fboundp function))
 				  function
 				'csid-parse-new)
-			      (csid-source-type source))
+			      (csid-source-type source)
+			      name)
 			   (progn
 			     (csid-parse-source
 			      url
 			      (if (fboundp function)
 				  function
 				'csid-parse-new)
-			      (csid-source-type source))))))
+			      (csid-source-type source)
+			      name)))))
 		   (unless results
 		     (message "No results for type %s" name))
 		   (loop for result in results
@@ -329,8 +331,15 @@ no further processing).  URL is either a string or a parsed URL."
 			      (get-buffer-process asynch-buffer)))))))
       asynch-buffer)))
 
-(defun csid-parse-source (url function data-type)
-  (with-current-buffer (csid-retrieve-synchronously url t t)
+(defun csid-parse-source (url function data-type name)
+  (with-current-buffer (if (eq function 'csid-parse-facebook)
+			   (progn
+			     (with-current-buffer (generate-new-buffer "face")
+			       (insert-file-contents
+				(format "/tmp/face-%d.html"
+					(cdr (assoc name csid-facebook-files))))
+			       (current-buffer)))
+			 (csid-retrieve-synchronously url t t))
     (goto-char (point-min))
     (prog1
 	(when (search-forward "\n\n" nil t)
@@ -374,7 +383,7 @@ no further processing).  URL is either a string or a parsed URL."
 		     for h1 = (dom-by-tag elem 'h1)
 		     when elem
 		     collect (list
-			      (csid-parse-month-date
+			      (csid-parse-english-month-date
 			       (format "%s %s"
 				       (dom-text (dom-by-class day "^number$"))
 				       month-name))
@@ -482,12 +491,13 @@ no further processing).  URL is either a string or a parsed URL."
 
 ;; "06. sept 2013"
 (defun csid-parse-shortish-month (string)
-  (when (string-match (format "\\([0-9]+\\).*\\(%s\\).*?\\([0-9]+\\)"
-			      (mapconcat
-			       (lambda (month)
-				 (substring month 0 3))
-			       csid-months "\\|"))
-		      string)
+  (when (and (string-match (format "\\([0-9]+\\).*\\(%s\\).*?\\([0-9]+\\)"
+				   (mapconcat
+				    (lambda (month)
+				      (substring month 0 3))
+				    csid-months "\\|"))
+			   string)
+	     (= (length (match-string 3 string)) 3))
     (format "%s-%02d-%02d"
 	    (match-string 3 string)
 	    (1+ (position (match-string 2 string)
@@ -661,27 +671,38 @@ no further processing).  URL is either a string or a parsed URL."
 		      (dom-texts link))))
 
 (defun csid-parse-facebook (dom)
-  (let ((id (loop for meta in (dom-by-tag dom 'meta)
-		  for content = (dom-attr meta 'content)
-		  when (and content
-			    (string-match "fb://page/\\([0-9]+\\)" content))
-		  return (match-string 1 content)))
-	(cursor nil))
-    (when id
-      (csid-parse-facebook-public-1
-       (csid-get-facebook-events-public id cursor)))))
+  (with-temp-buffer
+    (dom-print dom)
+    (goto-char (point-min))
+    (when (and (search-forward "upcoming_events" nil t)
+	       (search-backward "{\"complete\"" nil t))
+      (csid-parse-facebook-public-1 (json-read)))))
 
-(defun csid-parse-facebook-1 (json)
-  (loop for event across (cdr (assq 'data json))
-	collect (list (csid-parse-iso8601 (cdr (assq 'start_time event)))
-		      (format "https://www.facebook.com/events/%s/"
-			      (cdr (assq 'id event)))
-		      (cdr (assq 'name event)))))
+(defun csid-parse-facebook-time (time)
+  (or (csid-parse-shortish-month time)
+      (csid-parse-short-yearless-month time)
+      (and (string-match "I DAG" time)
+	   (format-time-string "%F"))
+      (and (string-match "I MORGEN" time)
+	   (format-time-string "%F" (+ (float-time)
+				       (* 60 60 24))))
+      (and (string-match "KOMMENDE \\([^ ]+\\)" time)
+	   (let ((day-num (seq-position csid-weekdays
+					(downcase (match-string 1 time))))
+		 (start (float-time)))
+	     (while (not (= (1- (string-to-number
+				 (format-time-string "%u" start)))
+			    day-num))
+	       (cl-incf start (* 60 60 24)))
+	     (format-time-string "%F" start)))))
 
 (defun csid-parse-facebook-public-1 (json)
-  (loop for event across (cdr (assq 'edges (cdr (assq 'upcoming_events (cdr (assq 'page (cdr (assq 'data json))))))))
+  (loop for event across (cdr (assq 'edges
+				    (cdr (assq 'upcoming_events
+					       (cdr (assq 'page (cdr (assq 'data (cdr (assq 'result json))))))))))
 	for elem = (cdr (assq 'node event))
-	collect (list (csid-parse-iso8601 (cdar (cdr (assq 'time_range elem))))
+	for time = (cdr (assq 'day_time_sentence elem))
+	collect (list (csid-parse-facebook-time time)
 		      (format "https://www.facebook.com/events/%s/"
 			      (cdr (assq 'id elem)))
 		      (cdr (assq 'name elem)))))
@@ -746,18 +767,6 @@ no further processing).  URL is either a string or a parsed URL."
 	collect (list (csid-parse-sloppy-iso8601 date)
 		      (dom-attr (dom-by-tag elem 'a) 'href)
 		      (dom-texts (dom-by-tag elem 'span)))))
-
-(defun csid-parse-betong (dom)
-  (loop for elem in (dom-by-tag
-		     (car (dom-by-class dom "^table$"))
-		     'tr)
-	for tds = (dom-by-tag elem 'td)
-	for link = (dom-by-tag (nth 1 tds) 'a)
-	when (and link
-		  (string-match "konsert" (dom-text (nth 3 tds))))
-	collect (list (csid-parse-numeric-date (dom-text (nth 0 tds)))
-		      (dom-attr link 'href)
-		      (dom-text link))))
 
 (defun csid-parse-bidrobon (dom)
   (loop for event in (dom-by-class dom "^wsite-multicol$")
@@ -1460,27 +1469,6 @@ no further processing).  URL is either a string or a parsed URL."
       (write-region (point-min) (point-max)
 		    (expand-file-name (format "%s.html" this-date) dir)))))
 
-;; (dolist (elem (cdar json)) (insert (format "&%s=%s" (car elem) (cdr elem))))
-
-(defun csid-get-facebook-events-public (id &optional cursor)
-  (let* ((url-request-method "POST")
-	 (boundary (mml-compute-boundary '()))
-	 (url-request-extra-headers '(("Content-Type" . "application/x-www-form-urlencoded")))
-	 (url-request-data
-	  (concat
-	  "av=0&__user=0&__a=1&__dyn=7AgNe5Gmawgrolg9odoyGzEy4QjFwn8S2Sq2i5U4e1qzEjyQUC6UnGi7UK7HzEfFUmwKzorx64ogU9E8okz820xi3y4o4O0CawQw86q2u2-263WWwSxu15wgEdoKfwXwnogxOfwbu4obHxK8wwwwxmfz9rwu8y0L8ixiQUy2G2CaCzU5i2C8wgUbU9kbxS4UN1W2y2O0B8bUbGwCxe1LwYzUuxy4o5S1dw&__csr=&__req=5&__beoa=0&__pc=PHASED:DEFAULT&dpr=1&__rev=1001551031&__s=::nlh54b&__hsi=6771355804121667879-0&lsd=AVrV-mXL&jazoest=2669&__spin_r=1001551031&__spin_b=trunk&__spin_t=1576579130&fb_api_caller_class=RelayModern&fb_api_req_friendly_name=PageEventsTabUpcomingEventsCardRendererQuery&variables=%7B%22pageID%22%3A%22"
-	  id
-	  (if cursor (url-hexify-string
-		      (format "\",\"count\":9,\"cursor\":\"%s" cursor)))
-	  "%22%7D&doc_id=2455863461165494")))
-    (with-current-buffer (csid-retrieve-synchronously
-			  "https://www.facebook.com/api/graphql")
-      (goto-char (point-min))
-      (when (re-search-forward "^\r?\n" nil t)
-	(prog1
-	    (ignore-errors (json-read))
-	  (kill-buffer (current-buffer)))))))
-
 (defun csid-write-event-summaries ()
   (csid-read-database)
   ;; Somehow loading certain images makes Facebook return the real
@@ -1736,6 +1724,20 @@ no further processing).  URL is either a string or a parsed URL."
     (if (> (length text) 400)
 	(concat (substring text 0 400) "[...]")
       text)))
+
+(defvar csid-facebook-files nil)
+
+(defun csid-download-facebook-urls ()
+  (setq csid-facebook-files nil)
+  (with-temp-buffer
+    (cl-loop for source in csid-sources
+	     for i from 1
+	     when (eq (nth 2 source) 'facebook)
+	     do
+	     (insert (format "%d %s\n" i (nth 1 source)))
+	     (push (cons (nth 0 source) i) csid-facebook-files))
+    (write-region (point-min) (point-max) "/tmp/faceurls.txt"))
+  (call-process "~/src/csid/faceget.py"))
 
 (provide 'csid)
 

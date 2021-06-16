@@ -1454,18 +1454,33 @@ no further processing).  URL is either a string or a parsed URL."
       (write-region (point-min) (point-max)
 		    (expand-file-name (format "%s.html" this-date) dir)))))
 
+(defvar csid-facebook-event-files nil)
+
 (defun csid-write-event-summaries ()
   (csid-read-database)
   ;; Somehow loading certain images makes Facebook return the real
   ;; text page on subsequent accesses.
   ;; (eww "https://www.facebook.com/events/419122858560701/")
   ;; (sit-for 10)
-  (loop for (nil date url nil event-id) in csid-database
-	when (and url
-		  (or (string> date (format-time-string "%F"))
-		      (equal date (format-time-string "%F")))
-		  (not (file-exists-p (csid-summary-file url))))
-	do (csid-write-event-summary url event-id)))    
+  (setq csid-facebook-event-files nil)
+  (let ((data
+	 (cl-loop for (nil date url nil event-id) in csid-database
+		  when (and url
+			    (or (string> date (format-time-string "%F"))
+				(equal date (format-time-string "%F")))
+			    (not (file-exists-p (csid-summary-file url))))
+		  collect (cons event-id url))))
+    (with-temp-buffer
+      (cl-loop for (id . url) in data
+	       for i from 1000
+	       when (string-match "facebook.com" url)
+	       do
+	       (insert "%d %s\n" i url)
+	       (push (cons url i) csid-facebook-event-files))
+      (write-region (point-min) (point-max) "/tmp/faceurls.txt"))
+    (call-process "./faceget.py")
+    (cl-loop for (event-id . url) in data
+	     do (csid-write-event-summary url event-id))))
 
 (defun csid-get-event-summary-loop (dom)
   ;; Facebook will return no text other than the cookie warning,
@@ -1559,8 +1574,13 @@ no further processing).  URL is either a string or a parsed URL."
 
 (defun csid-retrieve-event-dom (url)
   (message "%s" url)
-  (if (string-match "facebook.com" url)
-      (csid-retrieve-phantom-event-dom url)
+  (if (and (string-match "facebook.com" url)
+	   (assoc url csid-facebook-event-files))
+      (with-temp-buffer
+	(insert-file-contents
+	 (format "/tmp/face-%d.html"
+		 (cdr (assoc url csid-facebook-event-files))))
+	(libxml-parse-html-region (point-min) (point-max)))
     (csid-retrieve-direct-event-dom url)))
 
 (defun csid-retrieve-direct-event-dom (url)

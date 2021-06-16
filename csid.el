@@ -112,7 +112,6 @@
     ("LilleKampen" "https://www.facebook.com/pg/lillekampen/events/?ref=page_internal" facebook (59.913884 10.781574))
     ("Vaterland" "https://www.facebook.com/pg/vaterlandoslo/events/?ref=page_internal" facebook (59.913885 10.756072))
     ("Rommen scene" "https://www.rommenscene.no/program/" rommen (59.967347 10.914572) :nobound)
-    ("Skippergata" "https://www.facebook.com/pg/Skippergata.oslo/events/?ref=page_internal" facebook (59.910627 10.747597))
     ("Aye Aye Club" "https://www.facebook.com/pg/ayeayeclub/events/?ref=page_internal" facebook (59.913293 10.748973))
     ("Last Train" "https://www.facebook.com/pg/lasttrainoslo/events/?ref=page_internal" facebook (59.914852 10.736654))
     ("Elefant" "https://www.facebook.com/pg/elefantoslo/events/?ref=page_internal" facebook (59.910894 10.737074))

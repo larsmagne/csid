@@ -978,12 +978,12 @@ no further processing).  URL is either a string or a parsed URL."
 		 (dom-text (dom-by-tag elem 'h3)))))
 
 (defun csid-parse-gamla (dom)
-  (loop for elem in (dom-by-tag (dom-by-class dom "av-upcoming-events") 'a)
+  (loop for elem in (dom-by-tag dom 'rs-slide)
 	collect (list
 		 (csid-parse-month-date
-		  (dom-texts (dom-by-class elem "tribe-event-date-start")))
-		 (dom-attr elem 'href)
-		 (dom-texts (dom-by-tag elem 'h4)))))
+		  (dom-texts (dom-by-class elem "tribe_formatted_event_date")))
+		 (shr-expand-url (dom-attr elem 'data-link))
+		 (dom-texts (last (dom-by-tag elem 'span))))))
 
 (defun csid-parse-sawol (dom)
   (append

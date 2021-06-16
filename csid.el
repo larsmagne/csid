@@ -681,7 +681,8 @@ no further processing).  URL is either a string or a parsed URL."
 			  (time (dom-texts (dom-by-tag parent 'span)))
 			  (link (cdr (dom-by-tag parent 'a))))
 		     (list (csid-parse-facebook-time time)
-			   (dom-attr link 'href)
+			   (replace-regexp-in-string
+			    "[?].*" "" (dom-attr link 'href))
 			   (dom-texts link)))))
 	   
 (defun csid-parse-facebook-time (time)

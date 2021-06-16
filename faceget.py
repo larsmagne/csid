@@ -5,6 +5,16 @@ from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import NoSuchElementException
 
+def cookie():
+    for phrase in ['Godta alle', 'Alle akzeptieren']:
+        try:
+            accept = driver.find_element_by_xpath("//button[@title='" + phrase + "']")
+            accept.click()
+            return False
+        except Exception:
+            pass
+    return True
+
 with open('facepass.txt') as f:
     user = f.readline().strip()
     passwd = f.readline().strip()
@@ -24,12 +34,9 @@ driver = webdriver.Chrome(options=chrome_options)
 # Login
 driver.get("http://www.facebook.com")
 
-for phrase in ['Godta alle', 'Alle akzeptieren']:
-    try:
-        accept = driver.find_element_by_xpath("//button[@title='" + phrase + "']")
-        accept.click()
-    except NoSuchElementException:
-        pass
+while cookie():
+    print("Waiting for cookie")
+    time.sleep(1)
 
 driver.find_element_by_id("email").send_keys(user)
 driver.find_element_by_id("pass").send_keys(passwd)

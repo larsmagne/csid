@@ -105,7 +105,6 @@
     ("Cappelens forslag" "https://www.facebook.com/CappelensForslag/events" facebook (59.915077 10.753527))
     ;;("Barrikaden" "http://vestbredden.net/barrikaden/" barrikaden :date)
     ("Henie Onstad" "http://hok.no/kalender" henie-onstad :date (59.888617 10.553501) :nobound)
-    ("Ila fysikalske" "https://nb-no.facebook.com/pg/ilafysikalske/events/" facebook (59.930864 10.753765))
     ("Khartoum" "https://nb-no.facebook.com/pg/khartoumcontemporary/events/?ref=page_internal" facebook (59.917118 10.750163))
     ("Salt" "https://www.facebook.com/pg/SaltArtMusic/events/?ref=page_internal" facebook (59.907498 10.747032))
     ("Røverstaden" "https://www.facebook.com/pg/roverstaden/events/?ref=page_internal" facebook (59.913562 10.729115))

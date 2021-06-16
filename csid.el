@@ -1164,11 +1164,11 @@ no further processing).  URL is either a string or a parsed URL."
 		      (replace-regexp-in-string " " " " text))))
 
 (defun csid-parse-subscene (dom)
-  (loop for event in (dom-by-class dom "entry-content")
+  (loop for event in (dom-by-class dom "type-event")
 	for link = (dom-by-tag event 'a)
 	when (and link
 		  (string-match "http" (dom-attr link 'href)))
-	collect (list (csid-parse-month-date (dom-texts (dom-by-tag event 'p)))
+	collect (list (csid-parse-month-date (dom-texts event))
 		      (dom-attr link 'href)
 		      (dom-texts (dom-by-tag event 'h1)))))
 

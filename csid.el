@@ -1392,6 +1392,7 @@ no further processing).  URL is either a string or a parsed URL."
 (defun csid-update-html (file &optional inhibit-fetch)
   (csid-read-database)
   (unless inhibit-fetch
+    (csid-download-facebook-urls)
     (csid-parse-sources))
   (csid-generate-html file))
 

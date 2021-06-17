@@ -1492,7 +1492,7 @@ no further processing).  URL is either a string or a parsed URL."
 	       (insert (format "%d %s\n" i url))
 	       (push (cons url i) csid-facebook-event-files))
       (write-region (point-min) (point-max) "/tmp/faceurls.txt"))
-    (call-process "./faceget.py")
+    (call-process "~larsi/src/csid/faceget.py")
     (cl-loop for (event-id . url) in data
 	     do (csid-write-event-summary url event-id))))
 
@@ -1767,7 +1767,7 @@ no further processing).  URL is either a string or a parsed URL."
 	     (insert (format "%d %s\n" i (nth 1 source)))
 	     (push (cons (nth 0 source) i) csid-facebook-files))
     (write-region (point-min) (point-max) "/tmp/faceurls.txt"))
-  (call-process "./faceget.py"))
+  (call-process "~larsi/src/csid/faceget.py"))
 
 (defun csid-parse-kampenbistro (dom)
   (cl-loop for event in (dom-by-class dom "eventlist-event")

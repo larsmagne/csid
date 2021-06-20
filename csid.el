@@ -1300,7 +1300,7 @@ no further processing).  URL is either a string or a parsed URL."
       (insert "<table class='events'><colgroup><col class='band'><col class='venue'><col class='button'></colgroup>")
       (setq start (point))
       (loop with prev-date
-	    with i = 0
+	    for i from 0
 	    for (venue date url name id fetch-date rank) in data
 	    when (and (not (string< date now))
 		      ;; Only do some hundred lines when there's summaries
@@ -1339,7 +1339,6 @@ no further processing).  URL is either a string or a parsed URL."
 				     (if (or (not img)
 					     (> i 200))
 					 ""
-				       (incf i)
 				       (format "<img src=%S>" img)))
 				   (or (csid-summary url 'summary))))))
 	    (setq prev-date date))

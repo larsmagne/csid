@@ -1300,13 +1300,13 @@ no further processing).  URL is either a string or a parsed URL."
       (insert "<table class='events'><colgroup><col class='band'><col class='venue'><col class='button'></colgroup>")
       (setq start (point))
       (loop with prev-date
+	    with i = 0
 	    for (venue date url name id fetch-date rank) in data
-	    for i from 0
 	    when (and (not (string< date now))
 		      ;; Only do some hundred lines when there's summaries
 		      ;; (to avoid excessive length).
 		      (or (not summaries)
-			  (< i 300)))
+			  (< i 100)))
 	    do (progn
 		 (unless (equal date prev-date)
 		   (insert (format "<tr class='%s date'><td colspan=3>%s</tr>"
@@ -1334,6 +1334,7 @@ no further processing).  URL is either a string or a parsed URL."
 				 venue))
 		 (when (and summaries
 			    url)
+		   (incf i)
 		   (insert (format "<tr><td colspan=3>%s%s</td></tr>"
 				   (let ((img (csid-summary url 'image)))
 				     (if (or (not img)

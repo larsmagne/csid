@@ -1308,7 +1308,7 @@ no further processing).  URL is either a string or a parsed URL."
 		      ;; Only do some hundred lines when there's summaries
 		      ;; (to avoid excessive length).
 		      (or (not summaries)
-			  (< i 50)))
+			  (< i 200)))
 	    do (progn
 		 (unless (equal date prev-date)
 		   (insert (format "<tr class='%s date'><td colspan=3>%s</tr>"
@@ -1340,7 +1340,7 @@ no further processing).  URL is either a string or a parsed URL."
 		   (insert (format "<tr><td colspan=3>%s%s</td></tr>"
 				   (let ((img (csid-summary url 'image)))
 				     (if (or (not img)
-					     (> i 25))
+					     (> i 10))
 					 ""
 				       (format "<img src=%S>" img)))
 				   (or (csid-summary url 'summary) "")))

@@ -1302,7 +1302,11 @@ no further processing).  URL is either a string or a parsed URL."
       (loop with prev-date
 	    with i = 0
 	    for (venue date url name id fetch-date rank) in data
-	    unless (string< date now)
+	    when (and (not (string< date now))
+		      ;; Only do some hundred lines when there's summaries
+		      ;; (to avoid excessive length).
+		      (or (not summaries)
+			  (< i 300)))
 	    do (progn
 		 (unless (equal date prev-date)
 		   (insert (format "<tr class='%s date'><td colspan=3>%s</tr>"
@@ -1338,17 +1342,18 @@ no further processing).  URL is either a string or a parsed URL."
 				   (or (csid-summary url 'summary))))))
 	    (setq prev-date date))
       (insert "</table><div id='selector'></div></div><div id='rightmargin'>&nbsp;</div></div>")
-      (dolist (js '("jquery-3.3.1.min.js"
-		    "jquery.cookie.js"
-		    "jquery.colorbox-min.js"
-		    "FileSaver.min.js"
-		    "csid.js"
-		    "pikaday.js"
-		    "sha1.js"))
-	(insert (format "<script type='text/javascript' src='%s?ts=%s'></script>"
-			js
-			(csid-timestamp))))
-      (insert "<script type='text/javascript'>addNavigation();</script>"))))
+      (unless summaries
+	(dolist (js '("jquery-3.3.1.min.js"
+		      "jquery.cookie.js"
+		      "jquery.colorbox-min.js"
+		      "FileSaver.min.js"
+		      "csid.js"
+		      "pikaday.js"
+		      "sha1.js"))
+	  (insert (format "<script type='text/javascript' src='%s?ts=%s'></script>"
+			  js
+			  (csid-timestamp))))
+	(insert "<script type='text/javascript'>addNavigation();</script>")))))
 
 (defun csid-summary (url type)
   (let ((file (csid-summary-file url)))

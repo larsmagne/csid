@@ -1710,7 +1710,7 @@ function isSafari() {
 
 function imgur(url) {
   var ext = ".webp";
-  if (isSafari)
+  if (isSafari())
     ext = ".png";
   return url + ext;
 }

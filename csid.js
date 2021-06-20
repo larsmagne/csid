@@ -1716,5 +1716,5 @@ function imgur(url) {
 }
 
 function imgur2x(url) {
-  return imgur(url + "2x");
+  return imgur(url + "x2");
 }

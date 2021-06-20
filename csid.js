@@ -563,9 +563,8 @@ function actionEventMenu(node, venue) {
   colorbox("<div id='event-summary'><table><tr><td id='event-image'><tr><td id='event-text'></table></div><a id='event-link' href='" + link +
 	   "'>Display the event web page</a><a href='#' id='mark-event'>" +
 	   type + "</a>" + exportString +
-	   "<a href='#' id='csid-close'>Close</a><div class='outer-venue-logo'><img src='" + logo +
-	   ".png' srcset='" + logo +
-	   "x2.png 2x'></div>");
+	   "<a href='#' id='csid-close'>Close</a><div class='outer-venue-logo'><img src='" + imgur(logo) +
+	   "' srcset='" + imgur2x(logo) + " 2x'></div>");
   $("#mark-event").bind("click", function() {
     toggleShow(id, $.inArray(id, shows) == -1);
     closeColorbox();
@@ -627,9 +626,9 @@ function actionVenueMenu(name) {
     if (! existingLogos[fixName(name)])
       logo = "https://csid.no/logos/larger/" + fixName(name);
   }
-  colorbox("<div class='outer-venue-logo'><img src='" + logo +
-	   ".png' srcset='" + logo +
-	   "x2.png 2x'></div><a href='#' id='venue-limit'>" +
+  colorbox("<div class='outer-venue-logo'><img src='" + imgur(logo) +
+	   "' srcset='" + imgur2x(logo) +
+	   " 2x'></div><a href='#' id='venue-limit'>" +
 	   limit + "</a><a href='#' id='venue-mark'>" + venues +
 	   "</a><a href='#' id='all-venues'>Show all events from all venues</a><a href='#' id='csid-close'>Close</a>");
   $("#venue-limit").bind("click", function() {
@@ -714,11 +713,11 @@ function addLogos() {
 
     if (phoneGap && ! existingLogos[fixName(venue)]) {
       td.innerHTML = "<img src='https://csid.no/logos/thumb/" +
-	fixName(venue) + ".png' srcset='https://csid.no/logos/thumb/" +
-	fixName(venue) + "x2.png 2x'></td>";
+	imgur(fixName(venue)) + "' srcset='https://csid.no/logos/thumb/" +
+	imgur2x(fixName(venue)) + " 2x'></td>";
     } else {
-      td.innerHTML = "<img src='logos/thumb/" + fixName(venue) +
-	".png' srcset='logos/thumb/" + fixName(venue) + "x2.png 2x'>";
+      td.innerHTML = "<img src='logos/thumb/" + imgur(fixName(venue)) +
+	"' srcset='logos/thumb/" + imgur2x(fixName(venue)) + " 2x'>";
     }
   });
 }
@@ -764,8 +763,9 @@ function addDesktopLogos() {
 	  }
 	}
       };
-      image.setAttribute("srcset", "logos/thumb/" + fixName(venue) + "x2.png 2x");
-      image.src = "logos/thumb/" + fixName(venue) + ".png";
+      image.setAttribute("srcset", "logos/thumb/" + imgur2x(fixName(venue)) +
+			 " 2x");
+      image.src = "logos/thumb/" + imgur(fixName(venue));
     });
     $(td).mouseleave(function() {
       focus = false;
@@ -792,8 +792,9 @@ function loadLogo(mobilep, venues, index) {
     if (index < (venues.length - 1))
       loadLogo(mobilep, venues, index + 1);
   };
-  image.setAttribute("srcset", "logos/thumb/" + fixName(venue) + "x2.png 2x");
-  image.src = "logos/thumb/" + fixName(venue) + ".png";
+  image.setAttribute("srcset", "logos/thumb/" + imgur2x(fixName(venue)) +
+		     " 2x");
+  image.src = "logos/thumb/" + imgur(fixName(venue));
 }
 
 function hideDuplicates() {
@@ -1616,9 +1617,9 @@ function doAd(id, venue, margin) {
       $text.append("<p><a href=\"" + url + "\">Go to the event page</a>");
       $ewrap.append($text);
 
-      var $img = $("<img src='logos/larger/" + fixName(venue) +
-		   ".png' srcset='logos/larger/" + fixName(venue) +
-		   "x2.png 2x'>");
+      var $img = $("<img src='logos/larger/" + imgur(fixName(venue)) +
+		   "' srcset='logos/larger/" + imgur2x(fixName(venue)) +
+		   " 2x'>");
       $img.css({"max-width": width - 10});
       var $imgwrap = $("<div class='margin-image-wrap'></div>");
       $imgwrap.append($img);
@@ -1694,4 +1695,26 @@ function slideAd(margin) {
 		      $elem.css({position: "static"});
 		  });
   });
+}
+
+function agentHas(keyword) {
+    return navigator.userAgent.toLowerCase().search(keyword.toLowerCase()) > -1;
+}
+
+function isSafari() {
+  return (!!window.ApplePaySetupFeature || !!window.safari) &&
+    agentHas("Safari") &&
+    !agentHas("Chrome") &&
+    !agentHas("CriOS");
+}
+
+function imgur(url) {
+  var ext = ".webp";
+  if (isSafari)
+    ext = ".png";
+  return url + ext;
+}
+
+function imgur2x(url) {
+  return imgur(url + "2x");
 }

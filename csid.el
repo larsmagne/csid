@@ -1316,7 +1316,9 @@ no further processing).  URL is either a string or a parsed URL."
 				   (csid-add-weekday date))))
 		 (setq prev-date date)
 		 (insert (format "<tr name='%s' id='event-%s' data=%s date='%s' time='%s' lat='%s' lng='%s'%s><td><a href='%s'>%s<td>%s</tr>"
-				 (replace-regexp-in-string " " "_" venue)
+				 (replace-regexp-in-string
+				  "&" "x" 
+				  (replace-regexp-in-string " " "_" venue))
 				 id
 				 rank date fetch-date
 				 (csid-latlng venue 0)

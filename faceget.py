@@ -34,7 +34,11 @@ driver = webdriver.Chrome(options=chrome_options)
 # Login
 driver.get("http://www.facebook.com")
 
+cookie_times = 0
 while cookie():
+    cookie_times += 1
+    if cookie_times > 30:
+        break;
     print("Waiting for cookie")
     time.sleep(1)
 

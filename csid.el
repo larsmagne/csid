@@ -1293,7 +1293,7 @@ no further processing).  URL is either a string or a parsed URL."
 	prev-date start)
     (with-temp-file (or file "/tmp/csid.html")
       (if summaries
-	  (insert "<title>Concerts in Oslo</title><link href='csid.css?ts=%s' rel='stylesheet' type='text/css'><h1>Konserter i Oslo</h1><h2>Concerts in Oslo</h2>")
+	  (insert "<title>Concerts in Oslo</title><meta charset='utf-8'><link href='csid.css?ts=%s' rel='stylesheet' type='text/css'><h1>Konserter i Oslo</h1><h2>Concerts in Oslo</h2>")
 	(insert
 	 (format
 	  "<head><title>Concerts in Oslo</title><meta charset='utf-8'><link href='csid.css?ts=%s' rel='stylesheet' type='text/css'><link disabled id='dark-css' href='dark.css' rel='stylesheet' type='text/css'><meta name='viewport' content='width=device-width, initial-scale=1'><link href='pikaday.css' rel='stylesheet' type='text/css'><link rel='icon' href='https://csid.no/favicon.ico'><link href='https://fonts.googleapis.com/css?family=Passion+One' rel='stylesheet'><link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'><div id='large-heading'><div class='title'>Concerts in Oslo</div><div class='subtitle'>Konserter i Oslo</div></div><div id='body-wrap'><div id='leftmargin'>&nbsp;</div><div id='body-container'><div id='small-heading'><div id='small-menu'><span class='box-shadow-menu'></span></div>Concerts in Oslo</div>"

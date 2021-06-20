@@ -481,7 +481,7 @@ function sortByDistanceCont() {
       if (meter < 1)
 	d.innerHTML = "you are there";
       else
-	d.innerHTML = "" + meter + " meters";
+	d.innerHTML = "" + meter + " metres";
     } else
       d.innerHTML = "" + Math.round((dist * 10) / 10) + " km";
       

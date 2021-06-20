@@ -76,6 +76,7 @@
     ;;("NB" "http://www.nb.no/Hva-skjer/Arrangementer/Konserter" nasjonalbiblioteket)
     ("Uhørt" "https://www.facebook.com/uhortistroget/events" facebook (59.914105 10.748769))
     ("Kulturhuset" "https://www.facebook.com/kulturhusetioslo/events" facebook (59.914646 10.750909))
+    ("Kampen Bistro" "http://www.kampenbistro.no/hvaskjer" kampenbistro (59.913718003724746 10.780875043457623))
     ;;("Kampenjazz" "http://oysteineide.wix.com/kampenjazz#!konserter/cb30" kampenjazz :date)
     ("Cafeteatret" "http://nordicblacktheatre.no/wp-admin/admin-ajax.php?action=wpcal-getevents&end=1444600800&start=1440972000" cafeteatret :json (59.910344 10.767058))
     ("Telenor Arena" "http://telenorarena.no/en/calendar" telenor (59.903079 10.624335))
@@ -428,6 +429,18 @@ no further processing).  URL is either a string or a parsed URL."
     (format "%04d-%02d-%02d"
 	    (string-to-number (match-string 3 string))
 	    (1+ (position (match-string 1 string) csid-months
+			  :test 'equalp))
+	    (string-to-number (match-string 2 string)))))
+
+;; "fredag, august 8, 2014"
+(defun csid-parse-english-month-date-with-year (string)
+  (setq string (downcase string))
+  (when (string-match (format "\\(%s\\).*?\\([0-9]+\\).*?\\([0-9]+\\)"
+			      (mapconcat 'identity csid-english-months "\\|"))
+		      string)
+    (format "%04d-%02d-%02d"
+	    (string-to-number (match-string 3 string))
+	    (1+ (position (match-string 1 string) csid-english-months
 			  :test 'equalp))
 	    (string-to-number (match-string 2 string)))))
 
@@ -1754,6 +1767,14 @@ no further processing).  URL is either a string or a parsed URL."
 	     (push (cons (nth 0 source) i) csid-facebook-files))
     (write-region (point-min) (point-max) "/tmp/faceurls.txt"))
   (call-process "./faceget.py"))
+
+(defun csid-parse-kampenbistro (dom)
+  (cl-loop for event in (dom-by-class dom "eventlist-event")
+	   for link = (dom-by-tag (dom-by-tag event 'h1) 'a)
+	   collect (list (csid-parse-english-month-date-with-year
+			  (dom-texts (dom-by-class event "^date$")))
+			 (dom-attr link 'href)
+			 (dom-texts link))))
 
 (provide 'csid)
 

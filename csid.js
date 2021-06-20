@@ -1360,7 +1360,7 @@ var summaryQuery = false;
 
 function fetchSummaries(ids, index, callback) {
   var hash = sha1(ids[index][1]);
-  var url = "summaries/" +
+  var url = "https://csid.no/summaries/" +
 	hash.substring(0, 3) + "/" + hash.substring(3) +
 	"-data.json";
   summaryQuery = $.ajax({

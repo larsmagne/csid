@@ -41,9 +41,7 @@ div.misc-heading {
   font-size: 16px;
   text-align: middle;
   background: #a0a0a0;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  height: 19px;
+  height: 40px;
   width: 100%;
 }
 div.misc-heading .box-shadow-menu {

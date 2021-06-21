@@ -1346,7 +1346,7 @@ no further processing).  URL is either a string or a parsed URL."
 				   (or (csid-summary url 'summary) "")))
 		   (insert "</table><table class='events'><colgroup><col class='band'><col class='venue'><col class='button'></colgroup>")))
 	    (setq prev-date date))
-      (insert "</table><div id='selector'></div></div><div id='rightmargin'>&nbsp;</div></div>")
+      (insert "</table><div id='meta-misc'><div id='selector'></div></div></div><div id='rightmargin'>&nbsp;</div></div>")
       (unless summaries
 	(dolist (js '("jquery-3.3.1.min.js"
 		      "jquery.cookie.js"

@@ -26,14 +26,34 @@ col.venue {
 col.button {
   width: 60px;
 }
-div#selector {
-  padding-bottom: 10px;
-  padding-left: 10px;
-  padding-right: 10px;
-  width: 180px;
+div#meta-misc {
+  width: 200px;
   display: inline-block;
-  background: #c0c0c0;
   vertical-align: top;
+  position: relative;
+}
+div.misc-heading {
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+  text-align: middle;
+  background: #a0a0a0;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  height: 19px;
+  width: 100%;
+}
+div.misc-heading .box-shadow-menu {
+  position: relative;
+  float: right;
+}
+div.misc-heading div.small-menu {
+    left: 130px;
+}
+div#selector {
+  width: 180px;
+  background: #c0c0c0;
+  padding: 10px;
 }
 table.events tr td {
   vertical-align: middle;
@@ -188,7 +208,6 @@ span.dark-name {
   font-weight: bold;
 }
 label.dark-wrap {
-  margin-top: 10px;
 }
 span.venue-name {
   cursor: pointer;
@@ -287,6 +306,9 @@ div#large-heading div.subtitle {
     padding-right: 10px;
   }
   div#selector {
+    display: none;
+  }
+  div#meta-misc {
     display: none;
   }
   div.outer-venue-logo {
@@ -468,7 +490,7 @@ div.distance {
     0 0.3em 0 0 white,
     0 0.6em 0 0 white;
 }
-div#small-menu {
+div#small-menu, div.small-menu {
   position: absolute;
   top: 9px;
   left: 2px;
@@ -654,10 +676,14 @@ div.margin-wrap {
   max-width: 200px;
 }
 div.margin-header {
+  text-align: center;
   padding: 5px;
+  padding-top: 10px;
+  padding-bottom: 10px;
   background: #808080;
   color: white;
   font-weight: bold;
+  font-size: 16px;
 }
 div.margin-image-wrap {
   text-align: center;
@@ -671,4 +697,30 @@ div.margin-event-wrap {
   white-space: normal;
   display: inline-block;
   vertical-align: top;
+}
+
+div.misc-menu {
+    background: #c00000;
+}
+div#meta-hidden {
+    display: none;
+}
+div#meta-menu:hover div#meta-hidden {
+    display: block;
+}
+
+div#meta-hidden div.export {
+    background: linear-gradient(to bottom, #b0b0b0 0%, #d0d0d0 100%);
+    height: 50px;
+    padding: 5px;
+    margin-left: 0px;
+    display: flex;
+    align-items: center;
+}
+div#meta-hidden div.export span {
+  display: inline-block;
+  vertical-align: middle;
+}
+div#meta-hidden .cbcontainer {
+    margin-bottom: 0px;
 }

@@ -42,7 +42,8 @@ function addNavigation() {
   var deniedVenues = getSettings("deniedVenues");
   var shows = getSettings("shows");
 
-  $("#selector").append("<label class='dark-wrap cbcontainer'><input type=checkbox id='dark'><span class='dark-name'>Dark Mode</span><span class='checkmark dark-mark'></span></label><div class='explanation'>Everything in <a id='help' href='help.html?1'><b>bold</b></a> is clickable</div>");
+  $("#meta-misc").prepend("<div id='meta-menu'><div class='misc-heading'><div class='small-menu'><span class='box-shadow-menu'></span></div></div><div id='meta-hidden'></div></div>");
+  $("#meta-hidden").append("<div class='export'><span><label class='dark-wrap cbcontainer'><input type=checkbox id='dark'><span class='dark-name'>Dark Mode</span><span class='checkmark dark-mark'></span></label></span></div><div class='export'><span><a id='help' href='help.html?1'>Help</a></span></div>");
 
   $("#dark").click(function() {
     var css = document.getElementById("dark-css");
@@ -63,7 +64,7 @@ function addNavigation() {
     css.disabled = false;
   }
   
-  $("#selector").append("<div class='select-elem'><a id='dshow-map'>Show today's events on a map</a></div>");
+  $("#meta-hidden").append("<div class='export'><span><a id='dshow-map'>Show today's events on a map</a></span></div>");
   $("#dshow-map").bind("click", showMap);
   
   $("tr").each(function(key, node) {
@@ -157,20 +158,20 @@ function addNavigation() {
   var visible = "invisible";
   if ($("tr.checked").length > 0 || window.location.href.match("shows="))
     visible = "";
-  $("#selector").append("<div id='export' class='export " + visible + 
-		       "'><a class='export'>List only chosen events</a></div>");
+  $("#meta-hidden").append("<div id='export' class='export " + visible + 
+			   "'><span><a class='export'>List only chosen events</a></span></div>");
   $("a.export").bind("click", function(e) {
     exportShows();
   });
 
-  $("#selector").append("<div class='export'><a id='sort'>List events in scan order</a></div>");
+  $("#meta-hidden").append("<div class='export'><span><a id='sort'>List events in scan order</a></span></div>");
   $("#sort").bind("click", function() {
     sortByScanOrder();
     addRestoreLink();
   });
 
-  $("#selector").append("<div class='export " + visible +
-			"'><a id='ical'>Export calendar</a></div>");
+  $("#meta-hidden").append("<div class='export " + visible +
+			"'><span><a id='ical'>Export calendar</a></span></div>");
   $("#ical").bind("click", function() {
     exportCalendar();
   });
@@ -182,7 +183,8 @@ function addNavigation() {
     });
   }
 
-  $("#selector").append("<div class='export'><a id='rss' href='csid.atom'>Atom/\RSS feed</a><p><a href='https://itunes.apple.com/us/app/csid-concerts-in-oslo/id1037896784?mt=8&ign-mpt=uo%3D4'><img src='assets/apple.png'></a><p><a href='https://play.google.com/store/apps/details?id=no.ingebrigtsen.csid'><img src='assets/google.png'></a></div></div>");
+  $("#meta-hidden").append("<div class='export'><span><a id='rss' href='csid.atom'>Atom/\RSS feed</a></span></div>");
+  $("#selector").append("<p><a href='https://itunes.apple.com/us/app/csid-concerts-in-oslo/id1037896784?mt=8&ign-mpt=uo%3D4'><img src='assets/apple.png'></a><p><a href='https://play.google.com/store/apps/details?id=no.ingebrigtsen.csid'><img src='assets/google.png'></a>");
 
   $("img#logo").bind("click", function() {
     window.location.href = "https://csid.no/";
@@ -356,7 +358,7 @@ function hideShow(onlyVenue, onlyAfterTimestamp, onlyEvent,
       $.cookie("timestamp", maxTimestamp, { expires: 10000 });
     else if (maxTimestamp > $.cookie("timestamp") &&
 	     ! document.getElementById("new")) {
-      $("#selector").append("<div class='export'><a id='new'>Display events arrived since last time</a></div>");
+      $("#meta-hidden").append("<div class='export'><a id='new'>Display events arrived since last time</a></div>");
       $("#new").bind("click", function() {
 	hideShow(false, $.cookie("timestamp"));
 	$.cookie("timestamp", maxTimestamp, { expires: 10000 });
@@ -1598,7 +1600,7 @@ function doAd(id, venue, margin) {
       var $wrap = $(margin).find(".margin-wrap");
       if ($wrap.length == 0) {
 	$(margin).empty();
-	$wrap = $("<div class='margin-wrap'><div class='margin-header'>Today:</div></div>");
+	$wrap = $("<div class='margin-wrap'><div class='margin-header'>Today</div></div>");
 	$wrap.css({width: width});
       } else {
 	slide = true;

@@ -11,11 +11,14 @@ div#body-container {
   flex-shrink: 0;
 }
 table.events {
-  border-collapse: separate;
+    background: #c0c0c0;
+  border-collapse: collapse;
   border-spacing: 0px;
   width: 800px;
   display: inline-block;
   table-layout: fixed;
+}
+table.events tbody {
 }
 col.band {
   width: 600px;
@@ -101,7 +104,7 @@ table.events td > a {
 table.events tr.date {
   background: #000060;
   color: white;
-  height: 30px;
+  height: 40px;
   background-repeat: no-repeat;
   background-position: 10px 0px;
 }
@@ -677,13 +680,14 @@ div.margin-wrap {
 }
 div.margin-header {
   text-align: center;
-  padding: 5px;
-  padding-top: 10px;
-  padding-bottom: 10px;
   background: #808080;
   color: white;
   font-weight: bold;
   font-size: 16px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 div.margin-image-wrap {
   text-align: center;

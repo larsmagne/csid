@@ -271,7 +271,14 @@ div#large-heading div.subtitle {
     float: none;
     margin-top: 38px;
   }
+  col.band {
+      width: 100%;
+  }
+  col.venue {
+    width: 100px;
+  }
   col.button {
+    width: 0px;
     display: none;
   }
   div#large-heading {

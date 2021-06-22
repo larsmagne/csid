@@ -125,6 +125,7 @@
     ("Rock In" "https://www.facebook.com/pg/rockinoslo/events/?ref=page_internal" facebook (59.913002 10.761144))
     ("Brød & Sirkus" "https://www.facebook.com/brodogsirkus/events/" facebook (59.91311858805727 10.736465987756189))
     ("Oslo Jazzfestival" "https://oslojazz.no/program/" oslo-jazzfestival)
+    ("Oslo Bluesklubb" "https://www.osloblues.com/konsertarkiv/" oslo-bluesklubb)
     ))
 
 (defvar csid-database nil)
@@ -1796,6 +1797,13 @@ no further processing).  URL is either a string or a parsed URL."
 			   (caddr (memq name event))))
 			 (shr-expand-url (dom-attr (dom-by-tag event 'a) 'href))
 			 (dom-texts (dom-by-tag event 'h2)))))
+
+(defun csid-parse-oslo-bluesklubb (dom)
+  (cl-loop for event in (dom-by-tag (dom-by-class dom "entry-content") 'p)
+	   collect (list (csid-parse-norwegian-month-date-with-year
+			  (dom-texts event))
+			 (dom-attr (dom-by-tag event 'a) 'href)
+			 (dom-texts (dom-by-tag event 'a)))))
 
 (provide 'csid)
 

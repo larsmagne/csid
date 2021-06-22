@@ -733,3 +733,11 @@ div#meta-hidden div.export span {
 div#meta-hidden .cbcontainer {
     margin-bottom: 0px;
 }
+div.message {
+    background: white;
+    color: red;
+    width: 300px;
+    display: block;
+    word-wrap: break-word;
+}
+

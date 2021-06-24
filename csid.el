@@ -126,6 +126,7 @@
     ("Brød & Sirkus" "https://www.facebook.com/brodogsirkus/events/" facebook (59.91311858805727 10.736465987756189))
     ("Oslo Jazzfestival" "https://oslojazz.no/program/" oslo-jazzfestival)
     ("Oslo Bluesklubb" "https://www.osloblues.com/konsertarkiv/" oslo-bluesklubb)
+    ("Kampen Kaffe & Bar" "https://www.facebook.com/kampenkaffebar/events" facebook (59.911972107696684 10.781134433609944))
     ))
 
 (defvar csid-database nil)

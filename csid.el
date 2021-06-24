@@ -127,6 +127,7 @@
     ("Oslo Jazzfestival" "https://oslojazz.no/program/" oslo-jazzfestival)
     ("Oslo Bluesklubb" "https://www.osloblues.com/konsertarkiv/" oslo-bluesklubb)
     ("Kampen Kaffe & Bar" "https://www.facebook.com/kampenkaffebar/events" facebook (59.911972107696684 10.781134433609944))
+    ("MS Bjørvika" "https://www.facebook.com/msbjorvika/events/" facebook (59.905780304973966 10.75342868368582))
     ))
 
 (defvar csid-database nil)

@@ -107,7 +107,7 @@
     ;;("Barrikaden" "http://vestbredden.net/barrikaden/" barrikaden :date)
     ("Henie Onstad" "http://hok.no/kalender" henie-onstad :date (59.888617 10.553501) :nobound)
     ("Khartoum" "https://nb-no.facebook.com/pg/khartoumcontemporary/events/?ref=page_internal" facebook (59.917118 10.750163))
-    ("Salt" "https://www.facebook.com/pg/SaltArtMusic/events/?ref=page_internal" facebook (59.907498 10.747032))
+    ("Salt" "https://www.facebook.com/pg/SaltArtMusic/events/?ref=page_internal" facebook (59.90704963300261 10.746273380187537))
     ("Røverstaden" "https://www.facebook.com/pg/roverstaden/events/?ref=page_internal" facebook (59.913562 10.729115))
     ("No 53" "https://www.facebook.com/pg/No-53-139168752824276/events/?ref=page_internal" facebook (59.908699 10.767789))
     ("LilleKampen" "https://www.facebook.com/pg/lillekampen/events/?ref=page_internal" facebook (59.913884 10.781574))

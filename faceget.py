@@ -9,6 +9,7 @@ def cookie():
     for phrase in ['Godta alle', 'Alle akzeptieren']:
         try:
             accept = driver.find_element_by_xpath("//button[@title='" + phrase + "']")
+            time.sleep(5)
             accept.click()
             return False
         except Exception:
@@ -28,7 +29,7 @@ f.close()
 chrome_options = webdriver.ChromeOptions()
 prefs = {"profile.default_content_setting_values.notifications" : 2}
 chrome_options.add_experimental_option("prefs", prefs)
-chrome_options.add_argument("--headless")
+#chrome_options.add_argument("--headless")
 driver = webdriver.Chrome(options=chrome_options)
 
 # Login
@@ -41,6 +42,8 @@ while cookie():
         break;
     print("Waiting for cookie")
     time.sleep(1)
+
+time.sleep(5)
 
 driver.find_element_by_id("email").send_keys(user)
 driver.find_element_by_id("pass").send_keys(passwd)

@@ -30,10 +30,15 @@ chrome_options = webdriver.ChromeOptions()
 prefs = {"profile.default_content_setting_values.notifications" : 2}
 chrome_options.add_experimental_option("prefs", prefs)
 #chrome_options.add_argument("--headless")
+chrome_options.add_argument("--disable-dev-shm-usage");
+chrome_options.add_argument('--no-sandbox')
+chrome_options.add_experimental_option('prefs', {'intl.accept_languages': 'no'})
 driver = webdriver.Chrome(options=chrome_options)
 
 # Login
 driver.get("http://www.facebook.com")
+
+time.sleep(500)
 
 cookie_times = 0
 while cookie():
@@ -43,7 +48,7 @@ while cookie():
     print("Waiting for cookie")
     time.sleep(1)
 
-time.sleep(5)
+time.sleep(500)
 
 driver.find_element_by_id("email").send_keys(user)
 driver.find_element_by_id("pass").send_keys(passwd)

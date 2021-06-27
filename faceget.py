@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import time
+import random
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import NoSuchElementException
@@ -9,6 +10,7 @@ def cookie():
     for phrase in ['Godta alle', 'Alle akzeptieren']:
         try:
             accept = driver.find_element_by_xpath("//button[@title='" + phrase + "']")
+            time.sleep(5)
             accept.click()
             return False
         except Exception:
@@ -28,26 +30,38 @@ f.close()
 chrome_options = webdriver.ChromeOptions()
 prefs = {"profile.default_content_setting_values.notifications" : 2}
 chrome_options.add_experimental_option("prefs", prefs)
+chrome_options.add_argument("--disable-notifications")
 chrome_options.add_argument("--headless")
+chrome_options.add_argument("--disable-dev-shm-usage");
+chrome_options.add_argument('--no-sandbox')
+chrome_options.add_experimental_option('prefs', {'intl.accept_languages': 'no'})
 driver = webdriver.Chrome(options=chrome_options)
 
 # Login
 driver.get("http://www.facebook.com")
 
-cookie_times = 0
-while cookie():
-    cookie_times += 1
-    if cookie_times > 30:
-        break;
-    print("Waiting for cookie")
-    time.sleep(1)
+time.sleep(5)
+
+#cookie_times = 0
+#while cookie():
+#    cookie_times += 1
+#    if cookie_times > 30:
+#        break;
+#    print("Waiting for cookie")
+#    time.sleep(1)
+
+#time.sleep(500)
 
 driver.find_element_by_id("email").send_keys(user)
+time.sleep(2)
 driver.find_element_by_id("pass").send_keys(passwd)
+time.sleep(3)
 driver.find_element_by_name("login").click()
+time.sleep(7)
 
 # Reload the main page -- it seems to like this.
 driver.get("http://www.facebook.com")
+time.sleep(6)
 
 # Fetch and dump all the URLs
 for elem in urls:
@@ -77,7 +91,8 @@ for elem in urls:
         if max < 0:
             times = 0
     html = driver.execute_script("return document.body.innerHTML;")
-    with open("/tmp/face-" + bits[0] + ".html", "w") as f:
+    with open("/tmp/face/face-" + bits[0] + ".html", "w") as f:
         f.write(html)
+    time.sleep(random.randint(10, 20))
 
 driver.quit()

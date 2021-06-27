@@ -108,14 +108,14 @@ table.events tr.date {
 }
 .expand {
   background-image: url("expand1x.png") !important;
-  background-image: -webkit-image-set(
+  background-image: image-set(
     url("expand1x.png") 1x,
     url("expand2x.png") 2x
   ) !important;
 }
 .collapse {
   background-image: url("collapse1x.png") !important;
-  background-image: -webkit-image-set(
+  background-image: image-set(
     url("collapse1x.png") 1x,
     url("collapse2x.png") 2x
   ) !important;

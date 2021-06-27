@@ -48,9 +48,11 @@ time.sleep(5)
 driver.find_element_by_id("email").send_keys(user)
 driver.find_element_by_id("pass").send_keys(passwd)
 driver.find_element_by_name("login").click()
+time.sleep(7)
 
 # Reload the main page -- it seems to like this.
 driver.get("http://www.facebook.com")
+time.sleep(6)
 
 # Fetch and dump all the URLs
 for elem in urls:
@@ -82,5 +84,6 @@ for elem in urls:
     html = driver.execute_script("return document.body.innerHTML;")
     with open("/tmp/face-" + bits[0] + ".html", "w") as f:
         f.write(html)
+    time.sleep(10)
 
 driver.quit()

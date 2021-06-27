@@ -338,7 +338,7 @@ no further processing).  URL is either a string or a parsed URL."
       (if (eq function 'csid-parse-facebook)
 	  (with-current-buffer (generate-new-buffer "face")
 	    (let ((file 
-		   (format "/tmp/face-%s.html"
+		   (format "/tmp/face/face-%s.html"
 			   (cdr (assoc name csid-facebook-files)))))
 	      (when (file-exists-p file)
 		(insert "\n\n")
@@ -1507,7 +1507,7 @@ no further processing).  URL is either a string or a parsed URL."
 	       (insert (format "%d %s\n" i url))
 	       (push (cons url i) csid-facebook-event-files))
       (write-region (point-min) (point-max) "/tmp/faceurls.txt"))
-    (call-process "~larsi/src/csid/faceget.py")
+    ;;(call-process "~larsi/src/csid/faceget.py")
     (cl-loop for (event-id . url) in data
 	     do (csid-write-event-summary url event-id))))
 
@@ -1618,7 +1618,7 @@ no further processing).  URL is either a string or a parsed URL."
 	   (assoc url csid-facebook-event-files))
       (with-temp-buffer
 	(insert-file-contents
-	 (format "/tmp/face-%d.html"
+	 (format "/tmp/face/face-%d.html"
 		 (cdr (assoc url csid-facebook-event-files))))
 	(libxml-parse-html-region (point-min) (point-max)))
     (csid-retrieve-direct-event-dom url)))
@@ -1782,7 +1782,7 @@ no further processing).  URL is either a string or a parsed URL."
 	     (insert (format "%d %s\n" i (nth 1 source)))
 	     (push (cons (nth 0 source) i) csid-facebook-files))
     (write-region (point-min) (point-max) "/tmp/faceurls.txt"))
-  (call-process "~larsi/src/csid/faceget.py"))
+  (call-process "~/bin/fetch-face"))
 
 (defun csid-parse-kampenbistro (dom)
   (cl-loop for event in (dom-by-class dom "eventlist-event")

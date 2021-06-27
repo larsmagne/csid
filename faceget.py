@@ -80,7 +80,7 @@ for elem in urls:
                 more = driver.find_element_by_xpath(path)
                 print("Got the more")
                 more.click()
-                time.sleep(2)
+                time.sleep(random.randint(5, 20))
                 # If there's two of these, keep trying until the first
                 # goes away.
                 if len(driver.find_elements_by_xpath(path)) > 1:
@@ -93,6 +93,6 @@ for elem in urls:
     html = driver.execute_script("return document.body.innerHTML;")
     with open("/tmp/face/face-" + bits[0] + ".html", "w") as f:
         f.write(html)
-    time.sleep(random.randint(10, 20))
+    time.sleep(random.randint(20, 40))
 
 driver.quit()

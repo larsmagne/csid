@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import time
+import random
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import NoSuchElementException

@@ -29,7 +29,8 @@ f.close()
 chrome_options = webdriver.ChromeOptions()
 prefs = {"profile.default_content_setting_values.notifications" : 2}
 chrome_options.add_experimental_option("prefs", prefs)
-#chrome_options.add_argument("--headless")
+chrome_options.add_argument("--disable-notifications")
+chrome_options.add_argument("--headless")
 chrome_options.add_argument("--disable-dev-shm-usage");
 chrome_options.add_argument('--no-sandbox')
 chrome_options.add_experimental_option('prefs', {'intl.accept_languages': 'no'})
@@ -38,20 +39,22 @@ driver = webdriver.Chrome(options=chrome_options)
 # Login
 driver.get("http://www.facebook.com")
 
-time.sleep(500)
+time.sleep(5)
 
-cookie_times = 0
-while cookie():
-    cookie_times += 1
-    if cookie_times > 30:
-        break;
-    print("Waiting for cookie")
-    time.sleep(1)
+#cookie_times = 0
+#while cookie():
+#    cookie_times += 1
+#    if cookie_times > 30:
+#        break;
+#    print("Waiting for cookie")
+#    time.sleep(1)
 
-time.sleep(500)
+#time.sleep(500)
 
 driver.find_element_by_id("email").send_keys(user)
+time.sleep(2)
 driver.find_element_by_id("pass").send_keys(passwd)
+time.sleep(3)
 driver.find_element_by_name("login").click()
 time.sleep(7)
 
@@ -87,8 +90,8 @@ for elem in urls:
         if max < 0:
             times = 0
     html = driver.execute_script("return document.body.innerHTML;")
-    with open("/tmp/face-" + bits[0] + ".html", "w") as f:
+    with open("/tmp/face/face-" + bits[0] + ".html", "w") as f:
         f.write(html)
-    time.sleep(10)
+    time.sleep(random.randint(10, 20))
 
 driver.quit()

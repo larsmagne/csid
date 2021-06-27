@@ -67,8 +67,8 @@ time.sleep(6)
 for elem in urls:
     print(elem)
     bits = elem.split()
-    times = 5
-    max = 20
+    times = 2
+    max = 5
     # Fetch the URL.
     driver.get(bits[1])
     # Push "See More" some times.

@@ -450,6 +450,18 @@ no further processing).  URL is either a string or a parsed URL."
 			  :test 'equalp))
 	    (string-to-number (match-string 2 string)))))
 
+;; "fri, aug 8, 2014"
+(defun csid-parse-english-month-date-with-year (string)
+  (setq string (downcase string))
+  (when (string-match (format "\\(%s\\).*?\\([0-9]+\\).*?\\([0-9]+\\)"
+			      (mapconcat 'identity csid-english-months "\\|"))
+		      string)
+    (format "%04d-%02d-%02d"
+	    (string-to-number (match-string 3 string))
+	    (1+ (position (match-string 1 string) csid-english-months
+			  :test 'equalp))
+	    (string-to-number (match-string 2 string)))))
+
 ;; "onsdag 19. november 2014"
 (defun csid-parse-norwegian-month-date-with-year (string)
   (setq string (downcase string))
@@ -484,6 +496,25 @@ no further processing).  URL is either a string or a parsed URL."
 			      (lambda (number)
 				(or number 0))
 			      (parse-time-string string)))))
+
+;; "aug 6, 2013"
+(defun csid-parse-american-short-month (string)
+  (when (string-match (format "\\(%s\\).*?\\([0-9]+\\).*?\\([0-9][0-9][0-9][0-9]\\)"
+			      (mapconcat
+			       (lambda (month)
+				 (substring month 0 3))
+			       csid-english-months
+			       "\\|"))
+		      string)
+    (format "%s-%02d-%02d"
+	    (match-string 3 string)
+	    (1+ (position (match-string 1 string)
+			  (mapcar
+			   (lambda (month)
+			     (substring month 0 3))
+			   csid-english-months)
+			  :test 'equalp))
+	    (string-to-number (match-string 2 string)))))
 
 ;; "06. aug 2013"
 (defun csid-parse-short-month (string &optional englishp)
@@ -550,6 +581,24 @@ no further processing).  URL is either a string or a parsed URL."
 		      csid-months))
 		   :test 'equalp))
      (string-to-number (match-string 1 string)))))
+
+;; "Tue, jun 29. "
+(defun csid-parse-short-american-yearless-month (string)
+  (when (string-match (format "\\(%s\\).*?\\([0-9]+\\)"
+			      (mapconcat
+			       (lambda (month)
+				 (substring month 0 3))
+			       csid-english-months
+			       "\\|"))
+		      string)
+    (csid-expand-date
+     (1+ (position (match-string 1 string)
+		   (mapcar
+		    (lambda (month)
+		      (substring month 0 3))
+		    csid-english-months)
+		   :test 'equalp))
+     (string-to-number (match-string 2 string)))))
 
 ;; "aug 23"
 (defun csid-parse-short-reverse-yearless-month (string &optional englishp)
@@ -708,11 +757,13 @@ no further processing).  URL is either a string or a parsed URL."
 			   (dom-texts link)))))
 	   
 (defun csid-parse-facebook-time (time)
-  (or (csid-parse-shortish-month time)
-      (csid-parse-short-yearless-month time)
-      (and (string-match "I DAG" time)
+  (or (and (equal time "HAPPENING NOW")
 	   (format-time-string "%F"))
-      (and (string-match "I MORGEN" time)
+      (csid-parse-american-short-month time)
+      (csid-parse-short-american-yearless-month time)
+      (and (string-match "TODAY" time)
+	   (format-time-string "%F"))
+      (and (string-match "TOMORROW" time)
 	   (format-time-string "%F" (+ (float-time)
 				       (* 60 60 24))))
       (and (string-match "KOMMENDE \\([^ ]+\\)" time)
@@ -1782,7 +1833,8 @@ no further processing).  URL is either a string or a parsed URL."
 	     (insert (format "%d %s\n" i (nth 1 source)))
 	     (push (cons (nth 0 source) i) csid-facebook-files))
     (write-region (point-min) (point-max) "/tmp/faceurls.txt"))
-  (call-process "~/bin/fetch-face"))
+  ;;(call-process "~/bin/fetch-face")
+  )
 
 (defun csid-parse-kampenbistro (dom)
   (cl-loop for event in (dom-by-class dom "eventlist-event")

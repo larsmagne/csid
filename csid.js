@@ -1385,6 +1385,9 @@ function fetchSummaries(ids, index, callback) {
     error: function(data) {
       if (data.statusText == "abort")
 	return;
+      /* For now, just open the URL directly when there's no summary. */
+      window.location.href = ids[index][1];
+      return;
       insertBlankSummary(ids[index][0], ids[index][1], false);
       if (index + 1 < ids.length)
 	fetchSummaries(ids, index + 1);

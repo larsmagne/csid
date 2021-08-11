@@ -42,13 +42,15 @@ driver.get("http://www.facebook.com")
 
 time.sleep(5)
 
-#cookie_times = 0
-#while cookie():
-#    cookie_times += 1
-#    if cookie_times > 30:
-#        break;
-#    print("Waiting for cookie")
-#    time.sleep(1)
+cookie_times = 0
+while cookie():
+    cookie_times += 1
+    if cookie_times > 30:
+        break;
+    print("Waiting for cookie")
+    time.sleep(1)
+
+time.sleep(5)
 
 #time.sleep(500)
 
@@ -68,7 +70,7 @@ for elem in urls:
     print(elem)
     bits = elem.split()
     times = 2
-    max = 5
+    max = 3
     # Fetch the URL.
     driver.get(bits[1])
     # Push "See More" some times.
@@ -93,6 +95,6 @@ for elem in urls:
     html = driver.execute_script("return document.body.innerHTML;")
     with open("/tmp/face/face-" + bits[0] + ".html", "w") as f:
         f.write(html)
-    time.sleep(random.randint(20, 40))
+    time.sleep(random.randint(200, 400))
 
 driver.quit()

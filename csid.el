@@ -1558,10 +1558,8 @@ no further processing).  URL is either a string or a parsed URL."
 	       (insert (format "%d %s\n" i url))
 	       (push (cons url i) csid-facebook-event-files))
       (write-region (point-min) (point-max) "/tmp/faceurls.txt"))
-    (when nil
-      (call-process "~larsi/src/csid/faceget.py")
-      (cl-loop for (event-id . url) in data
-	       do (csid-write-event-summary url event-id)))))
+    (cl-loop for (event-id . url) in data
+	     do (csid-write-event-summary url event-id))))
 
 (defun csid-get-event-summary-loop (dom)
   ;; Facebook will return no text other than the cookie warning,
@@ -1597,6 +1595,8 @@ no further processing).  URL is either a string or a parsed URL."
 	;; Remove Facebook data.
 	(setq summary (replace-regexp-in-string
 		       "^.*dem til som venner............." "" summary))
+	(setq summary (replace-regexp-in-string
+		       "^.*Registrer deg............." "" summary))
 	(with-temp-buffer
 	  (insert "{")
 	  (when image
@@ -1666,12 +1666,15 @@ no further processing).  URL is either a string or a parsed URL."
 
 (defun csid-retrieve-event-dom (url)
   (message "%s" url)
-  (if (and (string-match "facebook.com" url)
-	   (assoc url csid-facebook-event-files))
+  (if (string-match "facebook.com" url)
       (with-temp-buffer
-	(insert-file-contents
-	 (format "/tmp/face/face-%d.html"
-		 (cdr (assoc url csid-facebook-event-files))))
+	(message "%s" url)
+	(call-process "ssh" nil t nil
+		      "concerts@185.56.185.142"
+		      "curl"
+		      "-s"
+		      "-A" "'Mozilla/5.0 (X11; Linux x86_64; rv:89.0) Gecko/20100101 Firefox/89.0'"
+		      url)
 	(libxml-parse-html-region (point-min) (point-max)))
     (csid-retrieve-direct-event-dom url)))
 
@@ -1806,7 +1809,7 @@ no further processing).  URL is either a string or a parsed URL."
         ;; We set a lower bound to how long we accept that the
         ;; readable portion of the page is going to be.
         (when (and (> (length (split-string (dom-texts highest))) 40)
-		   (not (string-match "kapsler\\|cookies"
+		   (not (string-match "kapsler\\|cookies\\|Har du glemt kontoen"
 				      (dom-texts highest))))
 	  (setq result highest))))
     result))

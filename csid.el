@@ -1557,7 +1557,7 @@ no further processing).  URL is either a string or a parsed URL."
 	       do
 	       (insert (format "%d %s\n" i url))
 	       (push (cons url i) csid-facebook-event-files))
-      (write-region (point-min) (point-max) "/tmp/faceurls.txt"))
+      (write-region (point-min) (point-max) "/tmp/faceurls-events.txt"))
     (cl-loop for (event-id . url) in data
 	     do (csid-write-event-summary url event-id))))
 

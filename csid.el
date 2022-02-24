@@ -50,7 +50,7 @@
     ("Victoria" "http://nasjonaljazzscene.no/arrangement/" victoria (59.914109 10.738198))
     ("Rockefeller" "http://rockefeller.no/index.html" rockefeller :multi (59.916125 10.750050))
     ;;("Mono" "http://www.cafemono.no/program/" mono (59.913942 10.749326))
-    ("Parkteateret" "http://parkteatret.no/program/" parkteateret (59.923515 10.758537))
+    ("Parkteateret" "https://www.parkteatret.no/program" parkteateret (59.923515 10.758537))
     ("Konsertforeninga" "https://www.facebook.com/Konsertforeninga/events/?ref=page_internal" facebook)
     ;;("Maksitaksi" "https://www.facebook.com/maksitaksii/events?ref=page_internal" facebook (59.918278 10.737577))
     ("Betong" "https://www.facebook.com/betongoslo/events" facebook (59.932264 10.712854))
@@ -78,7 +78,7 @@
     ("Kulturhuset" "https://www.facebook.com/kulturhusetioslo/events" facebook (59.914646 10.750909))
     ("Kampen Bistro" "http://www.kampenbistro.no/hvaskjer" kampenbistro (59.913718003724746 10.780875043457623))
     ;;("Kampenjazz" "http://oysteineide.wix.com/kampenjazz#!konserter/cb30" kampenjazz :date)
-    ("Cafeteatret" "http://nordicblacktheatre.no/wp-admin/admin-ajax.php?action=wpcal-getevents&end=1444600800&start=1440972000" cafeteatret :json (59.910344 10.767058))
+    ("Cafeteatret" "https://nordicblacktheatre.ticketco.events/no/en" ticketco (59.910344 10.767058))
     ("Telenor Arena" "http://telenorarena.no/en/calendar" telenor (59.903079 10.624335))
     ("Postkontoret" "https://www.facebook.com/toyenpostkontor/events?key=events" facebook (59.914083 10.775254))
     ;;("Per på hjørnet" "http://www.pph.oslo.no/" pph :date)
@@ -820,10 +820,13 @@ no further processing).  URL is either a string or a parsed URL."
 		       (dom-text (dom-by-class event "event_title"))))))
 
 (defun csid-parse-parkteateret (dom)
-  (loop for elem in (dom-by-class dom "concert-item")
-	collect (list (csid-parse-month-date
-		       (dom-texts (dom-by-class elem "concert-date")))
-		      (dom-attr (dom-by-tag elem 'a) 'href)
+  (loop for elem in (dom-by-class dom "event-card")
+	for link = (dom-attr (dom-by-tag elem 'a) 'href)
+	when (and link (string-match "arrangement" link))
+	collect (list (csid-parse-full-numeric-date
+		       (dom-texts
+			(dom-by-class elem "event-card__meta-column--date")))
+		      (shr-expand-url link)
 		      (dom-texts (dom-by-tag elem 'h2)))))
 
 (defun csid-parse-konsertforeninga (dom)
@@ -1151,17 +1154,6 @@ no further processing).  URL is either a string or a parsed URL."
 	return date
 	do (setq node (funcall func dom node))))
 
-(defun csid-parse-cafeteatret (json)
-  (loop for event across json
-	for title = (cdr (assq 'title event))
-	for url = (cdr (assq 'post_url event))
-	when (and (string-match "Kampenjazz" title)
-		  (> (length url) 0))
-	collect (list (csid-parse-iso8601 (cdr (assq 'start event)))
-		      url
-		      (replace-regexp-in-string
-		       "Kampenjazz presenterer:? +" "" title))))
-
 (defun csid-parse-telenor (dom)
   (loop for event in (dom-by-class dom "^item event$")
 	for link = (dom-attr (dom-by-tag event 'a) 'href)
@@ -1253,11 +1245,12 @@ no further processing).  URL is either a string or a parsed URL."
 		      (dom-texts (dom-by-tag event 'h1)))))
 
 (defun csid-parse-ticketco (dom)
-  (loop for event in (dom-by-class dom "tc-events-list--details")
+  (loop for event in (dom-by-class dom "tc-events-list--item")
 	for a = (dom-by-tag event 'a)
-	for date = (csid-parse-full-numeric-date
+	for date = (csid-parse-short-yearless-month
 		    (dom-texts (dom-by-class
-				event "^tc-events-list--place-time$")))
+				event "tc-events-list--date"))
+		    t)
 	when (csid-valid-date-p date)
 	collect (list date
 		      (dom-attr a 'href)

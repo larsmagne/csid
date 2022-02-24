@@ -65,7 +65,7 @@
     ("Herr Nilsen" "http://www.herrnilsen.no/program2009.html" nilsen (59.915406 10.740988))
     ("Spektrum" "https://oslospektrum.no/" spektrum (59.913001 10.753873))
     ("Ny Musikk" "https://www.facebook.com/nymusikk/events/?ref=page_internal" facebook (59.911173 10.765284))
-    ("Konserthuset" "http://www.oslokonserthus.no/program/json/all" konserthuset :json (59.913270 10.729669))
+    ("Konserthuset" "https://oslokonserthus.no/api/program?kategori=all&sal=&serie=" konserthuset :json (59.913270 10.729669))
     ("Riksscenen" "http://www.riksscenen.no/program.95415.no.html" riksscenen (59.919877 10.761074))
     ("Olsen" "https://www.facebook.com/olsenbryn/events/?ref=page_internal" facebook (59.907644 10.818268))
     ;;("Verkstedet" "https://www.facebook.com/verkstedetbar/events/?ref=page_internal" facebook (59.917728 10.754123))
@@ -1016,7 +1016,7 @@ no further processing).  URL is either a string or a parsed URL."
 (defun csid-parse-konserthuset (json)
   (loop for event across json
 	collect (list (csid-parse-iso8601
-		       (cdr (assq 'datetime (assq 'dato event))))
+		       (cdr (assq 'datetime event)))
 		      (cdr (assq 'url event))
 		      (cdr (assq 'title event)))))
 

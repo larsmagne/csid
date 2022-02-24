@@ -124,7 +124,7 @@
     ;;("Sagene" "https://www.facebook.com/pg/onsdagsjazzen/events/?ref=page_internal" facebook (59.937541 10.756546))
     ("Rock In" "https://www.facebook.com/pg/rockinoslo/events/?ref=page_internal" facebook (59.913002 10.761144))
     ("Brød & Sirkus" "https://www.facebook.com/brodogsirkus/events/" facebook (59.91311858805727 10.736465987756189))
-    ("Oslo Jazzfestival" "https://oslojazz.no/program/" oslo-jazzfestival)
+    ;;("Oslo Jazzfestival" "https://oslojazz.no/program/" oslo-jazzfestival)
     ("Oslo Bluesklubb" "https://www.osloblues.com/konsertarkiv/" oslo-bluesklubb)
     ("Kampen Kaffe & Bar" "https://www.facebook.com/kampenkaffebar/events" facebook (59.911972107696684 10.781134433609944))
     ("MS Bjørvika" "https://www.facebook.com/msbjorvika/events/" facebook (59.905780304973966 10.75342868368582))
@@ -1857,11 +1857,14 @@ no further processing).  URL is either a string or a parsed URL."
 			 (dom-texts (dom-by-tag event 'h2)))))
 
 (defun csid-parse-oslo-bluesklubb (dom)
-  (cl-loop for event in (dom-by-tag (dom-by-class dom "entry-content") 'p)
-	   collect (list (csid-parse-norwegian-month-date-with-year
-			  (dom-texts event))
-			 (dom-attr (dom-by-tag event 'a) 'href)
-			 (dom-texts (dom-by-tag event 'a)))))
+  (cl-loop for link in (dom-by-tag dom 'a)
+	   for prev = (dom-previous-sibling dom link)
+	   when (stringp prev)
+	   for date = (csid-parse-norwegian-month-date-with-year prev)
+	   when (csid-valid-date-p date)
+	   collect (list date
+			 (dom-attr link 'href)
+			 (dom-texts link))))
 
 (provide 'csid)
 

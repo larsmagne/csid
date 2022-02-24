@@ -677,6 +677,8 @@ no further processing).  URL is either a string or a parsed URL."
 
 (defvar csid-weekdays '("mandag" "tirsdag" "onsdag" "torsdag"
 			"fredag" "lørdag" "søndag"))
+(defvar csid-english-weekdays '("monday" "tuesday" "wednesday" "thursday"
+				"friday" "saturday" "sunday"))
 
 (defun csid-parse-current-month (string)
   (if (string-match (format "\\(%s\\) \\([0-9]+\\)"
@@ -766,9 +768,11 @@ no further processing).  URL is either a string or a parsed URL."
       (and (string-match "TOMORROW" time)
 	   (format-time-string "%F" (+ (float-time)
 				       (* 60 60 24))))
-      (and (string-match "KOMMENDE \\([^ ]+\\)" time)
-	   (let ((day-num (seq-position csid-weekdays
-					(downcase (match-string 1 time))))
+      (and (string-match "\\(?:KOMMENDE\\|THIS\\) \\([^ ]+\\)" time)
+	   (let ((day-num (or (seq-position csid-weekdays
+					    (downcase (match-string 1 time)))
+			      (seq-position csid-english-weekdays
+					    (downcase (match-string 1 time)))))
 		 (start (float-time)))
 	     (while (not (= (1- (string-to-number
 				 (format-time-string "%u" start)))

@@ -59,11 +59,11 @@
     ("Vulkan" "https://vulkanarena.no/" vulkan (59.922435 10.751270))
     ("Jakob" "http://jakob.no/program/" jakob (59.918090 10.754294))
     ("Ultima" "http://ultima.no/program" ultima)
-    ("Blitz" "http://www.blitz.no/kalender" blitz (59.918438 10.737446))
+    ("Blitz" "https://www.facebook.com/blitzbooking/events/" facebook (59.918438 10.737446))
     ("Magneten" "http://magnetenpub.blogspot.no//feeds/pages/default?alt=json&v=2&dynamicviews=1"
      magneten :json :date (59.936159 10.765462))
     ("Herr Nilsen" "http://www.herrnilsen.no/program2009.html" nilsen (59.915406 10.740988))
-    ("Spektrum" "http://www.oslospektrum.no/" spektrum (59.913001 10.753873))
+    ("Spektrum" "https://oslospektrum.no/" spektrum (59.913001 10.753873))
     ("Ny Musikk" "https://www.facebook.com/nymusikk/events/?ref=page_internal" facebook (59.911173 10.765284))
     ("Konserthuset" "http://www.oslokonserthus.no/program/json/all" konserthuset :json (59.913270 10.729669))
     ("Riksscenen" "http://www.riksscenen.no/program.95415.no.html" riksscenen (59.919877 10.761074))
@@ -996,10 +996,10 @@ no further processing).  URL is either a string or a parsed URL."
    (time-add (current-time) (* 4 30 24 60 60))))
 
 (defun csid-parse-spektrum (dom)
-  (loop for elem in (dom-by-tag dom 'li)
+  (loop for elem in (dom-by-class dom "b-enkelt-element-arrliste")
 	for a = (dom-by-tag elem 'a)
-	for date = (csid-parse-full-numeric-date
-		    (dom-text (dom-by-class elem "date")))
+	for date = (csid-parse-norwegian-month-date-with-year
+		    (dom-texts (dom-by-class elem "b-arrangementliste-tekst")))
 	when (csid-valid-date-p date)
 	collect (list date
 		      (shr-expand-url (dom-attr a 'href))

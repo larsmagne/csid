@@ -887,8 +887,10 @@ no further processing).  URL is either a string or a parsed URL."
 
 (defun csid-parse-cosmopolite-2 (dom)
   (cl-loop for elem in (dom-by-tag dom 'li)
-	   collect (list (csid-parse-month-date
-			  (dom-texts (dom-by-class elem "bottom-row")))
+	   for date = (csid-parse-month-date
+		       (dom-texts (dom-by-class elem "bottom-row")))
+	   when (csid-valid-date-p date)
+	   collect (list date
 			 (shr-expand-url
 			  (dom-attr (dom-by-tag elem 'a) 'href))
 			 (dom-texts (dom-by-class elem "views-field-title")))))

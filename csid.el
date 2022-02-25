@@ -27,7 +27,7 @@
 
 ;;; Code:
 
-(require 'cl)
+(require 'cl-lib)
 (require 'pp)
 (require 'eww)
 (require 'dom)
@@ -334,6 +334,8 @@ no further processing).  URL is either a string or a parsed URL."
 			      (get-buffer-process asynch-buffer)))))))
       asynch-buffer)))
 
+(defvar csid-facebook-files nil)
+
 (defun csid-parse-source (url function data-type name)
   (with-current-buffer
       (if (eq function 'csid-parse-facebook)
@@ -439,6 +441,10 @@ no further processing).  URL is either a string or a parsed URL."
 			     :test 'equalp))
 	    (string-to-number (match-string 2 string)))))
 
+(defvar csid-english-months
+  '("january" "february" "march" "april" "may" "june" "july"
+    "august" "september" "october" "november" "december"))
+
 ;; "fri, aug 8, 2014"
 (defun csid-parse-english-month-date-with-year (string)
   (setq string (downcase string))
@@ -462,10 +468,6 @@ no further processing).  URL is either a string or a parsed URL."
 	    (1+ (cl-position (match-string 2 string) csid-months
 			     :test 'equalp))
 	    (string-to-number (match-string 1 string)))))
-
-(defvar csid-english-months
-  '("january" "february" "march" "april" "may" "june" "july"
-    "august" "september" "october" "november" "december"))
 
 (defun csid-parse-english-month-date (string)
   (setq string (downcase string))
@@ -1780,8 +1782,6 @@ no further processing).  URL is either a string or a parsed URL."
     (if (> (length text) 400)
 	(concat (substring text 0 400) "[...]")
       text)))
-
-(defvar csid-facebook-files nil)
 
 (defun csid-download-facebook-urls ()
   (setq csid-facebook-files nil)

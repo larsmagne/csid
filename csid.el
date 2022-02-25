@@ -829,10 +829,13 @@ no further processing).  URL is either a string or a parsed URL."
 (defun csid-parse-parkteateret (dom)
   (loop for elem in (dom-by-class dom "event-card")
 	for link = (dom-attr (dom-by-tag elem 'a) 'href)
-	when (and link (string-match "arrangement" link))
-	collect (list (csid-parse-full-numeric-date
-		       (dom-texts
-			(dom-by-class elem "event-card__meta-column--date")))
+	for date = (csid-parse-full-numeric-date
+		    (dom-texts
+		     (dom-by-class elem "event-card__meta-column--date")))
+	when (and link
+		  (string-match "arrangement" link)
+		  (csid-valid-date-p date))
+	collect (list date
 		      (shr-expand-url link)
 		      (dom-texts (dom-by-tag elem 'h2)))))
 

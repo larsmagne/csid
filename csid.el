@@ -1015,7 +1015,7 @@ no further processing).  URL is either a string or a parsed URL."
 	when (csid-valid-date-p date)
 	collect (list date
 		      (shr-expand-url (dom-attr a 'href))
-		      (dom-text a))))
+		      (dom-attr a 'title))))
 
 (defun csid-parse-nymusikk (dom)
   (loop for elem in (dom-by-class dom "^tweet$")

@@ -1258,7 +1258,7 @@ no further processing).  URL is either a string or a parsed URL."
 
 (defun csid-parse-ticketco (dom)
   (loop for event in (dom-by-class dom "tc-events-list--item")
-	for a = (dom-by-tag event 'a)
+	for a = (dom-by-class event "tc-events-list--title")
 	for date = (csid-parse-short-yearless-month
 		    (dom-texts (dom-by-class
 				event "tc-events-list--date"))

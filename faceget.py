@@ -8,7 +8,8 @@ from selenium.common.exceptions import NoSuchElementException
 
 def cookie():
     for phrase in ['Godta alle', 'Alle akzeptieren',
-                   'Tillat alle informasjonskapsler']:
+                   'Tillat alle informasjonskapsler',
+                   'Tillat nødvendige og valgfrie informasjonskapsler']:
         try:
             accept = driver.find_element_by_xpath("//button[@title='" + phrase + "']")
             time.sleep(5)

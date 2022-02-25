@@ -1,5 +1,5 @@
 ;;; csid.el --- Generate Concert Listings
-;; Copyright (C) 2013-2014 Lars Magne Ingebrigtsen
+;; Copyright (C) 2013-2022 Lars Magne Ingebrigtsen
 
 ;; Author: Lars Magne Ingebrigtsen <larsi@gnus.org>
 ;; Keywords: music
@@ -70,14 +70,12 @@
     ("Olsen" "https://www.facebook.com/olsenbryn/events/?ref=page_internal" facebook (59.907644 10.818268))
     ;;("Verkstedet" "https://www.facebook.com/verkstedetbar/events/?ref=page_internal" facebook (59.917728 10.754123))
     ("Gamla" "https://www.gamla.no/" gamla (59.913654 10.745297))
-    ;;("Sawol" "http://www.sawol.no/category/program/" sawol)
     ;;("Buckleys" "http://www.buckleys.no/konserter.html" buckleys :date)
     ;;("New Orleans" "http://www.neworleansworkshop.com/program" neworleans :date)
     ;;("NB" "http://www.nb.no/Hva-skjer/Arrangementer/Konserter" nasjonalbiblioteket)
     ("Uhørt" "https://www.facebook.com/uhortistroget/events" facebook (59.914105 10.748769))
     ("Kulturhuset" "https://www.facebook.com/kulturhusetioslo/events" facebook (59.914646 10.750909))
     ("Kampen Bistro" "http://www.kampenbistro.no/hvaskjer" kampenbistro (59.913718003724746 10.780875043457623))
-    ;;("Kampenjazz" "http://oysteineide.wix.com/kampenjazz#!konserter/cb30" kampenjazz :date)
     ("Cafeteatret" "https://nordicblacktheatre.ticketco.events/no/en" ticketco (59.910344 10.767058))
     ("Telenor Arena" "http://telenorarena.no/en/calendar" telenor (59.903079 10.624335))
     ("Postkontoret" "https://www.facebook.com/toyenpostkontor/events?key=events" facebook (59.914083 10.775254))
@@ -197,51 +195,51 @@
     (setq csid-database nil))
   (csid-write-database
    (csid-update-database
-    (loop for source in csid-sources
-	  for (name url function) = source
-	  for function = (intern (format "csid-parse-%s" function) obarray)
-	  do (message "%s" name)
-	  when (or (not type)
-		   (string= type name))
-	  append (let* ((max-specpdl-size 6000)
-			(max-lisp-eval-depth 6000)
-			(results
-			 (if type
-			     (csid-parse-source
-			      url
-			      (if (and (not debug)
-				       (fboundp function))
-				  function
-				'csid-parse-new)
-			      (csid-source-type source)
-			      name)
-			   (progn
-			     (csid-parse-source
-			      url
-			      (if (fboundp function)
-				  function
-				'csid-parse-new)
-			      (csid-source-type source)
-			      name)))))
-		   (unless results
-		     (message "No results for type %s %s" name url))
-		   (loop for result in results
-			 unless (memq :multi source)
-			 do (push name result)
-			 collect (csid-add-id result (memq :date source)))))))
+    (cl-loop for source in csid-sources
+	     for (name url function) = source
+	     for function = (intern (format "csid-parse-%s" function) obarray)
+	     do (message "%s" name)
+	     when (or (not type)
+		      (string= type name))
+	     append (let* ((max-specpdl-size 6000)
+			   (max-lisp-eval-depth 6000)
+			   (results
+			    (if type
+				(csid-parse-source
+				 url
+				 (if (and (not debug)
+					  (fboundp function))
+				     function
+				   'csid-parse-new)
+				 (csid-source-type source)
+				 name)
+			      (progn
+				(csid-parse-source
+				 url
+				 (if (fboundp function)
+				     function
+				   'csid-parse-new)
+				 (csid-source-type source)
+				 name)))))
+		      (unless results
+			(message "No results for type %s %s" name url))
+		      (cl-loop for result in results
+			       unless (memq :multi source)
+			       do (push name result)
+			       collect (csid-add-id result (memq :date source)))))))
   (format "%s" (with-temp-buffer
 		 (insert-file-contents csid-database-file-name)
 		 (buffer-string))))
 
 (defun csid-add-id (elem datep)
   (let ((found nil))
-    (loop with index = (if datep 1 2)
-	  for old in csid-database
-	  when (and (equal (car elem) (car old))
-		    (equal (nth index elem)
-			   (nth index old)))
-	  do (setq found (nth 4 old)))
-    (append elem (list (or found (incf csid-sequence))
+    (cl-loop with index = (if datep 1 2)
+	     for old in csid-database
+	     when (and (equal (car elem) (car old))
+		       (equal (nth index elem)
+			      (nth index old)))
+	     do (setq found (nth 4 old)))
+    (append elem (list (or found (cl-incf csid-sequence))
 		       (format-time-string "%FT%T")))))
 
 (defun csid-close ()
@@ -387,19 +385,19 @@ no further processing).  URL is either a string or a parsed URL."
       (kill-buffer (current-buffer)))))
 
 (defun csid-parse-blaa (dom)
-  (loop for month in (dom-by-class dom "^month$")
-	for month-name = (dom-texts (dom-by-tag month 'h1))
-	append (loop for day in (dom-by-class month "^day$")
-		     append (loop for elem in (dom-by-tag day 'article)
-		     for h1 = (dom-by-tag elem 'h1)
-		     when elem
-		     collect (list
-			      (csid-parse-english-month-date
-			       (format "%s %s"
-				       (dom-text (dom-by-class day "^number$"))
-				       month-name))
-			      (dom-attr (dom-by-tag h1 'a) 'href)
-			      (dom-texts h1))))))
+  (cl-loop for month in (dom-by-class dom "^month$")
+	   for month-name = (dom-texts (dom-by-tag month 'h1))
+	   append (cl-loop for day in (dom-by-class month "^day$")
+			   append (cl-loop for elem in (dom-by-tag day 'article)
+					   for h1 = (dom-by-tag elem 'h1)
+					   when elem
+					   collect (list
+						    (csid-parse-english-month-date
+						     (format "%s %s"
+							     (dom-text (dom-by-class day "^number$"))
+							     month-name))
+						    (dom-attr (dom-by-tag h1 'a) 'href)
+						    (dom-texts h1))))))
 
 ;; Date parsers.
 
@@ -412,8 +410,8 @@ no further processing).  URL is either a string or a parsed URL."
   (if (string-match (format "\\([0-9]+\\).*\\(%s\\)"
 			    (mapconcat 'identity csid-months "\\|"))
 		    string)
-      (csid-expand-date (1+ (position (match-string 2 string) csid-months
-				      :test 'equalp))
+      (csid-expand-date (1+ (cl-position (match-string 2 string) csid-months
+					 :test 'equalp))
 			(string-to-number (match-string 1 string)))
     string))
 
@@ -424,8 +422,8 @@ no further processing).  URL is either a string or a parsed URL."
 			    (mapconcat 'identity csid-months "\\|"))
 		    string)
       (csid-expand-date-window
-       (1+ (position (match-string 2 string) csid-months
-		     :test 'equalp))
+       (1+ (cl-position (match-string 2 string) csid-months
+			:test 'equalp))
        (string-to-number (match-string 1 string)))
     string))
 
@@ -437,20 +435,8 @@ no further processing).  URL is either a string or a parsed URL."
 		      string)
     (format "%04d-%02d-%02d"
 	    (string-to-number (match-string 3 string))
-	    (1+ (position (match-string 1 string) csid-months
-			  :test 'equalp))
-	    (string-to-number (match-string 2 string)))))
-
-;; "fredag, august 8, 2014"
-(defun csid-parse-english-month-date-with-year (string)
-  (setq string (downcase string))
-  (when (string-match (format "\\(%s\\).*?\\([0-9]+\\).*?\\([0-9]+\\)"
-			      (mapconcat 'identity csid-english-months "\\|"))
-		      string)
-    (format "%04d-%02d-%02d"
-	    (string-to-number (match-string 3 string))
-	    (1+ (position (match-string 1 string) csid-english-months
-			  :test 'equalp))
+	    (1+ (cl-position (match-string 1 string) csid-months
+			     :test 'equalp))
 	    (string-to-number (match-string 2 string)))))
 
 ;; "fri, aug 8, 2014"
@@ -461,8 +447,8 @@ no further processing).  URL is either a string or a parsed URL."
 		      string)
     (format "%04d-%02d-%02d"
 	    (string-to-number (match-string 3 string))
-	    (1+ (position (match-string 1 string) csid-english-months
-			  :test 'equalp))
+	    (1+ (cl-position (match-string 1 string) csid-english-months
+			     :test 'equalp))
 	    (string-to-number (match-string 2 string)))))
 
 ;; "onsdag 19. november 2014"
@@ -473,8 +459,8 @@ no further processing).  URL is either a string or a parsed URL."
 		      string)
     (format "%04d-%02d-%02d"
 	    (string-to-number (match-string 3 string))
-	    (1+ (position (match-string 2 string) csid-months
-			  :test 'equalp))
+	    (1+ (cl-position (match-string 2 string) csid-months
+			     :test 'equalp))
 	    (string-to-number (match-string 1 string)))))
 
 (defvar csid-english-months
@@ -486,9 +472,9 @@ no further processing).  URL is either a string or a parsed URL."
   (if (string-match (format "\\([0-9]+\\).*\\(%s\\)"
 			    (mapconcat 'identity csid-english-months "\\|"))
 		    string)
-      (csid-expand-date (1+ (position (match-string 2 string)
-				      csid-english-months
-				      :test 'equalp))
+      (csid-expand-date (1+ (cl-position (match-string 2 string)
+					 csid-english-months
+					 :test 'equalp))
 			(string-to-number (match-string 1 string)))
     string))
 
@@ -511,12 +497,12 @@ no further processing).  URL is either a string or a parsed URL."
 		      string)
     (format "%s-%02d-%02d"
 	    (match-string 3 string)
-	    (1+ (position (match-string 1 string)
-			  (mapcar
-			   (lambda (month)
-			     (substring month 0 3))
-			   csid-english-months)
-			  :test 'equalp))
+	    (1+ (cl-position (match-string 1 string)
+			     (mapcar
+			      (lambda (month)
+				(substring month 0 3))
+			      csid-english-months)
+			     :test 'equalp))
 	    (string-to-number (match-string 2 string)))))
 
 ;; "06. aug 2013"
@@ -532,14 +518,14 @@ no further processing).  URL is either a string or a parsed URL."
 		    string)
       (format "%s-%02d-%02d"
 	      (match-string 3 string)
-	      (1+ (position (match-string 2 string)
-			    (mapcar
-			     (lambda (month)
-			       (substring month 0 3))
-			     (if englishp
-				 csid-english-months
-			       csid-months))
-			    :test 'equalp))
+	      (1+ (cl-position (match-string 2 string)
+			       (mapcar
+				(lambda (month)
+				  (substring month 0 3))
+				(if englishp
+				    csid-english-months
+				  csid-months))
+			       :test 'equalp))
 	      (string-to-number (match-string 1 string)))
     (csid-parse-month-date string)))
 
@@ -554,13 +540,13 @@ no further processing).  URL is either a string or a parsed URL."
 	     (= (length (match-string 3 string)) 3))
     (format "%s-%02d-%02d"
 	    (match-string 3 string)
-	    (1+ (position (match-string 2 string)
-			  (mapcar
-			   (lambda (month)
-			     (substring month 0
-					(length (match-string 2 string))))
-			   csid-months)
-			  :test 'equalp))
+	    (1+ (cl-position (match-string 2 string)
+			     (mapcar
+			      (lambda (month)
+				(substring month 0
+					   (length (match-string 2 string))))
+			      csid-months)
+			     :test 'equalp))
 	    (string-to-number (match-string 1 string)))))
 
 ;; "Ma. 23. sep. "
@@ -575,14 +561,14 @@ no further processing).  URL is either a string or a parsed URL."
 			       "\\|"))
 		      string)
     (csid-expand-date
-     (1+ (position (match-string 2 string)
-		   (mapcar
-		    (lambda (month)
-		      (substring month 0 3))
-		    (if englishp
-			csid-english-months
-		      csid-months))
-		   :test 'equalp))
+     (1+ (cl-position (match-string 2 string)
+		      (mapcar
+		       (lambda (month)
+			 (substring month 0 3))
+		       (if englishp
+			   csid-english-months
+			 csid-months))
+		      :test 'equalp))
      (string-to-number (match-string 1 string)))))
 
 ;; "Tue, jun 29. "
@@ -595,12 +581,12 @@ no further processing).  URL is either a string or a parsed URL."
 			       "\\|"))
 		      string)
     (csid-expand-date
-     (1+ (position (match-string 1 string)
-		   (mapcar
-		    (lambda (month)
-		      (substring month 0 3))
-		    csid-english-months)
-		   :test 'equalp))
+     (1+ (cl-position (match-string 1 string)
+		      (mapcar
+		       (lambda (month)
+			 (substring month 0 3))
+		       csid-english-months)
+		      :test 'equalp))
      (string-to-number (match-string 2 string)))))
 
 ;; "aug 23"
@@ -616,14 +602,14 @@ no further processing).  URL is either a string or a parsed URL."
 			       "\\|"))
 		      string)
     (csid-expand-date
-     (1+ (position (match-string 1 string)
-		   (mapcar
-		    (lambda (month)
-		      (substring month 0 3))
-		    (if englishp
-			csid-english-months
-		      csid-months))
-		   :test 'equalp))
+     (1+ (cl-position (match-string 1 string)
+		      (mapcar
+		       (lambda (month)
+			 (substring month 0 3))
+		       (if englishp
+			   csid-english-months
+			 csid-months))
+		      :test 'equalp))
      (string-to-number (match-string 2 string)))))
 
 
@@ -687,9 +673,9 @@ no further processing).  URL is either a string or a parsed URL."
   (if (string-match (format "\\(%s\\) \\([0-9]+\\)"
 			    (mapconcat 'identity csid-weekdays "\\|"))
 		    string)
-      (let ((day-number (1+ (position (downcase (match-string 1 string))
-				      csid-weekdays
-				      :test #'equal)))
+      (let ((day-number (1+ (cl-position (downcase (match-string 1 string))
+					 csid-weekdays
+					 :test #'equal)))
 	    (day (string-to-number (match-string 2 string)))
 	    (time (decode-time))
 	    found)
@@ -708,7 +694,7 @@ no further processing).  URL is either a string or a parsed URL."
 		     (= (string-to-number
 			 (format-time-string "%u" (apply 'encode-time time)))
 			day-number))
-	    (setq found (copy-list time)))
+	    (setq found (copy-sequence time)))
 	  (setcar (nthcdr 4 time) (1+ (nth 4 time)))
 	  (when (= (nth 4 time) 13)
 	    (setcar (nthcdr 4 time) 1)
@@ -721,7 +707,7 @@ no further processing).  URL is either a string or a parsed URL."
 	(this-month (nth 4 (decode-time))))
     (when (and (not this-year-only)
 	       (< month this-month))
-      (incf this-year))
+      (cl-incf this-year))
     (format "%s-%02d-%02d" this-year month day)))
 
 (defun csid-expand-date-window (month day &optional this-year-only)
@@ -729,13 +715,13 @@ no further processing).  URL is either a string or a parsed URL."
 	 (year
 	  (cadar
 	   (sort
-	    (loop for year in (list (1- this-year) this-year (1+ this-year))
-		  collect (list (abs (- (float-time
-					 (parse-iso8601-time-string
-					  (format "%s-%02d-%02dT05:05:05"
-						  year month day)))
-					(float-time)))
-				year))
+	    (cl-loop for year in (list (1- this-year) this-year (1+ this-year))
+		     collect (list (abs (- (float-time
+					    (parse-iso8601-time-string
+					     (format "%s-%02d-%02dT05:05:05"
+						     year month day)))
+					   (float-time)))
+				   year))
 	    (lambda (a1 a2)
 	      (< (car a1) (car a2)))))))
     (if this-year-only
@@ -743,12 +729,12 @@ no further processing).  URL is either a string or a parsed URL."
       (format "%s-%02d-%02d" year month day))))
 
 (defun csid-parse-mir (dom)
-  (loop for elem in (dom-by-id dom "program")
-	for link = (dom-by-tag (dom-by-class elem "programtittel") 'a)
-	collect (list (csid-parse-month-date
-		       (dom-text (dom-by-class elem "programtid")))
-		      (dom-attr link 'href)
-		      (dom-texts link))))
+  (cl-loop for elem in (dom-by-id dom "program")
+	   for link = (dom-by-tag (dom-by-class elem "programtittel") 'a)
+	   collect (list (csid-parse-month-date
+			  (dom-text (dom-by-class elem "programtid")))
+			 (dom-attr link 'href)
+			 (dom-texts link))))
 
 (defun csid-parse-facebook (dom)
   (cl-loop for event in (dom-by-tag dom 'a)
@@ -784,22 +770,22 @@ no further processing).  URL is either a string or a parsed URL."
 	     (format-time-string "%F" start)))))
 
 (defun csid-parse-victoria (dom)
-  (loop for elem in (dom-by-class dom "event-entry")
-	for date = (dom-by-class elem "show-for-small")
-	collect (list (csid-parse-numeric-date
-		       (dom-text (dom-by-tag date 'p)))
-		      (dom-attr (dom-by-tag elem 'a) 'href)
-		      (dom-text (dom-by-tag elem 'h2)))))
+  (cl-loop for elem in (dom-by-class dom "event-entry")
+	   for date = (dom-by-class elem "show-for-small")
+	   collect (list (csid-parse-numeric-date
+			  (dom-text (dom-by-tag date 'p)))
+			 (dom-attr (dom-by-tag elem 'a) 'href)
+			 (dom-text (dom-by-tag elem 'h2)))))
 
 (defun csid-parse-rockefeller (dom)
-  (loop for elem in (dom-by-class dom "^show bkg")
-	collect (list (csid-parse-rockefeller-stage
-		       (dom-attr (dom-by-class elem "^sknapp ") 'class))
-		      (csid-parse-full-numeric-date
-		       (dom-texts (dom-by-class elem "datofelt")))
-		      (shr-expand-url (dom-attr (dom-by-tag elem 'a) 'href))
-		      (csid-clean-string
-		       (dom-texts (dom-by-class elem "showtitle"))))))
+  (cl-loop for elem in (dom-by-class dom "^show bkg")
+	   collect (list (csid-parse-rockefeller-stage
+			  (dom-attr (dom-by-class elem "^sknapp ") 'class))
+			 (csid-parse-full-numeric-date
+			  (dom-texts (dom-by-class elem "datofelt")))
+			 (shr-expand-url (dom-attr (dom-by-tag elem 'a) 'href))
+			 (csid-clean-string
+			  (dom-texts (dom-by-class elem "showtitle"))))))
 
 (defun csid-parse-rockefeller-stage (class)
   (cond
@@ -817,53 +803,53 @@ no further processing).  URL is either a string or a parsed URL."
     "Rockefeller")))
 
 (defun csid-parse-mono (dom)
-  (loop for event in (dom-by-class
-		      (dom-by-id dom "^prikketabell_program$")
-		      "^event_wrapper$")
-	collect (list (csid-parse-numeric-date
-		       (dom-text (dom-by-class event "event_date")))
-		      (shr-expand-url (dom-attr (dom-by-tag event 'a) 'href))
-		      (csid-clean-string
-		       (dom-text (dom-by-class event "event_title"))))))
+  (cl-loop for event in (dom-by-class
+			 (dom-by-id dom "^prikketabell_program$")
+			 "^event_wrapper$")
+	   collect (list (csid-parse-numeric-date
+			  (dom-text (dom-by-class event "event_date")))
+			 (shr-expand-url (dom-attr (dom-by-tag event 'a) 'href))
+			 (csid-clean-string
+			  (dom-text (dom-by-class event "event_title"))))))
 
 (defun csid-parse-parkteateret (dom)
-  (loop for elem in (dom-by-class dom "event-card")
-	for link = (dom-attr (dom-by-tag elem 'a) 'href)
-	for date = (csid-parse-full-numeric-date
-		    (dom-texts
-		     (dom-by-class elem "event-card__meta-column--date")))
-	when (and link
-		  (string-match "arrangement" link)
-		  (csid-valid-date-p date))
-	collect (list date
-		      (shr-expand-url link)
-		      (dom-texts (dom-by-tag elem 'h2)))))
+  (cl-loop for elem in (dom-by-class dom "event-card")
+	   for link = (dom-attr (dom-by-tag elem 'a) 'href)
+	   for date = (csid-parse-full-numeric-date
+		       (dom-texts
+			(dom-by-class elem "event-card__meta-column--date")))
+	   when (and link
+		     (string-match "arrangement" link)
+		     (csid-valid-date-p date))
+	   collect (list date
+			 (shr-expand-url link)
+			 (dom-texts (dom-by-tag elem 'h2)))))
 
 (defun csid-parse-konsertforeninga (dom)
-  (loop for elem in (dom-by-class dom "eventon_list_event")
-	for date = (loop for meta in (dom-by-tag elem 'meta)
-			 when (equal (dom-attr meta 'itemprop)
-				     "startDate")
-			 return (dom-attr meta 'content))
-	when date
-	collect (list (csid-parse-sloppy-iso8601 date)
-		      (dom-attr (dom-by-tag elem 'a) 'href)
-		      (dom-texts (dom-by-tag elem 'span)))))
+  (cl-loop for elem in (dom-by-class dom "eventon_list_event")
+	   for date = (cl-loop for meta in (dom-by-tag elem 'meta)
+			       when (equal (dom-attr meta 'itemprop)
+					   "startDate")
+			       return (dom-attr meta 'content))
+	   when date
+	   collect (list (csid-parse-sloppy-iso8601 date)
+			 (dom-attr (dom-by-tag elem 'a) 'href)
+			 (dom-texts (dom-by-tag elem 'span)))))
 
 (defun csid-parse-bidrobon (dom)
-  (loop for event in (dom-by-class dom "^wsite-multicol$")
-	for link = (shr-expand-url
-		    (dom-attr
-		     (dom-by-tag (dom-by-class event "paragraph") 'a)
-		     'href))
-	for image = (shr-expand-url (dom-attr (dom-by-tag event 'img) 'src))
-	for date = (csid-parse-slashed-date
-		    (dom-texts (dom-by-class event "paragraph")))
-	when (and date
-		  (csid-date-likely-p date))
-	collect (list date
-		      (or link image)
-		      (dom-texts (dom-by-class event "paragraph")))))
+  (cl-loop for event in (dom-by-class dom "^wsite-multicol$")
+	   for link = (shr-expand-url
+		       (dom-attr
+			(dom-by-tag (dom-by-class event "paragraph") 'a)
+			'href))
+	   for image = (shr-expand-url (dom-attr (dom-by-tag event 'img) 'src))
+	   for date = (csid-parse-slashed-date
+		       (dom-texts (dom-by-class event "paragraph")))
+	   when (and date
+		     (csid-date-likely-p date))
+	   collect (list date
+			 (or link image)
+			 (dom-texts (dom-by-class event "paragraph")))))
 
 (defun csid-clean-string (string)
   (replace-regexp-in-string "^[\r\n\t ]\\|[\r\n\t ]$" "" 
@@ -902,60 +888,60 @@ no further processing).  URL is either a string or a parsed URL."
 			 (dom-texts (dom-by-class elem "views-field-title")))))
 
 (defun csid-parse-vulkan (dom)
-  (loop for elem in (dom-by-class dom "event_container")
-	collect (list (csid-parse-short-yearless-month
-			(dom-texts (dom-by-class elem "^date\\b")))
-		      (dom-attr (dom-by-tag elem 'a) 'href)
-		      (dom-texts (dom-by-class elem "event_title")))))
+  (cl-loop for elem in (dom-by-class dom "event_container")
+	   collect (list (csid-parse-short-yearless-month
+			  (dom-texts (dom-by-class elem "^date\\b")))
+			 (dom-attr (dom-by-tag elem 'a) 'href)
+			 (dom-texts (dom-by-class elem "event_title")))))
 
 (defun csid-parse-jakob (dom)
-  (loop for event in (dom-by-tag dom 'article)
-	collect (list (csid-parse-norwegian-month-date-with-year
-		       (dom-texts (dom-by-class event "^tease-meta$")))
-		      (dom-attr (dom-by-tag event 'a) 'href)
-		      (dom-texts (dom-by-tag event 'h2)))))
+  (cl-loop for event in (dom-by-tag dom 'article)
+	   collect (list (csid-parse-norwegian-month-date-with-year
+			  (dom-texts (dom-by-class event "^tease-meta$")))
+			 (dom-attr (dom-by-tag event 'a) 'href)
+			 (dom-texts (dom-by-tag event 'h2)))))
   
 (defun csid-parse-vanguard (dom)
-  (loop for elem in (dom-by-style dom "clear:both")
-	for a = (dom-by-tag elem 'a)
-	when (plusp (length (dom-texts a)))
-	collect (list (csid-parse-rfc2822
-		       (dom-texts (dom-by-class elem "smalltext")))
-		      (dom-attr a 'href)
-		      (dom-texts a))))
+  (cl-loop for elem in (dom-by-style dom "clear:both")
+	   for a = (dom-by-tag elem 'a)
+	   when (plusp (length (dom-texts a)))
+	   collect (list (csid-parse-rfc2822
+			  (dom-texts (dom-by-class elem "smalltext")))
+			 (dom-attr a 'href)
+			 (dom-texts a))))
 
 (defun csid-parse-ultima (dom)
-  (loop for elem in (dom-by-class dom "program_list_title")
-	for event = (dom-parent dom (dom-parent dom elem))
-	for link = (dom-attr (dom-by-tag event 'a) 'href)
-	when link
-	collect (list (csid-parse-full-numeric-date (dom-attr event 'data-day))
-		      link
-		      (dom-attr event 'data-title))))
+  (cl-loop for elem in (dom-by-class dom "program_list_title")
+	   for event = (dom-parent dom (dom-parent dom elem))
+	   for link = (dom-attr (dom-by-tag event 'a) 'href)
+	   when link
+	   collect (list (csid-parse-full-numeric-date (dom-attr event 'data-day))
+			 link
+			 (dom-attr event 'data-title))))
    
 (defun csid-parse-salt (dom)
-  (loop with regexp = "concert\\|konsert"
-	for elem in (dom-by-tag dom 'vevent)
-	for subject = (dom-text (dom-by-tag elem 'summary))
-	when (or (string-match regexp subject)
-		 (string-match
-		  regexp (dom-text (dom-by-tag elem 'description))))
-	collect (list (csid-parse-compact-iso8601
-		       (dom-text (dom-by-tag elem 'dtstart)))
-		      (dom-text (dom-by-tag elem 'url))
-		      subject)))
+  (cl-loop with regexp = "concert\\|konsert"
+	   for elem in (dom-by-tag dom 'vevent)
+	   for subject = (dom-text (dom-by-tag elem 'summary))
+	   when (or (string-match regexp subject)
+		    (string-match
+		     regexp (dom-text (dom-by-tag elem 'description))))
+	   collect (list (csid-parse-compact-iso8601
+			  (dom-text (dom-by-tag elem 'dtstart)))
+			 (dom-text (dom-by-tag elem 'url))
+			 subject)))
 
 (defun csid-parse-blitz (dom)
-  (loop for elem in (dom-by-class dom "views-row")
-	for month = (dom-text (dom-by-class elem "calendar-date-month"))
-	for day = (dom-text (dom-by-class elem "calendar-date-day"))
-	for link = (dom-by-tag elem 'a)
-	when (plusp (length month))
-	collect (list (csid-parse-short-yearless-month
-		       (format "%s %s" day month)
-		       t)
-		      (shr-expand-url (dom-attr link 'href))
-		      (dom-text link))))
+  (cl-loop for elem in (dom-by-class dom "views-row")
+	   for month = (dom-text (dom-by-class elem "calendar-date-month"))
+	   for day = (dom-text (dom-by-class elem "calendar-date-day"))
+	   for link = (dom-by-tag elem 'a)
+	   when (plusp (length month))
+	   collect (list (csid-parse-short-yearless-month
+			  (format "%s %s" day month)
+			  t)
+			 (shr-expand-url (dom-attr link 'href))
+			 (dom-text link))))
 
 (defun csid-parse-magneten (data)
   (let ((html
@@ -1008,265 +994,230 @@ no further processing).  URL is either a string or a parsed URL."
    (time-add (current-time) (* 4 30 24 60 60))))
 
 (defun csid-parse-spektrum (dom)
-  (loop for elem in (dom-by-class dom "b-enkelt-element-arrliste")
-	for a = (dom-by-tag elem 'a)
-	for date = (csid-parse-norwegian-month-date-with-year
-		    (dom-texts (dom-by-class elem "b-arrangementliste-tekst")))
-	when (csid-valid-date-p date)
-	collect (list date
-		      (shr-expand-url (dom-attr a 'href))
-		      (dom-attr a 'title))))
+  (cl-loop for elem in (dom-by-class dom "b-enkelt-element-arrliste")
+	   for a = (dom-by-tag elem 'a)
+	   for date = (csid-parse-norwegian-month-date-with-year
+		       (dom-texts (dom-by-class elem "b-arrangementliste-tekst")))
+	   when (csid-valid-date-p date)
+	   collect (list date
+			 (shr-expand-url (dom-attr a 'href))
+			 (dom-attr a 'title))))
 
 (defun csid-parse-nymusikk (dom)
-  (loop for elem in (dom-by-class dom "^tweet$")
-	for a = (dom-by-tag elem 'a)
-	collect (list (csid-parse-full-numeric-date
-		       (dom-text (dom-by-class elem "date")))
-		      (dom-attr a 'href)
-		      (dom-text a))))
+  (cl-loop for elem in (dom-by-class dom "^tweet$")
+	   for a = (dom-by-tag elem 'a)
+	   collect (list (csid-parse-full-numeric-date
+			  (dom-text (dom-by-class elem "date")))
+			 (dom-attr a 'href)
+			 (dom-text a))))
 
 (defun csid-parse-konserthuset (json)
-  (loop for event across json
-	collect (list (csid-parse-iso8601
-		       (cdr (assq 'datetime event)))
-		      (cdr (assq 'url event))
-		      (cdr (assq 'title event)))))
+  (cl-loop for event across json
+	   collect (list (csid-parse-iso8601
+			  (cdr (assq 'datetime event)))
+			 (cdr (assq 'url event))
+			 (cdr (assq 'title event)))))
 
 (defun csid-parse-riksscenen (dom)
-  (loop for date in (dom-by-class dom "event-date")
-	for elem = (dom-parent dom date)
-	for a = (dom-by-tag elem 'a)
-	when a
-	collect (list (csid-parse-month-date (dom-text date))
-		      (shr-expand-url (dom-attr a 'href))
-		      (dom-text a))))
+  (cl-loop for date in (dom-by-class dom "event-date")
+	   for elem = (dom-parent dom date)
+	   for a = (dom-by-tag elem 'a)
+	   when a
+	   collect (list (csid-parse-month-date (dom-text date))
+			 (shr-expand-url (dom-attr a 'href))
+			 (dom-text a))))
 
 (defun csid-parse-olsen (dom)
-  (loop for event in (dom-by-class dom "m-calender-event")
-	for link = (dom-by-tag event 'a)
-	collect (list (csid-parse-full-numeric-date
-		       (dom-texts (dom-by-class event "from-date")))
-		      (shr-expand-url (dom-attr link 'href))
-		      (dom-attr link 'title))))
+  (cl-loop for event in (dom-by-class dom "m-calender-event")
+	   for link = (dom-by-tag event 'a)
+	   collect (list (csid-parse-full-numeric-date
+			  (dom-texts (dom-by-class event "from-date")))
+			 (shr-expand-url (dom-attr link 'href))
+			 (dom-attr link 'title))))
 
 (defun csid-parse-verkstedet (dom)
-  (loop for elem in (dom-by-class dom "^event$")
-	collect (list
-		 (csid-parse-shortish-month
-		  (format "%s %s %s"
-			  (dom-text (dom-by-class elem "^day$"))
-			  (dom-text (dom-by-class elem "^month$"))
-			  (dom-text (dom-by-class elem "^year$"))))
-		 "http://www.verkstedetbar.no/program/"
-		 (dom-text (dom-by-tag elem 'h3)))))
+  (cl-loop for elem in (dom-by-class dom "^event$")
+	   collect (list
+		    (csid-parse-shortish-month
+		     (format "%s %s %s"
+			     (dom-text (dom-by-class elem "^day$"))
+			     (dom-text (dom-by-class elem "^month$"))
+			     (dom-text (dom-by-class elem "^year$"))))
+		    "http://www.verkstedetbar.no/program/"
+		    (dom-text (dom-by-tag elem 'h3)))))
 
 (defun csid-parse-gamla (dom)
-  (loop for elem in (dom-by-tag dom 'rs-slide)
-	collect (list
-		 (csid-parse-month-date
-		  (dom-texts (dom-by-class elem "tribe_formatted_event_date")))
-		 (shr-expand-url (dom-attr elem 'data-link))
-		 (dom-texts (last (dom-by-tag elem 'span))))))
-
-(defun csid-parse-sawol (dom)
-  (append
-   (loop for elem in (dom-by-class dom "category-program")
-	 for link = (dom-by-tag elem 'a)
-	 when (dom-attr link 'title)
-	 collect (list (csid-parse-short-month
-			(format "%s %s"
-				(dom-text (dom-by-class elem "dayInfo"))
-				(dom-text (dom-by-class elem "monthInfo"))))
-		       (dom-attr link 'href)
-		       (dom-attr link 'title)))
-   (let* ((next (dom-by-id dom "^nextpage$"))
-	  (link (and next (dom-attr (dom-by-tag next 'a) 'href))))
-     (when link
-       (csid-parse-source link 'csid-parse-sawol :html)))))
+  (cl-loop for elem in (dom-by-tag dom 'rs-slide)
+	   collect (list
+		    (csid-parse-month-date
+		     (dom-texts (dom-by-class elem "tribe_formatted_event_date")))
+		    (shr-expand-url (dom-attr elem 'data-link))
+		    (dom-texts (last (dom-by-tag elem 'span))))))
 
 (defun csid-parse-buckleys (dom)
-  (loop for elem in (dom-by-tag dom 'h2)
-	for event = (dom-parent dom (car (dom-by-tag elem 'br)))
-	for name = (or
-		    (loop for string in (cdr (dom-strings event))
-			  when (and (not (member string csid-months))
-				    (not (string-match "[0-9][0-9]:[0-9][0-9]"
-						       string))
-				    (not (string-match "presenterer" string)))
-			  return string)
-		    (cadr (dom-strings event)))
-	for date = (csid-parse-short-yearless-month (dom-texts elem))
-	when (and name
-		  (csid-valid-date-p date)
-		  (csid-date-likely-p date))
-	collect (list date
-		      "http://www.buckleys.no/konserter.html"
-		      (csid-clean-string name))))
+  (cl-loop for elem in (dom-by-tag dom 'h2)
+	   for event = (dom-parent dom (car (dom-by-tag elem 'br)))
+	   for name = (or
+		       (cl-loop for string in (cdr (dom-strings event))
+				when (and (not (member string csid-months))
+					  (not (string-match "[0-9][0-9]:[0-9][0-9]"
+							     string))
+					  (not (string-match "presenterer" string)))
+				return string)
+		       (cadr (dom-strings event)))
+	   for date = (csid-parse-short-yearless-month (dom-texts elem))
+	   when (and name
+		     (csid-valid-date-p date)
+		     (csid-date-likely-p date))
+	   collect (list date
+			 "http://www.buckleys.no/konserter.html"
+			 (csid-clean-string name))))
 
 (defun csid-parse-neworleans (dom)
-  (loop with year = (let ((year (dom-text (dom-by-tag dom 'title))))
-		      (and (string-match "[0-9][0-9][0-9][0-9]" year)
-			   (match-string 0 year)))
-	for title in (dom-by-class dom "views-field-title")
-	for elem = (dom-parent dom (dom-parent dom title))
-	for month = (dom-by-class elem "views-field-field_dato_1")
-	when (and (eq (car elem) 'div)
-		  month
-		  year)
-	collect (list (csid-parse-month-date-with-year
-		       (format "%s %s %s"
-			       (dom-texts month)
-			       (dom-texts
-				(dom-by-class elem "views-field-field_dato$"))
-			       year))
-		      "http://www.neworleansworkshop.com/program"
-		      (dom-texts title))))
+  (cl-loop with year = (let ((year (dom-text (dom-by-tag dom 'title))))
+			 (and (string-match "[0-9][0-9][0-9][0-9]" year)
+			      (match-string 0 year)))
+	   for title in (dom-by-class dom "views-field-title")
+	   for elem = (dom-parent dom (dom-parent dom title))
+	   for month = (dom-by-class elem "views-field-field_dato_1")
+	   when (and (eq (car elem) 'div)
+		     month
+		     year)
+	   collect (list (csid-parse-month-date-with-year
+			  (format "%s %s %s"
+				  (dom-texts month)
+				  (dom-texts
+				   (dom-by-class elem "views-field-field_dato$"))
+				  year))
+			 "http://www.neworleansworkshop.com/program"
+			 (dom-texts title))))
 
 (defun csid-parse-nasjonalbiblioteket (dom)
-  (loop for elem in (dom-by-class dom "kalendar-item")
-	for link = (dom-by-tag elem 'a)
-	collect (list (csid-parse-short-yearless-month
-		       (csid-clean-string
-			(dom-texts (dom-by-class elem "item-date"))))
-		      (shr-expand-url (dom-attr link 'href))
-		      (csid-clean-string (dom-texts link)))))
+  (cl-loop for elem in (dom-by-class dom "kalendar-item")
+	   for link = (dom-by-tag elem 'a)
+	   collect (list (csid-parse-short-yearless-month
+			  (csid-clean-string
+			   (dom-texts (dom-by-class elem "item-date"))))
+			 (shr-expand-url (dom-attr link 'href))
+			 (csid-clean-string (dom-texts link)))))
 
-(defun csid-parse-kampenjazz (dom)
-  (loop for elem in (dom-by-tag dom 'script)
-	for script = (dom-texts elem)
-	when (string-match "KONSERTER.*?\\(http:[^\"]+\\)" script)
-	return (csid-parse-source (replace-regexp-in-string
-				   "\\\\" "" (match-string 1 script))
-				  'csid-parse-kampenjazz-1
-				  'html)))
 
 (defun csid-ensure-date (string)
   (and (string-match "^[-0-9]+$" string)
        (string-match "[0-9]" string)
        string))
 
-(defun csid-parse-kampenjazz-1 (dom)
-  (loop for event in (append (dom-by-class dom "backcolor_5")
-			     (dom-by-class dom "backcolor_18"))
-	for date = (or (csid-parent-date dom event 'dom-previous-sibling)
-		       (csid-parent-date dom event 'dom-parent))
-	when (and date
-		  (csid-date-likely-p date))
-	collect (list date
-		      "http://oysteineide.wix.com/kampenjazz#!konserter/cb30"
-		      (dom-texts event))))
-
 (defun csid-parent-date (dom node func)
-  (loop with date
-	while (and node
-		   (not date))
-	do (setq date (csid-ensure-date
-		       (csid-parse-month-date (dom-texts node))))
-	when date
-	return date
-	do (setq node (funcall func dom node))))
+  (cl-loop with date
+	   while (and node
+		      (not date))
+	   do (setq date (csid-ensure-date
+			  (csid-parse-month-date (dom-texts node))))
+	   when date
+	   return date
+	   do (setq node (funcall func dom node))))
 
 (defun csid-parse-telenor (dom)
-  (loop for event in (dom-by-class dom "^item event$")
-	for link = (dom-attr (dom-by-tag event 'a) 'href)
-	when link
-	collect (list (csid-parse-short-month
-		       (dom-texts (dom-by-class event "date"))
-		       t)
-		      (shr-expand-url link)
-		      (csid-clean-string
-		       (dom-texts (dom-by-tag event 'h3))))))
+  (cl-loop for event in (dom-by-class dom "^item event$")
+	   for link = (dom-attr (dom-by-tag event 'a) 'href)
+	   when link
+	   collect (list (csid-parse-short-month
+			  (dom-texts (dom-by-class event "date"))
+			  t)
+			 (shr-expand-url link)
+			 (csid-clean-string
+			  (dom-texts (dom-by-tag event 'h3))))))
 
 (defun csid-parse-pph (dom)
   (let* ((box (dom-by-class dom "programbg"))
 	 (texts (delete "" (split-string (dom-texts box "|") "|"))))
-    (loop while texts
-	  for date = (csid-parse-numeric-date (car texts))
-	  if (and date
-		  (csid-valid-date-p date)
-		  (csid-date-likely-p date))
-	  collect (prog1
-		      (list date
-			    "http://www.pph.oslo.no/"
-			    (cadr texts))
-		    (setq texts (cddr texts)))
-	  else
-	  do (setq texts (cdr texts)))))
+    (cl-loop while texts
+	     for date = (csid-parse-numeric-date (car texts))
+	     if (and date
+		     (csid-valid-date-p date)
+		     (csid-date-likely-p date))
+	     collect (prog1
+			 (list date
+			       "http://www.pph.oslo.no/"
+			       (cadr texts))
+		       (setq texts (cddr texts)))
+	     else
+	     do (setq texts (cdr texts)))))
 
 (defun csid-parse-villa (dom)
-  (loop for event in (dom-by-class dom "edgtf-event-content")
-	for link = (dom-by-tag event 'a)
-	collect (list (csid-parse-short-yearless-month
-		       (dom-texts
-			(dom-by-class event "edgtf-event-date-holder")))
-		      (dom-attr link 'href)
-		      (dom-texts link))))
+  (cl-loop for event in (dom-by-class dom "edgtf-event-content")
+	   for link = (dom-by-tag event 'a)
+	   collect (list (csid-parse-short-yearless-month
+			  (dom-texts
+			   (dom-by-class event "edgtf-event-date-holder")))
+			 (dom-attr link 'href)
+			 (dom-texts link))))
 
 (defun csid-parse-dattera (dom)
-  (loop for day in (dom-by-class dom "^date$")
-	append (loop for event in (dom-by-tag day 'h3)
-		     for text = (dom-texts event)
-		     collect (list (csid-parse-month-date
-				    (dom-text (dom-by-tag day 'h4)))
-				   (shr-expand-url
-				    (dom-attr (dom-by-tag event 'a) 'href))
-				   text))))
+  (cl-loop for day in (dom-by-class dom "^date$")
+	   append (cl-loop for event in (dom-by-tag day 'h3)
+			   for text = (dom-texts event)
+			   collect (list (csid-parse-month-date
+					  (dom-text (dom-by-tag day 'h4)))
+					 (shr-expand-url
+					  (dom-attr (dom-by-tag event 'a) 'href))
+					 text))))
 
 (defun csid-parse-jaeger (dom)
-  (loop for event in (dom-by-class dom "program_right")
-	for link = (dom-by-tag (dom-by-tag event 'h1) 'a)
-	for date = (csid-parse-english-month-date
-		    (dom-texts (dom-by-tag event 'h7)))
-	when (and (csid-valid-date-p date)
-		  (csid-date-likely-p date))
-	collect (list date
-		      (dom-attr link 'href)
-		      (dom-text link))))
+  (cl-loop for event in (dom-by-class dom "program_right")
+	   for link = (dom-by-tag (dom-by-tag event 'h1) 'a)
+	   for date = (csid-parse-english-month-date
+		       (dom-texts (dom-by-tag event 'h7)))
+	   when (and (csid-valid-date-p date)
+		     (csid-date-likely-p date))
+	   collect (list date
+			 (dom-attr link 'href)
+			 (dom-text link))))
 
 (defun csid-parse-uio (dom)
-  (loop for event in (dom-by-class dom "vevent")
-	for title = (dom-by-class event "vrtx-title summary")
-	collect (list (csid-parse-iso8601
-		       (dom-attr (dom-by-class event "dtstart") 'title))
-		      (dom-attr title 'href)
-		      (dom-texts title))))
+  (cl-loop for event in (dom-by-class dom "vevent")
+	   for title = (dom-by-class event "vrtx-title summary")
+	   collect (list (csid-parse-iso8601
+			  (dom-attr (dom-by-class event "dtstart") 'title))
+			 (dom-attr title 'href)
+			 (dom-texts title))))
 
 (defun csid-parse-pizza (dom)
-  (loop with date
-	for event in (dom-by-tag dom 'p)
-	for text = (dom-text event)
-	when (and text
-		  (string-match
-		   (concat "^\\(" (mapconcat 'identity csid-weekdays "\\|")
-			   "\\)")
-		   text)
-		  (setq date (csid-parse-month-date text))
-		  (csid-valid-date-p date)
-		  (csid-date-likely-p date))
-	collect (list date
-		      "http://www.mrpizza.no/"
-		      (replace-regexp-in-string " " " " text))))
+  (cl-loop with date
+	   for event in (dom-by-tag dom 'p)
+	   for text = (dom-text event)
+	   when (and text
+		     (string-match
+		      (concat "^\\(" (mapconcat 'identity csid-weekdays "\\|")
+			      "\\)")
+		      text)
+		     (setq date (csid-parse-month-date text))
+		     (csid-valid-date-p date)
+		     (csid-date-likely-p date))
+	   collect (list date
+			 "http://www.mrpizza.no/"
+			 (replace-regexp-in-string " " " " text))))
 
 (defun csid-parse-subscene (dom)
-  (loop for event in (dom-by-class dom "type-event")
-	for link = (dom-by-tag event 'a)
-	when (and link
-		  (string-match "http" (dom-attr link 'href)))
-	collect (list (csid-parse-month-date (dom-texts event))
-		      (dom-attr link 'href)
-		      (mapconcat #'dom-texts (dom-by-tag event 'h1) ""))))
+  (cl-loop for event in (dom-by-class dom "type-event")
+	   for link = (dom-by-tag event 'a)
+	   when (and link
+		     (string-match "http" (dom-attr link 'href)))
+	   collect (list (csid-parse-month-date (dom-texts event))
+			 (dom-attr link 'href)
+			 (mapconcat #'dom-texts (dom-by-tag event 'h1) ""))))
 
 (defun csid-parse-ticketco (dom)
-  (loop for event in (dom-by-class dom "tc-events-list--item")
-	for a = (dom-by-class event "tc-events-list--title")
-	for date = (csid-parse-short-yearless-month
-		    (dom-texts (dom-by-class
-				event "tc-events-list--date"))
-		    t)
-	when (csid-valid-date-p date)
-	collect (list date
-		      (dom-attr a 'href)
-		      (dom-texts a))))
+  (cl-loop for event in (dom-by-class dom "tc-events-list--item")
+	   for a = (dom-by-class event "tc-events-list--title")
+	   for date = (csid-parse-short-yearless-month
+		       (dom-texts (dom-by-class
+				   event "tc-events-list--date"))
+		       t)
+	   when (csid-valid-date-p date)
+	   collect (list date
+			 (dom-attr a 'href)
+			 (dom-texts a))))
 
 (defun csid-parse-sentralen (dom)
   (append
@@ -1275,48 +1226,49 @@ no further processing).  URL is either a string or a parsed URL."
      (when next
        (csid-parse-source (dom-attr (dom-by-tag next 'a) 'href)
 			  'csid-parse-sentralen
-			  'html)))))
+			  'html
+			  "Sentralen")))))
 
 (defun csid-parse-sentralen-1 (dom)
-  (loop for event in (dom-by-class dom "event-list-item")
-	for date = (csid-parse-sloppy-numeric-date
-		    (dom-texts (dom-by-class event "event-date")))
-	for url = (dom-attr (dom-by-tag event 'a) 'href)
-	when (csid-valid-date-p date)
-	collect (list date
-		      (shr-expand-url url)
-		      (dom-texts (dom-by-class event "event-name")))))
+  (cl-loop for event in (dom-by-class dom "event-list-item")
+	   for date = (csid-parse-sloppy-numeric-date
+		       (dom-texts (dom-by-class event "event-date")))
+	   for url = (dom-attr (dom-by-tag event 'a) 'href)
+	   when (csid-valid-date-p date)
+	   collect (list date
+			 (shr-expand-url url)
+			 (dom-texts (dom-by-class event "event-name")))))
 
 (defun csid-parse-barrikaden (dom)
-  (loop for section in (dom-by-tag (dom-by-class dom "entry-content") 'p)
-	for elem = (dom-texts section)
-	for date = (csid-parse-full-numeric-date elem)
-	for text = (replace-regexp-in-string ".*[0-9]+.[0-9]+.[0-9]+.[: ]*" "" elem)
-	when (and date
-		  (plusp (length text)))
-	collect (list date
-		      "http://vestbredden.net/barrikaden/"
-		      text)))
+  (cl-loop for section in (dom-by-tag (dom-by-class dom "entry-content") 'p)
+	   for elem = (dom-texts section)
+	   for date = (csid-parse-full-numeric-date elem)
+	   for text = (replace-regexp-in-string ".*[0-9]+.[0-9]+.[0-9]+.[: ]*" "" elem)
+	   when (and date
+		     (plusp (length text)))
+	   collect (list date
+			 "http://vestbredden.net/barrikaden/"
+			 text)))
 
 (defun csid-parse-henie-onstad (dom)
-  (loop for event in (dom-by-class
-		      (loop for elem in (dom-by-class dom "calendar")
-			    when (eq (dom-tag elem) 'ul)
-			    return elem)
-		      "^row$")
-	for type = (dom-text (dom-by-class event "type"))
-	when (member type '("Konsert" "Performance"))
-	collect (list (csid-parse-numeric-date
-		       (dom-text (dom-by-class event "date-start")))
-		      "http://hok.no/kalender"
-		      (dom-text (dom-by-tag event 'h3)))))
+  (cl-loop for event in (dom-by-class
+			 (cl-loop for elem in (dom-by-class dom "calendar")
+				  when (eq (dom-tag elem) 'ul)
+				  return elem)
+			 "^row$")
+	   for type = (dom-text (dom-by-class event "type"))
+	   when (member type '("Konsert" "Performance"))
+	   collect (list (csid-parse-numeric-date
+			  (dom-text (dom-by-class event "date-start")))
+			 "http://hok.no/kalender"
+			 (dom-text (dom-by-tag event 'h3)))))
 
 (defun csid-parse-rommen (dom)
-  (loop for event in (dom-by-tag (dom-by-class dom "eventlist--upcoming")
-				 'article)
-	collect (list (dom-attr (dom-by-tag event 'time) 'datetime)
-		      (shr-expand-url (dom-attr (dom-by-tag event 'a) 'href))
-		      (dom-texts (dom-by-class event "eventlist-title")))))
+  (cl-loop for event in (dom-by-tag (dom-by-class dom "eventlist--upcoming")
+				    'article)
+	   collect (list (dom-attr (dom-by-tag event 'time) 'datetime)
+			 (shr-expand-url (dom-attr (dom-by-tag event 'a) 'href))
+			 (dom-texts (dom-by-class event "eventlist-title")))))
 
 (defun csid-clock-to-seconds (string)
   (if (string-match "\\([0-9][0-9]\\)[^0-9]\\([0-9][0-9]\\)" string)
@@ -1336,9 +1288,9 @@ no further processing).  URL is either a string or a parsed URL."
   (error "Parsed"))
 
 (defun csid-number-database ()
-  (loop for elem in (copy-list csid-database)
-	for i from 1
-	collect (append elem (list i))))
+  (cl-loop for elem in (copy-sequence csid-database)
+	   for i from 1
+	   collect (append elem (list i))))
 
 (defun csid-generate-html (&optional file summaries)
   (let ((data
@@ -1357,55 +1309,54 @@ no further processing).  URL is either a string or a parsed URL."
 	(insert
 	 (format
 	  "<head><title>Concerts in Oslo</title><meta charset='utf-8'><link href='csid.css?ts=%s' rel='stylesheet' type='text/css'><link disabled id='dark-css' href='dark.css' rel='stylesheet' type='text/css'><meta name='viewport' content='width=device-width, initial-scale=1'><link href='pikaday.css' rel='stylesheet' type='text/css'><link rel='icon' href='https://csid.no/favicon.ico'><link href='https://fonts.googleapis.com/css?family=Passion+One' rel='stylesheet'><link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'><div id='large-heading'><div class='title'>Concerts in Oslo</div><div class='subtitle'>Konserter i Oslo</div></div><div id='body-wrap'><div id='leftmargin'>&nbsp;</div><div id='body-container'><div id='small-heading'><div id='small-menu'><span class='box-shadow-menu'></span></div>Concerts in Oslo</div>"
-	  (csid-timestamp)
 	  (csid-timestamp))))
       (insert "<table class='events'><colgroup><col class='band'><col class='venue'><col class='button'></colgroup>")
       (setq start (point))
-      (loop with prev-date
-	    with i = 0
-	    for (venue date url name id fetch-date rank) in data
-	    when (and (not (string< date now))
-		      ;; Only do some hundred lines when there's summaries
-		      ;; (to avoid excessive length).
-		      (or (not summaries)
-			  (< i 200)))
-	    do (progn
-		 (unless (equal date prev-date)
-		   (insert (format "<tr class='%s date'><td colspan=3>%s</tr>"
-				   (if (equal prev-date date)
-				       "invisible"
-				     "visible")
-				   (csid-add-weekday date))))
-		 (setq prev-date date)
-		 (insert (format "<tr name='%s' id='event-%s' data=%s date='%s' time='%s' lat='%s' lng='%s'%s><td><a href='%s'>%s<td>%s</tr>"
-				 (replace-regexp-in-string
-				  "&" "x" 
-				  (replace-regexp-in-string " " "_" venue))
-				 id
-				 rank date fetch-date
-				 (csid-latlng venue 0)
-				 (csid-latlng venue 1)
-				 (if (memq :nobound (assoc venue csid-sources))
-				     " nobound='true'"
-				   "")
-				 url
-				 (csid-make-text-breakable
-				  (if (> (length name) 1000)
-				      (substring name 0 1000)
-				    name))
-				 venue))
-		 (when (and summaries
-			    url)
-		   (incf i)
-		   (insert (format "<tr><td colspan=3>%s%s</td></tr>"
-				   (let ((img (csid-summary url 'image)))
-				     (if (or (not img)
-					     (> i 10))
-					 ""
-				       (format "<img src=%S>" img)))
-				   (or (csid-summary url 'summary) "")))
-		   (insert "</table><table class='events'><colgroup><col class='band'><col class='venue'><col class='button'></colgroup>")))
-	    (setq prev-date date))
+      (cl-loop with prev-date
+	       with i = 0
+	       for (venue date url name id fetch-date rank) in data
+	       when (and (not (string< date now))
+			 ;; Only do some hundred lines when there's summaries
+			 ;; (to avoid excessive length).
+			 (or (not summaries)
+			     (< i 200)))
+	       do (progn
+		    (unless (equal date prev-date)
+		      (insert (format "<tr class='%s date'><td colspan=3>%s</tr>"
+				      (if (equal prev-date date)
+					  "invisible"
+					"visible")
+				      (csid-add-weekday date))))
+		    (setq prev-date date)
+		    (insert (format "<tr name='%s' id='event-%s' data=%s date='%s' time='%s' lat='%s' lng='%s'%s><td><a href='%s'>%s<td>%s</tr>"
+				    (replace-regexp-in-string
+				     "&" "x" 
+				     (replace-regexp-in-string " " "_" venue))
+				    id
+				    rank date fetch-date
+				    (csid-latlng venue 0)
+				    (csid-latlng venue 1)
+				    (if (memq :nobound (assoc venue csid-sources))
+					" nobound='true'"
+				      "")
+				    url
+				    (csid-make-text-breakable
+				     (if (> (length name) 1000)
+					 (substring name 0 1000)
+				       name))
+				    venue))
+		    (when (and summaries
+			       url)
+		      (cl-incf i)
+		      (insert (format "<tr><td colspan=3>%s%s</td></tr>"
+				      (let ((img (csid-summary url 'image)))
+					(if (or (not img)
+						(> i 10))
+					    ""
+					  (format "<img src=%S>" img)))
+				      (or (csid-summary url 'summary) "")))
+		      (insert "</table><table class='events'><colgroup><col class='band'><col class='venue'><col class='button'></colgroup>")))
+	       (setq prev-date date))
       (insert "</table><div id='meta-misc'><div id='selector'></div></div></div><div id='rightmargin'>&nbsp;</div></div>")
       (unless summaries
 	(dolist (js '("jquery-3.3.1.min.js"
@@ -1435,30 +1386,30 @@ no further processing).  URL is either a string or a parsed URL."
   ;; Special-case the only venue that has several sub-venues.
   (when (member venue '("Bushwick" "Leiligheten" "John Dee"))
     (setq venue "Rockefeller"))
-  (let ((pos (loop for elem in (assoc venue csid-sources)
-		   when (and (listp elem)
-			     (= (length elem) 2)
-			     (numberp (car elem))
-			     (numberp (cadr elem)))
-		   return elem)))
+  (let ((pos (cl-loop for elem in (assoc venue csid-sources)
+		      when (and (listp elem)
+				(= (length elem) 2)
+				(numberp (car elem))
+				(numberp (cadr elem)))
+		      return elem)))
     ;; Default to the middle of the world, which is Sentrum Scene.
     (elt (or pos '(59.915440 10.751550)) index)))
 
 (defun csid-make-text-breakable (string)
   (mapconcat
    'identity
-   (loop for word in (split-string string)
-	 collect (if (> (length word) 30)
-		     (mapconcat
-		      'identity
-		      (loop for i from 0 upto (/ (length word) 30)
-			    collect
-			    (url-insert-entities-in-string
-			     (substring word (* i 30)
-					(min (* (1+ i) 30)
-					     (length word)))))
-		      "<wbr>")
-		   (url-insert-entities-in-string word)))
+   (cl-loop for word in (split-string string)
+	    collect (if (> (length word) 30)
+			(mapconcat
+			 'identity
+			 (cl-loop for i from 0 upto (/ (length word) 30)
+				  collect
+				  (url-insert-entities-in-string
+				   (substring word (* i 30)
+					      (min (* (1+ i) 30)
+						   (length word)))))
+			 "<wbr>")
+		      (url-insert-entities-in-string word)))
    " "))
 
 (defun csid-add-weekday (date &optional year)
@@ -1493,25 +1444,25 @@ no further processing).  URL is either a string or a parsed URL."
 			  (string< (nth 1 e1)
 				   (nth 1 e2)))))
 	(time (current-time)))
-    (loop repeat 18
-	  for this-date = (format-time-string "%Y-%m-%d" time)
-	  for events =
-	  (loop for (venue date url name id scan-time) in database
-		when (and scan-time
-			  (string-match this-date scan-time))
-		collect (format "%s: <a href=\"%s\">%s</a> at %s"
-				date
-				(format "https://csid.no/?goto=%s" id)
-				name
-				venue))
-	  when events
-	  do (atom-add-html-entry
-	      feed
-	      (format "Concerts Registered on %s" this-date)
-	      (format "https://csid.no/scan-date=%s" this-date)
-	      (mapconcat 'identity events
-			 "<br />"))
-	  do (setq time (time-subtract time (list 0 (* 25 60 60)))))
+    (cl-loop repeat 18
+	     for this-date = (format-time-string "%Y-%m-%d" time)
+	     for events =
+	     (cl-loop for (venue date url name id scan-time) in database
+		      when (and scan-time
+				(string-match this-date scan-time))
+		      collect (format "%s: <a href=\"%s\">%s</a> at %s"
+				      date
+				      (format "https://csid.no/?goto=%s" id)
+				      name
+				      venue))
+	     when events
+	     do (atom-add-html-entry
+		 feed
+		 (format "Concerts Registered on %s" this-date)
+		 (format "https://csid.no/scan-date=%s" this-date)
+		 (mapconcat 'identity events
+			    "<br />"))
+	     do (setq time (time-subtract time (list 0 (* 25 60 60)))))
     (with-temp-buffer
       (atom-print feed)
       (write-region (point-min) (point-max) file))))
@@ -1530,11 +1481,11 @@ no further processing).  URL is either a string or a parsed URL."
 	"<head><title>Crowdsourcing Is Dead</title><meta charset='utf-8'><link href='https://csid.no/csid.css' rel='stylesheet' type='text/css'><meta name='viewport' content='width=device-width, initial-scale=1'><link href='pikaday.css' rel='stylesheet' type='text/css'><link rel='icon' href='https://csid.no/favicon.ico'><body><div id='body-container'><div id='large-heading'><a href=\"https://csid.no/\"><img src='https://csid.no/csid.png' id='logo'></a><p>(Also known as <a href='https://lars.ingebrigtsen.no/2013/09/crowdsourcing-is-dead.html'>'Concerts In Oslo' or 'Konserter i Oslo'</a> on %s.)</p></div><div id='small-heading'><span class='box-shadow-menu' id='small-menu'></span></div>Crowdsourcing Is Dead</div>"
 	(csid-add-weekday this-date t)))
       (insert "<table class='events'>")
-      (loop for (venue date url name id scan-time) in
-	    (sort database (lambda (e1 e2) (string< (car e1) (car e2))))
-	    when (equal this-date date)
-	    do (insert (format "<tr><td><a href=\"%s\">%s</a><td>%s"
-			       url name venue)))
+      (cl-loop for (venue date url name id scan-time) in
+	       (sort database (lambda (e1 e2) (string< (car e1) (car e2))))
+	       when (equal this-date date)
+	       do (insert (format "<tr><td><a href=\"%s\">%s</a><td>%s"
+				  url name venue)))
       (insert "</table>")
       (write-region (point-min) (point-max)
 		    (expand-file-name (format "%s.html" this-date) dir)))))
@@ -1569,11 +1520,11 @@ no further processing).  URL is either a string or a parsed URL."
 (defun csid-get-event-summary-loop (dom)
   ;; Facebook will return no text other than the cookie warning,
   ;; sometimes, so check for that and repeat.
-  (loop repeat 5
-	for summary = (csid-get-event-summary dom)
-	unless (string-match "cookies.*Facebook" summary)
-	return summary
-	finally (return summary)))
+  (cl-loop repeat 5
+	   for summary = (csid-get-event-summary dom)
+	   unless (string-match "cookies.*Facebook" summary)
+	   return summary
+	   finally (return summary)))
 
 (defun csid-find-facebook-image (dom)
   (cl-loop for image in (dom-by-tag dom 'img)
@@ -1752,29 +1703,29 @@ no further processing).  URL is either a string or a parsed URL."
     (or candidate (dom-attr dom 'src))))
 
 (defun csid-get-imgs (dom url)
-  (loop for image in (dom-by-tag dom 'img)
-	for width = (dom-attr image 'width)
-	for height = (dom-attr image 'height)
-	for src = (csid-preferred-image image)
-	when (and src
-		  (not (string-match
-			"banner\\|progapr\\|for-print\\|svg$" src)))
-	collect (list (if (and width height)
-			  (* (string-to-number width)
-			     (string-to-number height))
-			-1)
-		      (shr-expand-url src url))))
+  (cl-loop for image in (dom-by-tag dom 'img)
+	   for width = (dom-attr image 'width)
+	   for height = (dom-attr image 'height)
+	   for src = (csid-preferred-image image)
+	   when (and src
+		     (not (string-match
+			   "banner\\|progapr\\|for-print\\|svg$" src)))
+	   collect (list (if (and width height)
+			     (* (string-to-number width)
+				(string-to-number height))
+			   -1)
+			 (shr-expand-url src url))))
 
 (defun csid-get-backgrounds (dom url)
-  (loop for style in (dom-by-tag dom 'style)
-	for style-text = (dom-text style)
-	for image = (and style-text
-			 (string-match "background-image.*url.*\\(http[^)]+\\)"
-				       style-text)
-			 (match-string 1 style-text))
-	when image
-	collect (list -1
-		      (shr-expand-url image url))))
+  (cl-loop for style in (dom-by-tag dom 'style)
+	   for style-text = (dom-text style)
+	   for image = (and style-text
+			    (string-match "background-image.*url.*\\(http[^)]+\\)"
+					  style-text)
+			    (match-string 1 style-text))
+	   when image
+	   collect (list -1
+			 (shr-expand-url image url))))
 
 (defun csid-rank-images (dom url)
   (sort
@@ -1784,22 +1735,22 @@ no further processing).  URL is either a string or a parsed URL."
      (> (car i1) (car i2)))))
 
 (defun csid-get-image-sizes (images)
-  (loop for (size url) in images
-	when (= size -1)
-	do (with-current-buffer (csid-retrieve-synchronously url)
-	     (goto-char (point-min))
-	     (when (re-search-forward "^\r?\n" nil t)
-	       (let ((dimensions
-		      (ignore-errors
-			(image-size (create-image
-				     (buffer-substring (point)
-						       (point-max))
-				     nil t)
-				    t))))
-		 (when dimensions
-		   (setq size (* (car dimensions) (cdr dimensions))))
-		 (kill-buffer (current-buffer)))))
-	collect (list size url)))
+  (cl-loop for (size url) in images
+	   when (= size -1)
+	   do (with-current-buffer (csid-retrieve-synchronously url)
+		(goto-char (point-min))
+		(when (re-search-forward "^\r?\n" nil t)
+		  (let ((dimensions
+			 (ignore-errors
+			   (image-size (create-image
+					(buffer-substring (point)
+							  (point-max))
+					nil t)
+				       t))))
+		    (when dimensions
+		      (setq size (* (car dimensions) (cdr dimensions))))
+		    (kill-buffer (current-buffer)))))
+	   collect (list size url)))
 
 (defun csid-highest-readability (node)
   (let ((result node)
@@ -1821,8 +1772,8 @@ no further processing).  URL is either a string or a parsed URL."
 
 (defun csid-get-event-summary (dom)
   (dolist (tag '(style script comment noscript))
-    (loop for comment in (dom-by-tag dom tag)
-	  do (dom-remove-node dom comment)))
+    (cl-loop for comment in (dom-by-tag dom tag)
+	     do (dom-remove-node dom comment)))
   (eww-score-readability dom)
   (let ((text (dom-texts (csid-highest-readability dom))))
     (setq text (replace-regexp-in-string "[\t\n\r ]+" " " text))

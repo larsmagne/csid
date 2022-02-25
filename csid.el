@@ -1254,7 +1254,7 @@ no further processing).  URL is either a string or a parsed URL."
 		  (string-match "http" (dom-attr link 'href)))
 	collect (list (csid-parse-month-date (dom-texts event))
 		      (dom-attr link 'href)
-		      (dom-texts (dom-by-tag event 'h1)))))
+		      (mapconcat #'dom-texts (dom-by-tag event 'h1) ""))))
 
 (defun csid-parse-ticketco (dom)
   (loop for event in (dom-by-class dom "tc-events-list--item")

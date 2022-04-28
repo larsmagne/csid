@@ -78,7 +78,7 @@ for elem in urls:
     # Push "See More" some times.
     while times > 0:
         times -= 1
-        for phrase in ['See More', 'Se flere']:
+        for phrase in ['See More', 'Se flere', 'See more']:
             try:
                 path = "//*[text()='" + phrase + "']"
                 more = driver.find_element_by_xpath(path)

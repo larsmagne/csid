@@ -130,6 +130,7 @@
     ("Tukthuset" "https://www.tukthuset.no/events-one" tukthuset (59.914668289423474 10.751130301904967))
     ("Smia" "https://www.facebook.com/mandagsjazzpasmia/events" facebook (59.90649480334542 10.785615544487854))
     ("Youngs" "https://data.accentapi.com/feed/25468.json" youngs :json (59.91433230474824 10.74908334691216))
+    ("Munchmuseet" "https://www.munchmuseet.no/en/live/" munch (59.90603859878417 10.755181524147991))
     ))
 
 (defvar csid-database nil)
@@ -1836,6 +1837,14 @@ no further processing).  URL is either a string or a parsed URL."
 	   collect (list (cdr (assq 'start_date_raw event))
 			 (cdr (assq 'html_link event))
 			 (cdr (assq 'name event)))))
+
+(defun csid-parse-munch (dom)
+  (cl-loop for event in (dom-by-class dom "EventCard\\( \\|$\\)")
+	   collect (list
+		    (csid-parse-full-numeric-date
+		     (dom-texts (dom-by-class event "EventCard__intro")))
+		    (shr-expand-url (dom-attr (dom-by-tag event 'a) 'title))
+		    (dom-attr (dom-by-tag event 'a) 'href))))
 
 (provide 'csid)
 

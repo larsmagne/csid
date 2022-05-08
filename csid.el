@@ -1843,8 +1843,8 @@ no further processing).  URL is either a string or a parsed URL."
 	   collect (list
 		    (csid-parse-full-numeric-date
 		     (dom-texts (dom-by-class event "EventCard__intro")))
-		    (shr-expand-url (dom-attr (dom-by-tag event 'a) 'title))
-		    (dom-attr (dom-by-tag event 'a) 'href))))
+		    (shr-expand-url (dom-attr (dom-by-tag event 'a) 'href))
+		    (dom-attr (dom-by-tag event 'a) 'title))))
 
 (provide 'csid)
 

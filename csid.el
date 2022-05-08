@@ -130,7 +130,7 @@
     ("Tukthuset" "https://www.tukthuset.no/events-one" tukthuset (59.914668289423474 10.751130301904967))
     ("Smia" "https://www.facebook.com/mandagsjazzpasmia/events" facebook (59.90649480334542 10.785615544487854))
     ("Youngs" "https://data.accentapi.com/feed/25468.json" youngs :json (59.91433230474824 10.74908334691216))
-    ("Munchmuseet" "https://www.munchmuseet.no/en/live/" munch (59.90603859878417 10.755181524147991))
+    ("Munchmuseet" "https://www.munchmuseet.no/en/what-s-on/?category=Musikk" munch (59.90603859878417 10.755181524147991))
     ))
 
 (defvar csid-database nil)

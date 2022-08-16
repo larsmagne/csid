@@ -131,6 +131,7 @@
     ("Smia" "https://www.facebook.com/mandagsjazzpasmia/events" facebook (59.90649480334542 10.785615544487854))
     ("Youngs" "https://data.accentapi.com/feed/25468.json" youngs :json (59.91433230474824 10.74908334691216))
     ("Munchmuseet" "https://www.munchmuseet.no/en/what-s-on/?category=Musikk" munch (59.90603859878417 10.755181524147991))
+    ("Hausmania" "https://www.facebook.com/hausmania/events/?ref=page_internal" facebook (59.91914030084836 10.751846122531205))
     ))
 
 (defvar csid-database nil)

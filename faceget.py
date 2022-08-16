@@ -35,7 +35,7 @@ chrome_options.add_experimental_option("prefs", prefs)
 chrome_options.add_argument("--disable-notifications")
 #chrome_options.add_argument("--headless")
 chrome_options.add_argument("--disable-dev-shm-usage");
-chrome_options.add_argument('--no-sandbox')
+#chrome_options.add_argument('--no-sandbox')
 chrome_options.add_experimental_option('prefs', {'intl.accept_languages': 'no'})
 driver = webdriver.Chrome(options=chrome_options)
 

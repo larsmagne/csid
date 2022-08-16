@@ -1636,6 +1636,7 @@ no further processing).  URL is either a string or a parsed URL."
 		      "concerts@185.56.185.142"
 		      "curl"
 		      "-s"
+		      "-L"
 		      "-A" "'Mozilla/5.0 (X11; Linux x86_64; rv:89.0) Gecko/20100101 Firefox/89.0'"
 		      url)
 	(libxml-parse-html-region (point-min) (point-max)))

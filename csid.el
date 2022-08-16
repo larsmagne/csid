@@ -1530,10 +1530,14 @@ no further processing).  URL is either a string or a parsed URL."
 	   finally (return summary)))
 
 (defun csid-find-facebook-image (dom)
-  (cl-loop for image in (dom-by-tag dom 'img)
-	   when (equal (dom-attr image 'data-imgperflogname)
-		       "profileCoverPhoto")
-	   return (dom-attr image 'src)))
+  (or
+   (cl-loop for image in (dom-by-tag dom 'img)
+	    when (equal (dom-attr image 'data-imgperflogname)
+			"profileCoverPhoto")
+	    return (dom-attr image 'src))
+   (cl-loop for elem in (dom-by-tag dom 'meta)
+	    when (equal (dom-attr elem 'property) "og:image")
+	    return (dom-attr elem 'content))))
 
 (defun csid-write-event-summary (url &optional event-id)
   (let ((file (csid-summary-file url))
@@ -1777,6 +1781,11 @@ no further processing).  URL is either a string or a parsed URL."
   (dolist (tag '(style script comment noscript))
     (cl-loop for comment in (dom-by-tag dom tag)
 	     do (dom-remove-node dom comment)))
+  ;; Facebook puts data here.
+  (cl-loop for elem in (dom-by-tag dom 'meta)
+	   when (equal (dom-attr elem 'name) "description")
+	   do (dom-add-child-before
+	       dom (dom-node 'p nil (dom-attr elem 'content))))
   (eww-score-readability dom)
   (let ((text (dom-texts (csid-highest-readability dom))))
     (setq text (replace-regexp-in-string "[\t\n\r ]+" " " text))

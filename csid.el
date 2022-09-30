@@ -742,6 +742,21 @@ no further processing).  URL is either a string or a parsed URL."
 			 (dom-texts link))))
 
 (defun csid-parse-facebook (dom)
+  (append (csid-parse-facebook-v1 dom)
+	  (csid-parse-facebook-v2 dom)))
+
+(defun csid-parse-facebook-v1 (dom)
+  (cl-loop for event in (dom-by-tag dom 'a)
+	   when (equal (dom-attr event 'aria-label) "event photo url")
+	   collect (let* ((parent (dom-parent dom (dom-parent dom event)))
+			  (time (dom-texts (dom-by-tag parent 'span)))
+			  (link (cdr (dom-by-tag parent 'a))))
+		     (list (csid-parse-facebook-time time)
+			   (replace-regexp-in-string
+			    "[?].*" "" (dom-attr link 'href))
+			   (dom-texts link)))))
+
+(defun csid-parse-facebook-v2 (dom)
   (cl-loop for event in (dom-by-tag dom 'a)
 	   for link = (dom-attr event 'href)
 	   for desc = (string-trim (dom-texts event))
@@ -751,7 +766,8 @@ no further processing).  URL is either a string or a parsed URL."
 			 time)
 		     (while (and parent (not time))
 		       (cl-loop for span in (dom-by-tag parent 'span)
-				for tim = (csid-parse-facebook-time (dom-text span))
+				for tim = (csid-parse-facebook-time
+					   (dom-text span))
 				when (and tim (not time))
 				do (setq time tim))
 		       (setq parent (dom-parent dom parent)))

@@ -786,11 +786,12 @@ no further processing).  URL is either a string or a parsed URL."
 	   (format-time-string "%F" (+ (float-time)
 				       (* 60 60 24))))
       (and (string-match "\\(?:KOMMENDE\\|THIS\\) \\([^ ]+\\)" time)
-	   (let ((day-num (or (seq-position csid-weekdays
-					    (downcase (match-string 1 time)))
-			      (seq-position csid-english-weekdays
-					    (downcase (match-string 1 time)))))
-		 (start (float-time)))
+	   (when-let ((day-num
+		       (or (seq-position csid-weekdays
+					 (downcase (match-string 1 time)))
+			   (seq-position csid-english-weekdays
+					 (downcase (match-string 1 time)))))
+	               (start (float-time)))
 	     (while (not (= (1- (string-to-number
 				 (format-time-string "%u" start)))
 			    day-num))

@@ -760,7 +760,9 @@ no further processing).  URL is either a string or a parsed URL."
   (cl-loop for event in (dom-by-tag dom 'a)
 	   for link = (dom-attr event 'href)
 	   for desc = (string-trim (dom-texts event))
-	   when (and link (string-match-p "/events/" link)
+	   when (and link
+		     (string-match-p "/events/" link)
+		     (string-match-p "\\`http" link)
 		     (cl-plusp (length desc)))
 	   collect (let ((parent (dom-parent dom event))
 			 time)

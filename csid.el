@@ -742,8 +742,10 @@ no further processing).  URL is either a string or a parsed URL."
 			 (dom-texts link))))
 
 (defun csid-parse-facebook (dom)
-  (append (csid-parse-facebook-v1 dom)
-	  (csid-parse-facebook-v2 dom)))
+  (seq-uniq (append (csid-parse-facebook-v1 dom)
+		    (csid-parse-facebook-v2 dom))
+	    (lambda (e1 e2)
+	      (equal (cadr e1) (cadr e2)))))
 
 (defun csid-parse-facebook-v1 (dom)
   (cl-loop for event in (dom-by-tag dom 'a)

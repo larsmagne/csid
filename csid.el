@@ -776,7 +776,7 @@ no further processing).  URL is either a string or a parsed URL."
 				do (setq time tim))
 		       (setq parent (dom-parent dom parent)))
 		     (list time
-			   link
+			   (replace-regexp-in-string "[?].*" "" link)
 			   desc))))
 	   
 (defun csid-parse-facebook-time (time)

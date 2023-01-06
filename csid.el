@@ -133,6 +133,7 @@
     ("Munchmuseet" "https://www.munchmuseet.no/en/what-s-on/?category=Musikk" munch (59.90603859878417 10.755181524147991))
     ("Hausmania" "https://www.facebook.com/hausmania/events/?ref=page_internal" facebook (59.91914030084836 10.751846122531205))
     ("Folk i Storgata" "https://www.facebook.com/Folkistorgata/events/?ref=page_internal" facebook (59.91551516562231 10.756034589391748))
+    ("Biermann Sessions" "https://www.facebook.com/biermannsessions/events" facebook (59.931460 10.755416))
     ))
 
 (defvar csid-database nil)

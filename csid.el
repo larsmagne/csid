@@ -136,6 +136,7 @@
     ("Biermann Sessions" "https://www.facebook.com/biermannsessions/events" facebook (59.931460 10.755416))
     ("Fuglen" "https://www.facebook.com/fuglencoffeeroasters/events" facebook (59.90624937702521 10.774220146133983))
     ("Parksalongen" "https://parksalongen.no/" facebook (59.92299236573238 10.73913253972904))
+    ("Storgata 26" "https://www.storgata26.no/api/events" storgata26 :json (59.91363881930287 10.75230374634739))
     ))
 
 (defvar csid-database nil)

@@ -135,6 +135,7 @@
     ("Folk i Storgata" "https://www.facebook.com/Folkistorgata/events/?ref=page_internal" facebook (59.91551516562231 10.756034589391748))
     ("Biermann Sessions" "https://www.facebook.com/biermannsessions/events" facebook (59.931460 10.755416))
     ("Fuglen" "https://www.facebook.com/fuglencoffeeroasters/events" facebook (59.90624937702521 10.774220146133983))
+    ("Parksalongen" "https://parksalongen.no/" facebook (59.92299236573238 10.73913253972904))
     ))
 
 (defvar csid-database nil)

@@ -137,6 +137,7 @@
     ("Fuglen" "https://www.facebook.com/fuglencoffeeroasters/events" facebook (59.90624937702521 10.774220146133983))
     ("Parksalongen" "https://parksalongen.no/" facebook (59.92299236573238 10.73913253972904))
     ("Storgata 26" "https://www.storgata26.no/api/events" storgata26 :json (59.91363881930287 10.75230374634739))
+    ("Cue" "https://www.cueoslo.no/arrangementer" cue (59.92896333322219 10.758125691312799))
     ))
 
 (defvar csid-database nil)
@@ -1897,6 +1898,18 @@ no further processing).  URL is either a string or a parsed URL."
 	   (list (csid-parse-iso8601 (cdr (assq 'start_time event)))
 		 (cdr (assq 'moreInfo (cdr (assq 'custom_fields event))))
 		 (cdr (assq 'name event)))))
+
+(defun csid-parse-cue (dom)
+  (cl-loop for event in (dom-by-tag dom 'div)
+	   for ds = (dom-texts (dom-by-class event "\\`event-details\\'"))
+	   for date = (csid-parse-month-date-window ds)
+	   when (and ds
+		     (equal (dom-attr event 'role) "listitem")
+		     (csid-valid-date-p date))
+	   collect (list date
+			 (shr-expand-url
+			  (dom-attr (dom-by-tag event 'a) 'href))
+			 (dom-texts (dom-by-tag event 'h2)))))
 
 (provide 'csid)
 

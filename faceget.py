@@ -5,13 +5,15 @@ import random
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.common.by import By
 
 def cookie():
     for phrase in ['Godta alle', 'Alle akzeptieren',
                    'Tillat alle informasjonskapsler',
                    'Tillat nødvendige og valgfrie informasjonskapsler']:
         try:
-            accept = driver.find_element_by_xpath("//button[@title='" + phrase + "']")
+            accept = driver.find_element(By.XPATH,
+                                         "//button[@title='" + phrase + "']")
             time.sleep(5)
             accept.click()
             return False
@@ -56,11 +58,11 @@ time.sleep(5)
 
 #time.sleep(500)
 
-driver.find_element_by_id("email").send_keys(user)
+driver.find_element(By.ID, "email").send_keys(user)
 time.sleep(2)
-driver.find_element_by_id("pass").send_keys(passwd)
+driver.find_element(By.ID, "pass").send_keys(passwd)
 time.sleep(3)
-driver.find_element_by_name("login").click()
+driver.find_element(By.NAME, "login").click()
 time.sleep(7)
 
 # Reload the main page -- it seems to like this.
@@ -81,13 +83,13 @@ for elem in urls:
         for phrase in ['See More', 'Se flere', 'See more']:
             try:
                 path = "//*[text()='" + phrase + "']"
-                more = driver.find_element_by_xpath(path)
+                more = driver.find_element(By.XPATH, path)
                 print("Got the more")
                 more.click()
                 time.sleep(random.randint(5, 20))
                 # If there's two of these, keep trying until the first
                 # goes away.
-                if len(driver.find_elements_by_xpath(path)) > 1:
+                if len(driver.find_elements(By.XPATH, path)) > 1:
                     times = 1
             except NoSuchElementException:
                 pass

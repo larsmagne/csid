@@ -1891,6 +1891,13 @@ no further processing).  URL is either a string or a parsed URL."
 		    (shr-expand-url (dom-attr (dom-by-tag event 'a) 'href))
 		    (dom-attr (dom-by-tag event 'a) 'title))))
 
+(defun csid-parse-storgata26 (data)
+  (cl-loop for event across data
+	   collect
+	   (list (csid-parse-iso8601 (cdr (assq 'start_time event)))
+		 (cdr (assq 'moreInfo (cdr (assq 'custom_fields event))))
+		 (cdr (assq 'name event)))))
+
 (provide 'csid)
 
 ;;; csid.el ends here

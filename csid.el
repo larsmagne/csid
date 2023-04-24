@@ -90,7 +90,7 @@
     ;;("Skuret" "https://www.facebook.com/skuret/events" facebook)
     ;;("Pizdets" "https://www.facebook.com/pissjets/events" facebook (59.916321 10.748236))
     ;;("Hvaskjer" "https://www.facebook.com/hvaskjertorshov/events" facebook (59.936192 10.765818))
-    ("UiO" "http://www.uio.no/om/aktuelt/arrangementer/konserter/" uio (59.940768 10.723079))
+    ;;("UiO" "http://www.uio.no/om/aktuelt/arrangementer/konserter/" uio (59.940768 10.723079))
     ;;("Mr Pizza" "http://www.mrpizza.no/" pizza :date)
     ("Sub Scene" "http://www.subscene.no/" subscene (59.912176 10.736554))
     ("Vigeland" "https://www.facebook.com/emanuelvigeland/events" facebook (59.947077 10.692663))

@@ -75,7 +75,6 @@
     ("Uhørt" "https://www.facebook.com/uhortistroget/events" facebook (59.914105 10.748769))
     ("Kulturhuset" "https://www.facebook.com/kulturhusetioslo/events" facebook (59.914646 10.750909))
     ("Kampen Bistro" "http://www.kampenbistro.no/hvaskjer" kampenbistro (59.913718003724746 10.780875043457623))
-    ("Cafeteatret" "https://nordicblacktheatre.ticketco.events/no/en" ticketco (59.910344 10.767058))
     ("Telenor Arena" "http://telenorarena.no/en/calendar" telenor (59.903079 10.624335))
     ("Postkontoret" "https://www.facebook.com/toyenpostkontor/events?key=events" facebook (59.914083 10.775254))
     ;;("Per på hjørnet" "http://www.pph.oslo.no/" pph :date)

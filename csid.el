@@ -78,7 +78,7 @@
     ("Telenor Arena" "http://telenorarena.no/en/calendar" telenor (59.903079 10.624335))
     ("Postkontoret" "https://www.facebook.com/toyenpostkontor/events?key=events" facebook (59.914083 10.775254))
     ;;("Per på hjørnet" "http://www.pph.oslo.no/" pph :date)
-    ("The Villa" "http://www.thevilla.no/program/" villa (59.915832 10.748751))
+    ("The Villa" "https://www.facebook.com/thevillaoslo/events?locale=nb_NO" facebook (59.915832 10.748751))
     ("Dattera" "http://www.dattera.no/nb/pages/6-Kalender" dattera (59.913291 10.760122))
     ;;("Internasjonalen" "https://www.facebook.com/pg/internasjonalenbar/events/?ref=page_internal" facebook (59.914558 10.749595))
     ("Jæger" "https://www.facebook.com/jaegeroslo/events/?ref=page_internal" facebook (59.913957 10.743499))
@@ -1102,15 +1102,6 @@ no further processing).  URL is either a string or a parsed URL."
 		       (setq texts (cddr texts)))
 	     else
 	     do (setq texts (cdr texts)))))
-
-(defun csid-parse-villa (dom)
-  (cl-loop for event in (dom-by-class dom "edgtf-event-content")
-	   for link = (dom-by-tag event 'a)
-	   collect (list (csid-parse-short-yearless-month
-			  (dom-texts
-			   (dom-by-class event "edgtf-event-date-holder")))
-			 (dom-attr link 'href)
-			 (dom-texts link))))
 
 (defun csid-parse-dattera (dom)
   (cl-loop for day in (dom-by-class dom "^date$")

@@ -46,9 +46,9 @@
 (defvar csid-sources
   '(("Revolver" "https://www.facebook.com/revolveroslo/events/?ref=page_internal" facebook (59.917146 10.749779))
     ("Kafé hærverk" "https://www.facebook.com/pg/kafehaerverk/events/?ref=page_internal" facebook (59.919202 10.751920))
-    ("Blå" "http://www.blaaoslo.no/" blaa (59.920284 10.752836))
-    ("Mir" "http://www.lufthavna.no/" mir (59.921667 10.761053))
-    ("Victoria" "http://nasjonaljazzscene.no/arrangement/" victoria (59.914109 10.738198))
+    ("Blå" "https://www.facebook.com/blaaoslo/events?locale=nb_NO" facebook (59.920284 10.752836))
+    ("Mir" "https://www.facebook.com/mirlufthavna/events?locale=nb_NO" facebook (59.921667 10.761053))
+    ("Victoria" "https://nasjonaljazzscene.no/arrangement/" victoria (59.914109 10.738198))
     ("Rockefeller" "http://rockefeller.no/index.html" rockefeller :multi (59.916125 10.750050))
     ;;("Mono" "http://www.cafemono.no/program/" mono (59.913942 10.749326))
     ("Parkteateret" "https://www.parkteatret.no/program" parkteateret (59.923515 10.758537))
@@ -395,20 +395,6 @@ no further processing).  URL is either a string or a parsed URL."
 	(delete-process (get-buffer-process (current-buffer))))
       (kill-buffer (current-buffer)))))
 
-(defun csid-parse-blaa (dom)
-  (cl-loop for month in (dom-by-class dom "^month$")
-	   for month-name = (dom-texts (dom-by-tag month 'h1))
-	   append (cl-loop for day in (dom-by-class month "^day$")
-			   append (cl-loop for elem in (dom-by-tag day 'article)
-					   for h1 = (dom-by-tag elem 'h1)
-					   when elem
-					   collect (list
-						    (csid-parse-english-month-date
-						     (format "%s %s"
-							     (dom-text (dom-by-class day "^number$"))
-							     month-name))
-						    (dom-attr (dom-by-tag h1 'a) 'href)
-						    (dom-texts h1))))))
 
 ;; Date parsers.
 
@@ -739,14 +725,6 @@ no further processing).  URL is either a string or a parsed URL."
 	(format "%s-%02d-%02d" this-year month day)
       (format "%s-%02d-%02d" year month day))))
 
-(defun csid-parse-mir (dom)
-  (cl-loop for elem in (dom-by-id dom "program")
-	   for link = (dom-by-tag (dom-by-class elem "programtittel") 'a)
-	   collect (list (csid-parse-month-date
-			  (dom-text (dom-by-class elem "programtid")))
-			 (dom-attr link 'href)
-			 (dom-texts link))))
-
 (defun csid-parse-facebook (dom)
   (seq-uniq (append (csid-parse-facebook-v1 dom)
 		    (csid-parse-facebook-v2 dom))
@@ -810,12 +788,12 @@ no further processing).  URL is either a string or a parsed URL."
 	     (format-time-string "%F" start)))))
 
 (defun csid-parse-victoria (dom)
-  (cl-loop for elem in (dom-by-class dom "event-entry")
-	   for date = (dom-by-class elem "show-for-small")
-	   collect (list (csid-parse-numeric-date
-			  (dom-text (dom-by-tag date 'p)))
-			 (dom-attr (dom-by-tag elem 'a) 'href)
-			 (dom-text (dom-by-tag elem 'h2)))))
+  (cl-loop for elem in (dom-by-class dom "t2-post-link")
+	   collect (list
+		    (csid-parse-sloppy-iso8601
+		     (dom-attr (dom-by-tag elem 'time) 'datetime))
+		    (dom-attr elem 'href)
+		    (dom-text (dom-by-tag elem 'h2)))))
 
 (defun csid-parse-rockefeller (dom)
   (cl-loop for elem in (dom-by-class dom "^show bkg")

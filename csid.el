@@ -46,8 +46,8 @@
 (defvar csid-sources
   '(("Revolver" "https://www.facebook.com/revolveroslo/events/?ref=page_internal" facebook (59.917146 10.749779))
     ("Kafé hærverk" "https://www.facebook.com/pg/kafehaerverk/events/?ref=page_internal" facebook (59.919202 10.751920))
-    ("Blå" "https://www.facebook.com/blaaoslo/events?locale=nb_NO" facebook (59.920284 10.752836))
-    ("Mir" "https://www.facebook.com/mirlufthavna/events?locale=nb_NO" facebook (59.921667 10.761053))
+    ("Blå" "https://www.facebook.com/blaaoslo/events?locale=nb_NO" facebook (59.920284 10.752836)) ;; Non-Facebook available
+    ("Mir" "https://www.facebook.com/mirlufthavna/events?locale=nb_NO" facebook (59.921667 10.761053)) ;; Non-Facebook available
     ("Victoria" "https://nasjonaljazzscene.no/arrangement/" victoria (59.914109 10.738198))
     ("Rockefeller" "http://rockefeller.no/index.html" rockefeller :multi (59.916125 10.750050))
     ;;("Mono" "http://www.cafemono.no/program/" mono (59.913942 10.749326))
@@ -55,9 +55,9 @@
     ("Konsertforeninga" "https://www.facebook.com/Konsertforeninga/events/?ref=page_internal" facebook)
     ;;("Maksitaksi" "https://www.facebook.com/maksitaksii/events?ref=page_internal" facebook (59.918278 10.737577))
     ("Betong" "https://www.facebook.com/betongoslo/events" facebook (59.932264 10.712854))
-    ("Cosmopolite" "https://www.facebook.com/CosmopoliteNorway/events?locale=nb_NO" facebook (59.936133 10.765991))
+    ("Cosmopolite" "https://www.facebook.com/CosmopoliteNorway/events?locale=nb_NO" facebook (59.936133 10.765991)) ;; Non-Facebook available
     ("Vulkan" "https://vulkanarena.no/" vulkan (59.922435 10.751270))
-    ("Jakob" "http://jakob.no/program/" jakob (59.918090 10.754294))
+    ("Jakob" "https://www.facebook.com/kulturkirken/events" facebook (59.918090 10.754294)) ;; Non-Facebook available
     ("Ultima" "http://ultima.no/program" ultima)
     ("Blitz" "https://www.facebook.com/blitzbooking/events/" facebook (59.918438 10.737446))
     ("Magneten" "http://magnetenpub.blogspot.no//feeds/pages/default?alt=json&v=2&dynamicviews=1"
@@ -879,13 +879,6 @@ no further processing).  URL is either a string or a parsed URL."
 			 (dom-attr (dom-by-tag elem 'a) 'href)
 			 (dom-texts (dom-by-class elem "event_title")))))
 
-(defun csid-parse-jakob (dom)
-  (cl-loop for event in (dom-by-tag dom 'article)
-	   collect (list (csid-parse-norwegian-month-date-with-year
-			  (dom-texts (dom-by-class event "^tease-meta$")))
-			 (dom-attr (dom-by-tag event 'a) 'href)
-			 (dom-texts (dom-by-tag event 'h2)))))
-  
 (defun csid-parse-vanguard (dom)
   (cl-loop for elem in (dom-by-style dom "clear:both")
 	   for a = (dom-by-tag elem 'a)

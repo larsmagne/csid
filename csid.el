@@ -55,7 +55,6 @@
     ("Konsertforeninga" "https://www.facebook.com/Konsertforeninga/events/?ref=page_internal" facebook)
     ;;("Maksitaksi" "https://www.facebook.com/maksitaksii/events?ref=page_internal" facebook (59.918278 10.737577))
     ("Betong" "https://www.facebook.com/betongoslo/events" facebook (59.932264 10.712854))
-    ("Bidrobon" "https://nb-no.facebook.com/pg/Drivhuset-musikkverksted-bidrobon-Biermannsg%C3%A5rden-202355836444/events/?ref=page_internal" facebook (59.931460 10.755416))
     ("Cosmopolite" "https://cosmopolite.no/program" cosmopolite (59.936133 10.765991))
     ("Vulkan" "https://vulkanarena.no/" vulkan (59.922435 10.751270))
     ("Jakob" "http://jakob.no/program/" jakob (59.918090 10.754294))

@@ -58,7 +58,6 @@
     ("Cosmopolite" "https://www.facebook.com/CosmopoliteNorway/events?locale=nb_NO" facebook (59.936133 10.765991)) ;; Non-Facebook available
     ("Vulkan" "https://vulkanarena.no/" vulkan (59.922435 10.751270))
     ("Jakob" "https://www.facebook.com/kulturkirken/events" facebook (59.918090 10.754294)) ;; Non-Facebook available
-    ("Ultima" "http://ultima.no/program" ultima)
     ("Blitz" "https://www.facebook.com/blitzbooking/events/" facebook (59.918438 10.737446))
     ("Magneten" "http://magnetenpub.blogspot.no//feeds/pages/default?alt=json&v=2&dynamicviews=1"
      magneten :json :date (59.936159 10.765462))
@@ -887,15 +886,6 @@ no further processing).  URL is either a string or a parsed URL."
 			  (dom-texts (dom-by-class elem "smalltext")))
 			 (dom-attr a 'href)
 			 (dom-texts a))))
-
-(defun csid-parse-ultima (dom)
-  (cl-loop for elem in (dom-by-class dom "program_list_title")
-	   for event = (dom-parent dom (dom-parent dom elem))
-	   for link = (dom-attr (dom-by-tag event 'a) 'href)
-	   when link
-	   collect (list (csid-parse-full-numeric-date (dom-attr event 'data-day))
-			 link
-			 (dom-attr event 'data-title))))
    
 (defun csid-parse-salt (dom)
   (cl-loop with regexp = "concert\\|konsert"

@@ -124,7 +124,7 @@
     ("Kampen Kaffe & Bar" "https://www.facebook.com/kampenkaffebar/events" facebook (59.911972107696684 10.781134433609944))
     ("MS Bjørvika" "https://www.facebook.com/msbjorvika/events/" facebook (59.905780304973966 10.75342868368582))
     ("Godthåb" "https://www.facebook.com/godthab/events/?ref=page_internal" facebook (59.91293095965448 10.761361703327038))
-    ("Tukthuset" "https://www.tukthuset.no/events-one" tukthuset (59.914668289423474 10.751130301904967))
+    ("Tukthuset" "https://www.facebook.com/Tukthuset/events?locale=nb_NO" facebook (59.914668289423474 10.751130301904967))
     ("Smia" "https://www.facebook.com/mandagsjazzpasmia/events" facebook (59.90649480334542 10.785615544487854))
     ("Youngs" "https://data.accentapi.com/feed/25468.json" youngs :json (59.91433230474824 10.74908334691216))
     ("Munchmuseet" "https://www.munchmuseet.no/en/what-s-on/?category=Musikk" munch (59.90603859878417 10.755181524147991))
@@ -1779,14 +1779,6 @@ no further processing).  URL is either a string or a parsed URL."
 	   collect (list date
 			 (dom-attr link 'href)
 			 (dom-texts link))))
-
-(defun csid-parse-tukthuset (dom)
-  (cl-loop for event in (dom-by-class dom "eventlist-event")
-	   for link = (dom-by-class event "eventlist-title")
-	   collect (list
-		    (dom-attr (dom-by-class event "event-date") 'datetime)
-		    (shr-expand-url (dom-attr (dom-by-tag link 'a) 'href))
-		    (dom-texts link))))
 
 (defun csid-parse-youngs (json)
   (cl-loop for event across (cdr (assq 'events json))

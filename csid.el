@@ -46,8 +46,8 @@
 (defvar csid-sources
   '(("Revolver" "https://www.facebook.com/revolveroslo/events/?ref=page_internal" facebook (59.917146 10.749779))
     ("Kafé hærverk" "https://www.facebook.com/pg/kafehaerverk/events/?ref=page_internal" facebook (59.919202 10.751920))
-    ("Blå" "https://www.facebook.com/blaaoslo/events?locale=nb_NO" facebook (59.920284 10.752836)) ;; Non-Facebook available
-    ("Mir" "https://www.facebook.com/mirlufthavna/events?locale=nb_NO" facebook (59.921667 10.761053)) ;; Non-Facebook available
+    ("Blå" "https://www.facebook.com/blaaoslo/events?locale=nb_NO" facebook (59.920284 10.752836)) ;; Non-Facebook available  https://www.blaaoslo.no/
+    ("Mir" "https://www.facebook.com/mirlufthavna/events?locale=nb_NO" facebook (59.921667 10.761053)) ;; Non-Facebook available  https://www.lufthavna.no/mir-events
     ("Victoria" "https://nasjonaljazzscene.no/arrangement/" victoria (59.914109 10.738198))
     ("Rockefeller" "http://rockefeller.no/index.html" rockefeller :multi (59.916125 10.750050))
     ;;("Mono" "http://www.cafemono.no/program/" mono (59.913942 10.749326))
@@ -55,9 +55,9 @@
     ("Konsertforeninga" "https://www.facebook.com/Konsertforeninga/events/?ref=page_internal" facebook)
     ;;("Maksitaksi" "https://www.facebook.com/maksitaksii/events?ref=page_internal" facebook (59.918278 10.737577))
     ("Betong" "https://www.facebook.com/betongoslo/events" facebook (59.932264 10.712854))
-    ("Cosmopolite" "https://www.facebook.com/CosmopoliteNorway/events?locale=nb_NO" facebook (59.936133 10.765991)) ;; Non-Facebook available
+    ("Cosmopolite" "https://www.facebook.com/CosmopoliteNorway/events?locale=nb_NO" facebook (59.936133 10.765991)) ;; Non-Facebook available  https://cosmopolite.no/program
     ("Vulkan" "https://vulkanarena.no/" vulkan (59.922435 10.751270))
-    ("Jakob" "https://www.facebook.com/kulturkirken/events" facebook (59.918090 10.754294)) ;; Non-Facebook available
+    ("Jakob" "https://www.facebook.com/kulturkirken/events" facebook (59.918090 10.754294)) ;; Non-Facebook available  https://www.jakob.no/program/
     ("Blitz" "https://www.facebook.com/blitzbooking/events/" facebook (59.918438 10.737446))
     ("Magneten" "http://magnetenpub.blogspot.no//feeds/pages/default?alt=json&v=2&dynamicviews=1"
      magneten :json :date (59.936159 10.765462))
@@ -68,7 +68,7 @@
     ("Riksscenen" "http://www.riksscenen.no/program.95415.no.html" riksscenen (59.919877 10.761074))
     ("Olsen" "https://www.facebook.com/olsenbryn/events/?ref=page_internal" facebook (59.907644 10.818268))
     ;;("Verkstedet" "https://www.facebook.com/verkstedetbar/events/?ref=page_internal" facebook (59.917728 10.754123))
-    ("Gamla" "https://www.facebook.com/GamlaBeatBar/events?locale=nb_NO" facebook (59.913654 10.745297)) ;; Non-Facebook available
+    ("Gamla" "https://www.facebook.com/GamlaBeatBar/events?locale=nb_NO" facebook (59.913654 10.745297)) ;; Non-Facebook available  https://gamla.no/gamla-konsert-scene
     ;;("Buckleys" "http://www.buckleys.no/konserter.html" buckleys :date)
     ;;("New Orleans" "http://www.neworleansworkshop.com/program" neworleans :date)
     ;;("NB" "http://www.nb.no/Hva-skjer/Arrangementer/Konserter" nasjonalbiblioteket)
@@ -120,7 +120,7 @@
     ("Rock In" "https://www.facebook.com/pg/rockinoslo/events/?ref=page_internal" facebook (59.913002 10.761144))
     ("Brød & Sirkus" "https://www.facebook.com/brodogsirkus/events/" facebook (59.91311858805727 10.736465987756189))
     ;;("Oslo Jazzfestival" "https://oslojazz.no/program/" oslo-jazzfestival)
-    ("Oslo Bluesklubb" "https://www.facebook.com/oslobluesklubb/events?locale=nb_NO" facebook)  ;; Non-Facebook available
+    ("Oslo Bluesklubb" "https://www.facebook.com/oslobluesklubb/events?locale=nb_NO" facebook)  ;; Non-Facebook available  https://osloblues.com/konsert
     ("Kampen Kaffe & Bar" "https://www.facebook.com/kampenkaffebar/events" facebook (59.911972107696684 10.781134433609944))
     ("MS Bjørvika" "https://www.facebook.com/msbjorvika/events/" facebook (59.905780304973966 10.75342868368582))
     ("Godthåb" "https://www.facebook.com/godthab/events/?ref=page_internal" facebook (59.91293095965448 10.761361703327038))

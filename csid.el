@@ -68,7 +68,7 @@
     ("Riksscenen" "http://www.riksscenen.no/program.95415.no.html" riksscenen (59.919877 10.761074))
     ("Olsen" "https://www.facebook.com/olsenbryn/events/?ref=page_internal" facebook (59.907644 10.818268))
     ;;("Verkstedet" "https://www.facebook.com/verkstedetbar/events/?ref=page_internal" facebook (59.917728 10.754123))
-    ("Gamla" "https://www.gamla.no/" gamla (59.913654 10.745297))
+    ("Gamla" "https://www.facebook.com/GamlaBeatBar/events?locale=nb_NO" facebook (59.913654 10.745297)) ;; Non-Facebook available
     ;;("Buckleys" "http://www.buckleys.no/konserter.html" buckleys :date)
     ;;("New Orleans" "http://www.neworleansworkshop.com/program" neworleans :date)
     ;;("NB" "http://www.nb.no/Hva-skjer/Arrangementer/Konserter" nasjonalbiblioteket)
@@ -1013,14 +1013,6 @@ no further processing).  URL is either a string or a parsed URL."
 			     (dom-text (dom-by-class elem "^year$"))))
 		    "http://www.verkstedetbar.no/program/"
 		    (dom-text (dom-by-tag elem 'h3)))))
-
-(defun csid-parse-gamla (dom)
-  (cl-loop for elem in (dom-by-tag dom 'rs-slide)
-	   collect (list
-		    (csid-parse-month-date
-		     (dom-texts (dom-by-class elem "tribe_formatted_event_date")))
-		    (shr-expand-url (dom-attr elem 'data-link))
-		    (dom-texts (last (dom-by-tag elem 'span))))))
 
 (defun csid-parse-buckleys (dom)
   (cl-loop for elem in (dom-by-tag dom 'h2)

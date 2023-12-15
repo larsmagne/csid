@@ -47,7 +47,7 @@
   '(("Revolver" "https://www.facebook.com/revolveroslo/events/?ref=page_internal" facebook (59.917146 10.749779))
     ("Kafé hærverk" "https://www.facebook.com/pg/kafehaerverk/events/?ref=page_internal" facebook (59.919202 10.751920))
     ("Blå" "https://www.blaaoslo.no/api/eventsEdge?" blaa :json (59.920284 10.752836))
-    ("Mir" "https://demo.broadcastapp.no/api/layoutWidgetCors?limit=99&venue=APJXjIH1ND&recommended=false&hostname=www-lufthavna-no.filesusr.com&city=Oslo" mir :json (59.921667 10.761053))
+    ("Mir" "https://demo.broadcastapp.no/api/layoutWidgetCors?limit=99&venue=APJXjIH1ND&recommended=false&hostname=www-lufthavna-no.filesusr.com&city=Oslo" broadcast :json (59.921667 10.761053))
     ("Victoria" "https://nasjonaljazzscene.no/arrangement/" victoria (59.914109 10.738198))
     ("Rockefeller" "http://rockefeller.no/index.html" rockefeller :multi (59.916125 10.750050))
     ;;("Mono" "http://www.cafemono.no/program/" mono (59.913942 10.749326))
@@ -132,7 +132,7 @@
     ("Folk i Storgata" "https://www.facebook.com/Folkistorgata/events/?ref=page_internal" facebook (59.91551516562231 10.756034589391748))
     ("Biermann Sessions" "https://www.facebook.com/biermannsessions/events" facebook (59.931460 10.755416))
     ("Fuglen" "https://www.facebook.com/fuglencoffeeroasters/events" facebook (59.90624937702521 10.774220146133983))
-    ("Parksalongen" "https://www.facebook.com/ParksalongenBar/events?locale=nb_NO" facebook (59.92299236573238 10.73913253972904))  ;; Non-Facebook available https://parksalongen.no/
+    ("Parksalongen" "https://demo.broadcastapp.no/api/layoutWidgetCors?limit=99&venue=edb78f8L8d&recommended=false&hostname=parksalongen.no&city=Oslo" broadcast :json (59.92299236573238 10.73913253972904))
     ("Storgata 26" "https://www.storgata26.no/api/events" storgata26 :json (59.91363881930287 10.75230374634739))
     ("Cue" "https://www.cueoslo.no/arrangementer" cue (59.92896333322219 10.758125691312799))
     ("Dunk" "https://www.facebook.com/dunkoslo/events" facebook (59.91579182575868 10.750933652420361))
@@ -1840,7 +1840,7 @@ no further processing).  URL is either a string or a parsed URL."
 			    iid)
 		    (cdr (assq 'name event)))))
 
-(defun csid-parse-mir (json)
+(defun csid-parse-broadcast (json)
   (cl-loop for event across (cdr (assq 'results json))
 	   collect
 	   (list (csid-parse-iso8601 (cdr (assq 'start_time event)))

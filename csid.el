@@ -120,7 +120,7 @@
     ("Rock In" "https://www.facebook.com/pg/rockinoslo/events/?ref=page_internal" facebook (59.913002 10.761144))
     ("Brød & Sirkus" "https://www.facebook.com/brodogsirkus/events/" facebook (59.91311858805727 10.736465987756189))
     ;;("Oslo Jazzfestival" "https://oslojazz.no/program/" oslo-jazzfestival)
-    ("Oslo Bluesklubb" "https://www.facebook.com/oslobluesklubb/events?locale=nb_NO" facebook)  ;; Non-Facebook available  https://osloblues.com/konsert
+    ("Oslo Bluesklubb" "https://osloblues.com/konsert" oslo-bluesklubb (59.91433230474824 10.74908334691216))
     ("Kampen Kaffe & Bar" "https://www.facebook.com/kampenkaffebar/events" facebook (59.911972107696684 10.781134433609944))
     ("MS Bjørvika" "https://www.facebook.com/msbjorvika/events/" facebook (59.905780304973966 10.75342868368582))
     ("Godthåb" "https://www.facebook.com/godthab/events/?ref=page_internal" facebook (59.91293095965448 10.761361703327038))
@@ -1779,14 +1779,13 @@ no further processing).  URL is either a string or a parsed URL."
 			 (dom-texts (dom-by-tag event 'h2)))))
 
 (defun csid-parse-oslo-bluesklubb (dom)
-  (cl-loop for link in (dom-by-tag dom 'a)
-	   for prev = (dom-previous-sibling dom link)
-	   when (stringp prev)
-	   for date = (csid-parse-norwegian-month-date-with-year prev)
-	   when (csid-valid-date-p date)
-	   collect (list date
-			 (dom-attr link 'href)
-			 (dom-texts link))))
+  (cl-loop for event in (dom-by-tag dom 'article)
+	   collect (list (csid-parse-full-numeric-date
+			  (dom-text (dom-by-tag event 'p)))
+			 (shr-expand-url
+			  (dom-attr (dom-by-tag event 'a) 'href))
+			 (dom-text (dom-by-tag (dom-by-tag event 'header)
+					       'a)))))
 
 (defun csid-parse-youngs (json)
   (cl-loop for event across (cdr (assq 'events json))

@@ -508,7 +508,7 @@ no further processing).  URL is either a string or a parsed URL."
 
 ;; "06. aug 2013"
 (defun csid-parse-short-month (string &optional englishp)
-  (if (string-match (format "\\([0-9]+\\).*\\(%s\\) +\\([0-9]+\\)"
+  (if (string-match (format "\\([0-9]+\\).*\\(%s\\)[.]? +\\([0-9]+\\)"
 			    (mapconcat
 			     (lambda (month)
 			       (substring month 0 3))
@@ -771,6 +771,8 @@ no further processing).  URL is either a string or a parsed URL."
 (defun csid-parse-facebook-time (time)
   (or (and (equal time "HAPPENING NOW")
 	   (format-time-string "%F"))
+      (csid-parse-short-month time)
+      (csid-parse-short-yearless-month time)
       (csid-parse-american-short-month time)
       (csid-parse-short-american-yearless-month time)
       (and (string-match "TODAY" time)

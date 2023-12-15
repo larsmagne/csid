@@ -68,7 +68,7 @@
     ("Riksscenen" "http://www.riksscenen.no/program.95415.no.html" riksscenen (59.919877 10.761074))
     ("Olsen" "https://www.facebook.com/olsenbryn/events/?ref=page_internal" facebook (59.907644 10.818268))
     ;;("Verkstedet" "https://www.facebook.com/verkstedetbar/events/?ref=page_internal" facebook (59.917728 10.754123))
-    ("Gamla" "https://www.facebook.com/GamlaBeatBar/events?locale=nb_NO" facebook (59.913654 10.745297)) ;; Non-Facebook available  https://gamla.no/gamla-konsert-scene
+    ("Gamla" "https://gamla.no/api/content/url?url=%2Fgamla-konsert-scene" gamla  :json (59.913654 10.745297))
     ;;("Buckleys" "http://www.buckleys.no/konserter.html" buckleys :date)
     ;;("New Orleans" "http://www.neworleansworkshop.com/program" neworleans :date)
     ;;("NB" "http://www.nb.no/Hva-skjer/Arrangementer/Konserter" nasjonalbiblioteket)
@@ -203,13 +203,19 @@
   (csid-write-database
    (csid-update-database
     (cl-loop for source in csid-sources
-	     for (name url function) = source
-	     for function = (intern (format "csid-parse-%s" function) obarray)
+	     for (name url f) = source
+	     for function = (intern (format "csid-parse-%s" f) obarray)
 	     do (message "%s" name)
 	     when (or (not type)
 		      (string= type name))
 	     append (let* ((max-specpdl-size 6000)
 			   (max-lisp-eval-depth 6000)
+			   (hfunc (intern (format
+					   "csid-extra-headers-%s"
+					   f)))
+			   (url-request-extra-headers
+			    (and (fboundp hfunc)
+				 (funcall hfunc)))
 			   (results
 			    (if type
 				(csid-parse-source
@@ -1913,6 +1919,24 @@ no further processing).  URL is either a string or a parsed URL."
 			    (dom-text (dom-by-tag event 'p)))
 			   (dom-attr (dom-by-tag event 'a) 'href)
 			   (dom-text (dom-by-tag event 'h5)))))))
+
+(defun csid-parse-gamla (json)
+  (cl-loop for elem across (cdr (assq 'blocks (cdr (assq 'result json))))
+	   for cards = (cdr (assq 'cards (assq 'content elem)))
+	   when cards
+	   return (cl-loop
+		   for e across cards
+		   for event = (cdr (assq 'content e))
+		   collect
+		   (list (csid-parse-short-yearless-month
+			  (cdr (assq 'bodyText event)))
+			 (cdr (assq 'link (cdr (assq 'content (elt (cdr (assq 'buttons event)) 0)))))
+			 (cdr (assq 'heading event))))))
+			   
+
+(defun csid-extra-headers-gamla ()
+  '(("X-Request-Domain" . "https://gamla.no")))
+
 
 (provide 'csid)
 

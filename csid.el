@@ -57,7 +57,7 @@
     ("Betong" "https://www.facebook.com/betongoslo/events" facebook (59.932264 10.712854))
     ("Cosmopolite" "https://cosmopolite.no/program" cosmopolite (59.936133 10.765991)) ;; Data from URL not used.
     ("Vulkan" "https://vulkanarena.no/" vulkan (59.922435 10.751270))
-    ("Jakob" "https://www.facebook.com/kulturkirken/events" facebook (59.918090 10.754294)) ;; Non-Facebook available  https://www.jakob.no/program/
+    ("Jakob" "https://www.jakob.no/program/" jakob (59.918090 10.754294))
     ("Blitz" "https://www.facebook.com/blitzbooking/events/" facebook (59.918438 10.737446))
     ("Magneten" "http://magnetenpub.blogspot.no//feeds/pages/default?alt=json&v=2&dynamicviews=1"
      magneten :json :date (59.936159 10.765462))
@@ -1847,7 +1847,7 @@ no further processing).  URL is either a string or a parsed URL."
 
 (defun csid-parse-cosmopolite (_ignore)
   (cl-loop
-   for i from 1 upto 4
+   for i from 1 upto 10
    append
    (cl-loop with json =
 	    (let ((url-request-method "POST")
@@ -1894,6 +1894,25 @@ no further processing).  URL is either a string or a parsed URL."
 			 (dom-text (dom-by-tag event 'time)))
 			(shr-expand-url (dom-attr link 'href))
 			(dom-text link)))))))
+
+(defun csid-parse-jakob (_ignore)
+  (cl-loop
+   for page from 1 upto 10
+   append (let ((dom (with-current-buffer
+			 (csid-retrieve-synchronously
+			  (format "https://www.jakob.no/program?page=%d"
+				  page))
+		       (goto-char (point-min))
+		       (search-forward "\n\n")
+		       (prog1
+			   (libxml-parse-html-region (point) (point-max))
+			 (kill-buffer (current-buffer))))))
+	    (cl-loop for event in (dom-by-class dom "card-body")
+		     collect
+		     (list (csid-parse-norwegian-month-date-with-year
+			    (dom-text (dom-by-tag event 'p)))
+			   (dom-attr (dom-by-tag event 'a) 'href)
+			   (dom-text (dom-by-tag event 'h5)))))))
 
 (provide 'csid)
 

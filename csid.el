@@ -46,7 +46,7 @@
 (defvar csid-sources
   '(("Revolver" "https://www.facebook.com/revolveroslo/events/?ref=page_internal" facebook (59.917146 10.749779))
     ("Kafé hærverk" "https://www.facebook.com/pg/kafehaerverk/events/?ref=page_internal" facebook (59.919202 10.751920))
-    ("Blå" "https://www.facebook.com/blaaoslo/events?locale=nb_NO" facebook (59.920284 10.752836)) ;; Non-Facebook available  https://www.blaaoslo.no/
+    ("Blå" "https://www.blaaoslo.no/api/eventsEdge?" blaa :json (59.920284 10.752836))
     ("Mir" "https://www.facebook.com/mirlufthavna/events?locale=nb_NO" facebook (59.921667 10.761053)) ;; Non-Facebook available  https://www.lufthavna.no/mir-events
     ("Victoria" "https://nasjonaljazzscene.no/arrangement/" victoria (59.914109 10.738198))
     ("Rockefeller" "http://rockefeller.no/index.html" rockefeller :multi (59.916125 10.750050))
@@ -1814,6 +1814,22 @@ no further processing).  URL is either a string or a parsed URL."
 			 (shr-expand-url
 			  (dom-attr (dom-by-tag event 'a) 'href))
 			 (dom-texts (dom-by-tag event 'h2)))))
+
+(defun csid-parse-blaa (json)
+  (cl-loop for event across json
+	   for iid = (cdr (assq 'id event))
+	   collect (list
+		    (csid-parse-iso8601 (cdr (assq 'start_time event)))
+		    (format "https://www.blaaoslo.no/events/%s/%s"
+			    (downcase (string-replace
+				       " " "-"
+				       (string-trim
+					(replace-regexp-in-string
+					 "[^a-zA-Z ]"
+					 ""
+					 (cdr (assq 'name event))))))
+			    iid)
+		    (cdr (assq 'name event)))))
 
 (provide 'csid)
 

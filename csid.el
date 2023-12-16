@@ -1823,7 +1823,7 @@ no further processing).  URL is either a string or a parsed URL."
 			 (dom-texts (dom-by-tag event 'h2)))))
 
 (defun csid--simplify-string (string)
-  (downcase (string-replace
+  (downcase (replace-regexp-in-string
 	     " " "-"
 	     (string-trim
 	      (replace-regexp-in-string

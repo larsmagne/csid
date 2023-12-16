@@ -767,14 +767,18 @@ no further processing).  URL is either a string or a parsed URL."
 		     (list time
 			   (replace-regexp-in-string "[?].*" "" link)
 			   desc))))
-	   
+
+(defun csid--filter-date (string)
+  (and (csid-valid-date-p string)
+       string))
+
 (defun csid-parse-facebook-time (time)
   (or (and (equal time "HAPPENING NOW")
 	   (format-time-string "%F"))
-      (csid-parse-short-month time)
-      (csid-parse-short-yearless-month time)
-      (csid-parse-american-short-month time)
-      (csid-parse-short-american-yearless-month time)
+      (csid--filter-date (csid-parse-short-month time))
+      (csid--filter-date (csid-parse-short-yearless-month time))
+      (csid--filter-date (csid-parse-american-short-month time))
+      (csid--filter-date (csid-parse-short-american-yearless-month time))
       (and (string-match "TODAY" time)
 	   (format-time-string "%F"))
       (and (string-match "TOMORROW" time)
@@ -1236,8 +1240,8 @@ no further processing).  URL is either a string or a parsed URL."
     0))
 
 (defun csid-valid-date-p (date)
-  (and (= (length date) 10)
-       (string-match "^[-0-9]+$" date)))
+  (and (stringp date)
+       (string-match "\\`[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]\\'" date)))
 
 (defun csid-parse-new (dom)
   (switch-to-buffer (get-buffer-create "*scratch*"))

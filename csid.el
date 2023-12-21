@@ -551,7 +551,8 @@ no further processing).  URL is either a string or a parsed URL."
 	    (string-to-number (match-string 1 string)))))
 
 ;; "Ma. 23. sep. "
-(defun csid-parse-short-yearless-month (string &optional englishp)
+(defun csid-parse-short-yearless-month (string &optional englishp
+					       this-year-only)
   (when (string-match (format "\\([0-9]+\\)[^0-9]+\\(%s\\)"
 			      (mapconcat
 			       (lambda (month)
@@ -570,10 +571,12 @@ no further processing).  URL is either a string or a parsed URL."
 			   csid-english-months
 			 csid-months))
 		      :test 'equalp))
-     (string-to-number (match-string 1 string)))))
+     (string-to-number (match-string 1 string))
+     this-year-only)))
 
 ;; "Tue, jun 29. "
-(defun csid-parse-short-american-yearless-month (string)
+(defun csid-parse-short-american-yearless-month (string
+						 &optional this-year-only)
   (when (string-match (format "\\(%s\\).*?\\([0-9]+\\)"
 			      (mapconcat
 			       (lambda (month)
@@ -588,7 +591,8 @@ no further processing).  URL is either a string or a parsed URL."
 			 (substring month 0 3))
 		       csid-english-months)
 		      :test 'equalp))
-     (string-to-number (match-string 2 string)))))
+     (string-to-number (match-string 2 string))
+     this-year-only)))
 
 ;; "aug 23"
 (defun csid-parse-short-reverse-yearless-month (string &optional englishp)
@@ -776,9 +780,11 @@ no further processing).  URL is either a string or a parsed URL."
   (or (and (equal time "HAPPENING NOW")
 	   (format-time-string "%F"))
       (csid--filter-date (csid-parse-short-month time))
-      (csid--filter-date (csid-parse-short-yearless-month time))
       (csid--filter-date (csid-parse-american-short-month time))
-      (csid--filter-date (csid-parse-short-american-yearless-month time))
+      (csid--filter-date
+       (csid-parse-short-american-yearless-month time t))
+      (csid--filter-date
+       (csid-parse-short-yearless-month time t))
       (and (string-match "TODAY" time)
 	   (format-time-string "%F"))
       (and (string-match "TOMORROW" time)

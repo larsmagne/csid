@@ -553,7 +553,7 @@ no further processing).  URL is either a string or a parsed URL."
 ;; "Ma. 23. sep. "
 (defun csid-parse-short-yearless-month (string &optional englishp
 					       this-year-only)
-  (when (string-match (format "\\([0-9]+\\)[^0-9]+\\(%s\\)"
+  (when (string-match (format "\\([0-9]+\\)[^0-9]+\\(%s\\)\\b"
 			      (mapconcat
 			       (lambda (month)
 				 (substring month 0 3))

@@ -137,6 +137,7 @@
     ("Cue" "https://www.cueoslo.no/arrangementer" cue (59.92896333322219 10.758125691312799))
     ("Dunk" "https://www.facebook.com/dunkoslo/events" facebook (59.91579182575868 10.750933652420361))
     ("Becco" "https://www.facebook.com/oslobecco/events" facebook (59.91670717898022 10.737669752399908))
+    ("Goldie" "https://www.goldie.no/api/eventsEdge?" goldie :json (59.54581 10.45038))
     ))
 
 (defvar csid-database nil)
@@ -1948,6 +1949,15 @@ no further processing).  URL is either a string or a parsed URL."
 (defun csid-extra-headers-gamla ()
   '(("X-Request-Domain" . "https://gamla.no")))
 
+(defun csid-parse-goldie (json)
+  (cl-loop for event across json
+	   collect
+	   (list (csid-parse-iso8601 (cdr (assq 'start_time event)))
+		 (format "https://www.goldie.no/events/%s/%s"
+			 (csid--simplify-string
+			  (cdr (assq 'name event)))
+			 (cdr (assq 'id event)))
+		 (cdr (assq 'name event)))))
 
 (provide 'csid)
 

@@ -780,3 +780,15 @@ div.message {
   width: 40px !important;
   height: 60px !important;
 }
+
+.pika-wrap > a {
+  width: 440px;
+  text-align: center;
+  cursor: pointer;
+  background: linear-gradient(to bottom, #40a040 0%, #207020 100%);
+  color: white;
+  padding: 10px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  display: inline-block;
+}

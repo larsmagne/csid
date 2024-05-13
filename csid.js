@@ -1082,6 +1082,11 @@ function chooseDate() {
   wrap.style.width = window.innerWidth + "px";
   wrap.appendChild(picker.el);
   document.body.appendChild(wrap);
+  $(".pika-wrap").append("<a href='#' id='calendar-close'>Close</a>");
+  $("#calendar-close").bind("click", function() {
+    $(".pika-wrap").remove();
+    return false;
+  });
   return false;
 }
 

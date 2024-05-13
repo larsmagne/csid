@@ -208,7 +208,7 @@ function addNavigation() {
   });
 
   if (mobilep) {
-    if (phoneGap && device.platform != "Win32NT")
+    if (phoneGap)
       addLogos();
     else
       loadLogos(mobilep);
@@ -556,8 +556,7 @@ function actionEventMenu(node, venue) {
   var exportString = "";
   var logo = "logos/larger/" + fixName(venue);
   if (phoneGap) {
-    if (device.platform != "Win32NT")
-      exportString = "<a href='#' id='export-event'>Export Event to Calendar</a>";
+    exportString = "<a href='#' id='export-event'>Export Event to Calendar</a>";
     exportString += "<a href='#' id='share-event'>Share Event</a>";
     if (! existingLogos[fixName(venue)])
       logo = "https://csid.no/logos/larger/" + fixName(venue);
@@ -1714,7 +1713,7 @@ function isSafari() {
 
 function imgur(url) {
   var ext = ".webp";
-  if (isSafari())
+  if (isSafari() || phoneGap)
     ext = ".png";
   return url + ext;
 }

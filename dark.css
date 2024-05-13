@@ -23,3 +23,11 @@ div.help a {
 div.summary {
   background: linear-gradient(to bottom, #404040 0%, #202020 100%);
 }
+
+td#event-text, td#event-image {
+  background: black !important;
+}
+
+div.outer-venue-logo {
+  background: black !important;
+}

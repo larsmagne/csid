@@ -870,11 +870,15 @@ function miscMenu() {
     pgString = "<a href='#' id='reload'>Reload Data</a>";
     appString = "";
   }
+  var darkString = "<a href='#' id='dark-mode' value='enable'>Dark Mode</a>";
+  if (getCookie("dark") == "enabled")
+    darkString = "<a href='#' id='dark-mode' value='disable'>Light Mode</a>";
   colorbox("<a href='#' id='show-venues'>Choose Venues to Exclude</a><a href='#' id='show-map'>Show Today's Events on a Map</a>" +
 	   (true? "<a href='#' id='list-closest'>List Today's Nearest Events</a>": "") +
 	   "<a href='#' id='list-new'>List New Events</a><a href='#' id='export-calendar'>Export Calendar</a><a href='#' id='sort-method'>" +
 	   sortString +
 	   "</a><a href='#' id='choose-date'>Choose Date</a><a href='#' id='search'>Search</a>" +
+	   darkString +
 	   summaryString +
 	   restoreString +
 	   goingString +
@@ -910,6 +914,16 @@ function miscMenu() {
   $("#google").bind("click", function() {
     closeColorbox();
     document.location.href = "https://play.google.com/store/apps/details?id=no.ingebrigtsen.csid";
+  });
+  $("#dark-mode").bind("click", function() {
+    var css = document.getElementById("dark-css");
+    if ($("#dark-mode").attr("value") == "enable") {
+      css.disabled = false;
+      localStorage.setItem("dark", "enabled");
+    } else {
+      css.disabled = true;
+      localStorage.setItem("dark", "disabled");
+    }
   });
   $("#export-calendar").hide();
   $("#export-calendar").bind("click", function() {

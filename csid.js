@@ -454,7 +454,10 @@ function sortByDistance() {
     sortByDistanceCont();
   }, function() {
     // On failure to get the position, just center somewhere.
-    colorbox("Unable to get the current location.");
+    colorbox("Unable to get the current location.<div><a href='#' id='csid-close'>Close</a></div>");
+  }, {
+    enableHighAccuracy: true,
+    timeout : 5000
   });
 }
 

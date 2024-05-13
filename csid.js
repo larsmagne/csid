@@ -561,11 +561,12 @@ function actionEventMenu(node, venue) {
     if (! existingLogos[fixName(venue)])
       logo = "https://csid.no/logos/larger/" + fixName(venue);
   }
-  colorbox("<div id='event-summary'><table><tr><td id='event-image'><tr><td id='event-text'></table></div><a id='event-link' href='" + link +
+  colorbox("<table id='event-summary'><tr><td id='event-image'><tr><td id='event-text'><tr><td><a id='event-link' href='" + link +
 	   "'>Display the event web page</a><a href='#' id='mark-event'>" +
 	   type + "</a>" + exportString +
 	   "<a href='#' id='csid-close'>Close</a><div class='outer-venue-logo'><img src='" + imgur(logo) +
-	   "' srcset='" + imgur2x(logo) + " 2x'></div>");
+	   "' srcset='" + imgur2x(logo) + " 2x'></div></table>");
+  $("#event-summary")[0].style.height = window.innerHeight - 20 + "px";
   $("#mark-event").bind("click", function() {
     toggleShow(id, $.inArray(id, shows) == -1);
     closeColorbox();

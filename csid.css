@@ -346,8 +346,19 @@ div#large-heading div.subtitle {
     font-weight: bold;
     width: 100%;
   }
-  td.event-text, td#event-image {
+  td#event-text, td#event-image {
+    background: white !important;
     text-align: center;
+  }
+  td#event-text {
+    height: 100%;
+  }
+  table#event-summary {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  table#event-summary td {
+    margin: 0px;
   }
   div.event-text div {
     padding: 20px;
@@ -521,25 +532,6 @@ div.summary div {
 div.summary img {
   float: left;
   padding-right: 20px;
-}
-
-div#event-summary {
-  width: 100%;
-  background-color: white;
-}
-
-div#event-summary table {
-  padding: 0px;
-  margin: 0px;
-  border-collapse: separate;
-}
-
-div#event-summary table td#event-text {
-  padding: 20px;
-}
-
-div#event-summary table td {
-  margin: 0px;
 }
 
 body {

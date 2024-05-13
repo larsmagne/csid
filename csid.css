@@ -767,12 +767,14 @@ div.message {
 }
 
 .pika-button {
-  font-size: 30px !important;
-  padding: 15px !important;
+  font-size: 25px !important;
+  padding: 10px !important;
+  padding-top: 15px !important;
+  padding-bottom: 15px !important;
 }
 
 .pika-lendar {
-  width: 440px !important;
+  width: 350px !important;
 }
 
 .pika-prev,
@@ -782,7 +784,7 @@ div.message {
 }
 
 .pika-wrap > a {
-  width: 440px;
+  width: 350px;
   text-align: center;
   cursor: pointer;
   background: linear-gradient(to bottom, #40a040 0%, #207020 100%);

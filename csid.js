@@ -452,9 +452,10 @@ function sortByDistance() {
   navigator.geolocation.getCurrentPosition(function(pos) {
     homePos = [pos.coords.latitude, pos.coords.longitude];
     sortByDistanceCont();
-  }, function() {
+  }, function(err) {
     // On failure to get the position, just center somewhere.
-    colorbox("Unable to get the current location.<div><a href='#' id='csid-close'>Close</a></div>");
+    colorbox("Unable to get the current location: " + err.message +
+	     "<div><a href='#' id='csid-close'>Close</a></div>");
   }, {
     enableHighAccuracy: true,
     timeout : 5000
@@ -861,7 +862,6 @@ function miscMenu() {
   var restoreString = "";
   if (limitedDisplay)
     restoreString = "<a href='#' id='restore'>Restore Events</a>";
-  var summaryString = "<a href='#' id='menu-summaries'>Load Summaries</a>";
   var goingString = "";
   $.map(getSettings("shows"), function(id) {
     if ($("#event-" + id).length)
@@ -882,7 +882,6 @@ function miscMenu() {
 	   sortString +
 	   "</a><a href='#' id='choose-date'>Choose Date</a><a href='#' id='search'>Search</a>" +
 	   darkString +
-	   summaryString +
 	   restoreString +
 	   goingString +
 	   pgString +

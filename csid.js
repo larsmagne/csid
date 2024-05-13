@@ -865,7 +865,7 @@ function miscMenu() {
       goingString = "<a href='#' id='going'>Display Events I'm Going To</a>";
   });
   var pgString = "";
-  var appString = "<div class='apps'><img src='assets/apple.png' id='apple'><img src='assets/google.png' id='google'><img src='assets/windows.png' id='windows'></div>";
+  var appString = "<div class='apps'><img src='assets/apple.png' id='apple'><img src='assets/google.png' id='google'>";
   if (phoneGap) {
     pgString = "<a href='#' id='reload'>Reload Data</a>";
     appString = "";
@@ -910,10 +910,6 @@ function miscMenu() {
   $("#google").bind("click", function() {
     closeColorbox();
     document.location.href = "https://play.google.com/store/apps/details?id=no.ingebrigtsen.csid";
-  });
-  $("#windows").bind("click", function() {
-    closeColorbox();
-    document.location.href = "https://www.microsoft.com/en-us/store/apps/concerts-in-oslo/9nblggh6c4lv";
   });
   $("#export-calendar").hide();
   $("#export-calendar").bind("click", function() {

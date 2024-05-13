@@ -741,3 +741,42 @@ div.message {
     word-wrap: break-word;
 }
 
+.pika-wrap {
+  background: linear-gradient(to bottom, #40a040 0%, #105010 100%);
+  position: fixed;
+  display: block;
+  top: 0px;
+  left: 0px;
+  height: 100%;
+  width: 100%;
+  z-index: 2000;
+  text-align: center;
+}
+
+.pika-single {
+  border: 0px !important;
+  display: inline-block !important;
+}
+
+.pika-label {
+  font-size: 20px !important;
+}
+
+.pika-table th {
+  font-size: 20px !important;
+}
+
+.pika-button {
+  font-size: 30px !important;
+  padding: 15px !important;
+}
+
+.pika-lendar {
+  width: 440px !important;
+}
+
+.pika-prev,
+.pika-next {
+  width: 40px !important;
+  height: 60px !important;
+}

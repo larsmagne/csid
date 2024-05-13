@@ -871,7 +871,7 @@ function miscMenu() {
     appString = "";
   }
   colorbox("<a href='#' id='show-venues'>Choose Venues to Exclude</a><a href='#' id='show-map'>Show Today's Events on a Map</a>" +
-	   (phoneGap? "<a href='#' id='list-closest'>List Today's Nearest Events</a>": "") +
+	   (true? "<a href='#' id='list-closest'>List Today's Nearest Events</a>": "") +
 	   "<a href='#' id='list-new'>List New Events</a><a href='#' id='export-calendar'>Export Calendar</a><a href='#' id='sort-method'>" +
 	   sortString +
 	   "</a><a href='#' id='choose-date'>Choose Date</a><a href='#' id='search'>Search</a>" +
@@ -984,7 +984,7 @@ function miscMenu() {
   var func = function() {
     $("table").show();
     closeColorbox();
-    $(".pika-single").remove();
+    $(".pika-wrap").remove();
     return false;
   };
   $("#csid-close").bind("click", func);
@@ -1059,7 +1059,7 @@ function chooseDate() {
       picker._d.setHours(5);
       var iso = picker._d.toISOString().substring(0, 10);
       $("table").show();
-      $(".pika-single").remove();
+      $(".pika-wrap").remove();
       var first = false;
       $("tr").each(function(key, node) {
 	var dat = node.getAttribute("date");
@@ -1076,14 +1076,12 @@ function chooseDate() {
       }
     }
   });
-  document.body.appendChild(picker.el);
-  // Ensure that the calendar is visible if the page is scrolled.
-  var box = $(".pika-single");
-  box.style.position = "fixed";
-  box.style.left = "0px";
-  box.style.top = "0px";
-  box.style.height = $(window).height() + "px";
-  box.style.width = $(window).width() + "px";
+  var wrap = document.createElement("div");
+  wrap.className = "pika-wrap";
+  wrap.style.height = window.innerHeight + "px";
+  wrap.style.width = window.innerWidth + "px";
+  wrap.appendChild(picker.el);
+  document.body.appendChild(wrap);
   return false;
 }
 

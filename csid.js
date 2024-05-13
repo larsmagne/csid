@@ -566,7 +566,7 @@ function actionEventMenu(node, venue) {
 	   type + "</a>" + exportString +
 	   "<a href='#' id='csid-close'>Close</a><div class='outer-venue-logo'><img src='" + imgur(logo) +
 	   "' srcset='" + imgur2x(logo) + " 2x'></div></table>");
-  $("#event-summary")[0].style.height = window.innerHeight - 20 + "px";
+  $("#event-summary")[0].style.height = window.innerHeight + "px";
   $("#mark-event").bind("click", function() {
     toggleShow(id, $.inArray(id, shows) == -1);
     closeColorbox();

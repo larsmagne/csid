@@ -26,6 +26,7 @@ div.summary {
 
 td#event-text, td#event-image {
   background: black !important;
+  color: white !important;
 }
 
 div.outer-venue-logo {

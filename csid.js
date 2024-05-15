@@ -449,6 +449,37 @@ function sortByScanOrder() {
 }
 
 function sortByDistance() {
+  if (!phoneGap) {
+    sortByDistanceGeo();
+    return;
+  }
+  
+  var permissions = cordova.plugins.permissions;
+
+  permissions.hasPermission
+  (permissions.ACCESS_COARSE_LOCATION,
+   function(status) {
+     if (!status.hasPermission) {
+       // Does not have the required permission, request for the same.
+       permissions.requestPermission
+       (permissions.ACCESS_COARSE_LOCATION, 
+	function(status) {
+	  if (status.hasPermission) {
+	    // Has permission already, fetch the location.
+	    sortByDistanceGeo();
+	  }
+	}, function () {
+	  colorbox("Unable to get permissions: " + err.message +
+		   "<div><a href='#' id='csid-close'>Close</a></div>");
+	});
+     } else {
+       // Has permission already, fetch the location.
+       sortByDistanceGeo();
+     }
+   });
+}
+
+function sortByDistanceGeo() {
   navigator.geolocation.getCurrentPosition(function(pos) {
     homePos = [pos.coords.latitude, pos.coords.longitude];
     sortByDistanceCont();
@@ -458,7 +489,8 @@ function sortByDistance() {
 	     "<div><a href='#' id='csid-close'>Close</a></div>");
   }, {
     enableHighAccuracy: true,
-    timeout : 5000
+    timeout : 6000,
+    maximumAge: 0
   });
 }
 

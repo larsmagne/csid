@@ -258,7 +258,6 @@ div#large-heading div.subtitle {
     margin: 0px;
   }
   div#body-container {
-    width: auto;
     flex-basis: initial;
     flex-grow: initial;
     flex-shrink: initial;

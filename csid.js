@@ -594,8 +594,7 @@ function actionEventMenu(node, venue) {
   if (phoneGap) {
     exportString = "<a href='#' id='export-event'>Export Event to Calendar</a>";
     exportString += "<a href='#' id='share-event'>Share Event</a>";
-    if (! existingLogos[fixName(venue)])
-      logo = "https://csid.no/logos/larger/" + fixName(venue);
+    logo = "https://csid.no/logos/larger/" + fixName(venue);
   }
   colorbox("<table id='event-summary'><tr><td id='event-image'><tr><td id='event-text'><tr><td><a id='event-link' href='" + link +
 	   "'>Display the event web page</a><a href='#' id='mark-event'>" +

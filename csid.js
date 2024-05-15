@@ -1158,7 +1158,7 @@ function exportEvent(id) {
 
   // create an event silently (on Android < 4 an interactive dialog is shown)
   //window.plugins.calendar.createEvent(title, venue, "",
-//				      startDate, endDate, success, error);
+  //				      startDate, endDate, success, error);
   window.plugins.calendar.createEventInteractively(title, venue, "",
 						   startDate, endDate,
 						   success,error);

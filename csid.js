@@ -659,10 +659,8 @@ function actionVenueMenu(name) {
     venues = "Include events from " + displayName;
 
   var logo = "logos/larger/" + fixName(name);
-  if (phoneGap) {
-    if (! existingLogos[fixName(name)])
-      logo = "https://csid.no/logos/larger/" + fixName(name);
-  }
+  if (phoneGap)
+    logo = "https://csid.no/logos/larger/" + fixName(venue);
   colorbox("<div class='outer-venue-logo'><img src='" + imgur(logo) +
 	   "' srcset='" + imgur2x(logo) +
 	   " 2x'></div><a href='#' id='venue-limit'>" +

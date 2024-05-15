@@ -449,7 +449,7 @@ function sortByScanOrder() {
 }
 
 function sortByDistance() {
-  if (!phoneGap) {
+  if (!phoneGap || device.platform != "Android") {
     sortByDistanceGeo();
     return;
   }

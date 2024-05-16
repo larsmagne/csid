@@ -57,7 +57,11 @@ function addNavigation() {
   });
 
   var css = document.getElementById("dark-css");
-  if (! getCookie("dark") || getCookie("dark") == "disabled") {
+  if (! getCookie("dark")) {
+    var osdark = window.matchMedia('(prefers-color-scheme:dark)').matches;
+    $("#dark").prop("checked", osdark);
+    css.disabled = !osdark;
+  } else if (getCookie("dark") == "disabled") {
     css.disabled = true;
   } else {
     $("#dark").prop("checked", true);

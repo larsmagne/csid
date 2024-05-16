@@ -37,3 +37,7 @@ div.outer-venue-logo {
 div#meta-hidden div.export {
   background: linear-gradient(to bottom, #303030 0%, #404040 45px);
 }
+
+div.margin-image-wrap {
+  background: linear-gradient(to bottom, #303030 0%, #404040 100%);
+}

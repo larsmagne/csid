@@ -26,6 +26,7 @@ function setSettings(name, value) {
 }
 
 var lastVenue = false;
+var isDark = false;
 
 function addNavigation() {
   // Default to not showing quizes.
@@ -50,9 +51,11 @@ function addNavigation() {
     if (css.disabled) {
       css.disabled = false;
       localStorage.setItem("dark", "enabled");
+      isDark = true;
     } else {
       css.disabled = true;
       localStorage.setItem("dark", "disabled");
+      isDark = false;
     }
   });
 
@@ -61,11 +64,14 @@ function addNavigation() {
     var osdark = window.matchMedia('(prefers-color-scheme:dark)').matches;
     $("#dark").prop("checked", osdark);
     css.disabled = !osdark;
+    isDark = osdark;
   } else if (getCookie("dark") == "disabled") {
     css.disabled = true;
+    isDark = false;
   } else {
     $("#dark").prop("checked", true);
     css.disabled = false;
+    isDark = true;
   }
   
   $("#meta-hidden").append("<div class='export'><span><a id='dshow-map'>Show today's events on a map</a></span></div>");
@@ -594,11 +600,11 @@ function actionEventMenu(node, venue) {
   if ($.inArray(id, shows) != -1)
     type = "I'm not going after all";
   var exportString = "";
-  var logo = "logos/larger/" + fixName(venue);
+  var logo = (isDark? "dark-": "") + "logos/larger/" + fixName(venue);
   if (phoneGap) {
     exportString = "<a href='#' id='export-event'>Export Event to Calendar</a>";
     exportString += "<a href='#' id='share-event'>Share Event</a>";
-    logo = "https://csid.no/logos/larger/" + fixName(venue);
+    logo = "https://csid.no/" + logo;
   }
   colorbox("<table id='event-summary'><tr><td id='event-image'><tr><td id='event-text'><tr><td><a id='event-link' href='" + link +
 	   "'>Display the event web page</a><a href='#' id='mark-event'>" +
@@ -662,9 +668,9 @@ function actionVenueMenu(name) {
   if ($.inArray(name, deniedVenues) != -1)
     venues = "Include events from " + displayName;
 
-  var logo = "logos/larger/" + fixName(name);
+  var logo = (isDark? "dark-": "") + "logos/larger/" + fixName(name);
   if (phoneGap)
-    logo = "https://csid.no/logos/larger/" + fixName(name);
+    logo = "https://csid.no/" + logo;
   colorbox("<div class='outer-venue-logo'><img src='" + imgur(logo) +
 	   "' srcset='" + imgur2x(logo) +
 	   " 2x'></div><a href='#' id='venue-limit'>" +
@@ -751,12 +757,15 @@ function addLogos() {
     td.className = "thumb-logo";
 
     if (phoneGap && ! existingLogos[fixName(venue)]) {
-      td.innerHTML = "<img src='https://csid.no/logos/thumb/" +
+      td.innerHTML = "<img src='https://csid.no/" + (isDark? "dark-": "") +
+	"logos/thumb/" +
 	imgur(fixName(venue)) + "' srcset='https://csid.no/logos/thumb/" +
 	imgur2x(fixName(venue)) + " 2x'></td>";
     } else {
-      td.innerHTML = "<img src='logos/thumb/" + imgur(fixName(venue)) +
-	"' srcset='logos/thumb/" + imgur2x(fixName(venue)) + " 2x'>";
+      td.innerHTML = "<img src='" + (isDark? "dark-": "") +
+	"logos/thumb/" + imgur(fixName(venue)) +
+	"' srcset='" + (isDark? "dark-": "") +
+	"logos/thumb/" + imgur2x(fixName(venue)) + " 2x'>";
     }
   });
 }
@@ -785,26 +794,15 @@ function addDesktopLogos() {
       focus = true;
       image.onload = function() {
 	if (focus) {
-	  if (getCookie("dark") == "enabled") {
-	    var pos = $(td).offset();
-	    td.innerHTML = "<div class='logo-background'></div>";
-	    var ratio = window.devicePixelRatio;
-	    if (! ratio)
-	      ratio = 1;
-	    $(td.childNodes[0]).css({width: (30+image.width) / ratio + "px",
-				     top: pos.top + 28 -
-				     (image.height / ratio / 2) + "px",
-				     left: pos.left + 10 + "px"});
-	    td.childNodes[0].appendChild(image);
-	  } else {
-	    td.innerHTML = "";
-	    td.appendChild(image);
-	  }
+	  td.innerHTML = "";
+	  td.appendChild(image);
 	}
       };
-      image.setAttribute("srcset", "logos/thumb/" + imgur2x(fixName(venue)) +
+      image.setAttribute("srcset", (isDark? "dark-": "") + "logos/thumb/" +
+			 imgur2x(fixName(venue)) +
 			 " 2x");
-      image.src = "logos/thumb/" + imgur(fixName(venue));
+      image.src = (isDark? "dark-": "") + "logos/thumb/" +
+	imgur(fixName(venue));
     });
     $(td).mouseleave(function() {
       focus = false;
@@ -831,9 +829,11 @@ function loadLogo(mobilep, venues, index) {
     if (index < (venues.length - 1))
       loadLogo(mobilep, venues, index + 1);
   };
-  image.setAttribute("srcset", "logos/thumb/" + imgur2x(fixName(venue)) +
+  image.setAttribute("srcset", (isDark? "dark-": "") + "logos/thumb/" +
+		     imgur2x(fixName(venue)) +
 		     " 2x");
-  image.src = "logos/thumb/" + imgur(fixName(venue));
+  image.src = (isDark? "dark-": "") + "logos/thumb/" +
+    imgur(fixName(venue));
 }
 
 function hideDuplicates() {
@@ -907,7 +907,7 @@ function miscMenu() {
     appString = "";
   }
   var darkString = "<a href='#' id='dark-mode' value='enable'>Dark Mode</a>";
-  if (getCookie("dark") == "enabled")
+  if (isDark)
     darkString = "<a href='#' id='dark-mode' value='disable'>Light Mode</a>";
   colorbox("<a href='#' id='show-venues'>Choose Venues to Exclude</a><a href='#' id='show-map'>Show Today's Events on a Map</a>" +
 	   (true? "<a href='#' id='list-closest'>List Today's Nearest Events</a>": "") +
@@ -955,9 +955,11 @@ function miscMenu() {
     if ($("#dark-mode").attr("value") == "enable") {
       css.disabled = false;
       localStorage.setItem("dark", "enabled");
+      isDark = true;
     } else {
       css.disabled = true;
       localStorage.setItem("dark", "disabled");
+      isDark = false;
     }
   });
   $("#export-calendar").hide();
@@ -1670,8 +1672,10 @@ function doAd(id, venue, margin) {
       $text.append("<p><a href=\"" + url + "\">Go to the event page</a>");
       $ewrap.append($text);
 
-      var $img = $("<img src='logos/larger/" + imgur(fixName(venue)) +
-		   "' srcset='logos/larger/" + imgur2x(fixName(venue)) +
+      var $img = $("<img src='" + (isDark? "dark-": "") +
+		   "logos/larger/" + imgur(fixName(venue)) +
+		   "' srcset='" + (isDark? "dark-": "") +
+		   "logos/larger/" + imgur2x(fixName(venue)) +
 		   " 2x'>");
       $img.css({"max-width": width - 10});
       var $imgwrap = $("<div class='margin-image-wrap'></div>");

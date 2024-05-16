@@ -710,6 +710,8 @@ div#meta-hidden div.export {
     margin-left: 0px;
     display: flex;
     align-items: center;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 div#meta-hidden div.export span {
   display: inline-block;

@@ -57,6 +57,7 @@ function addNavigation() {
       localStorage.setItem("dark", "disabled");
       isDark = false;
     }
+    swapDarkLightLogos();
   });
 
   var css = document.getElementById("dark-css");
@@ -961,6 +962,7 @@ function miscMenu() {
       localStorage.setItem("dark", "disabled");
       isDark = false;
     }
+    swapDarkLightLogos();
   });
   $("#export-calendar").hide();
   $("#export-calendar").bind("click", function() {
@@ -1774,4 +1776,21 @@ function imgur(url) {
 
 function imgur2x(url) {
   return imgur(url + "x2");
+}
+
+function swapDarkLightLogos() {
+  $('img').each(function() {
+    if (this.src) {
+      var match = this.src.match(/(dark-)?logos\//);
+      if (match) {
+	if (match[1]) {
+	  this.src = this.src.replace(/dark-logos\//, "logos/");
+	  this.srcset = this.srcset.replace(/dark-logos\//g, "logos/");
+	} else {
+	  this.src = this.src.replace(/logos\//, "dark-logos/");
+	  this.srcset = this.srcset.replace(/logos\//g, "dark-logos/");
+	}
+      }
+    }
+  });
 }

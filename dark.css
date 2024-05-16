@@ -14,6 +14,7 @@ a {
 table.events tr {
   cursor: pointer;
   background: linear-gradient(to bottom, #303030 0%, #404040 45px);
+  color: #e0e0e0 !important;
 }
 
 div.help a {

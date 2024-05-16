@@ -63,6 +63,8 @@ function addNavigation() {
   var css = document.getElementById("dark-css");
   if (! getCookie("dark")) {
     var osdark = window.matchMedia('(prefers-color-scheme:dark)').matches;
+    if (phoneGap && device.platform == "Android")
+      osdark = false;
     $("#dark").prop("checked", osdark);
     css.disabled = !osdark;
     isDark = osdark;

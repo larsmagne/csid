@@ -1957,7 +1957,28 @@ no further processing).  URL is either a string or a parsed URL."
 			 (cdr (assq 'id event)))
 		 (cdr (assq 'name event)))))
 
+(defun csid-filter-some-doubles ()
+  (cl-loop for elem in (seq-copy csid-database)
+	   for url = (nth 2 elem)
+	   when (and url (string-match "/events/event/" url))
+	   do (let* ((match (replace-regexp-in-string
+			     "/events/event/" "/events/[^/]+/"
+			     (regexp-quote url)))
+		     (removes
+		      (cl-loop for nelem in csid-database
+			       for url = (nth 2 nelem)
+			       when (and url
+					 (not (string-match
+					       "/events/event/" url))
+					 (string-match match url))
+			       collect
+			       (progn
+				 (setf (nth 4 elem) (nth 4 nelem))
+				 (setf (nth 5 elem) (nth 5 nelem))
+				 nelem))))
+		(dolist (e removes)
+		  (setq csid-database (delq e csid-database))))))
+
 (provide 'csid)
 
 ;;; csid.el ends here
-

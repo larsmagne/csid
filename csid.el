@@ -1848,9 +1848,7 @@ no further processing).  URL is either a string or a parsed URL."
 	   for iid = (cdr (assq 'id event))
 	   collect (list
 		    (csid-parse-iso8601 (cdr (assq 'start_time event)))
-		    (format "https://www.blaaoslo.no/events/%s/%s"
-			    (csid--simplify-string
-			     (cdr (assq 'name event)))
+		    (format "https://www.blaaoslo.no/events/event/%s"
 			    iid)
 		    (cdr (assq 'name event)))))
 
@@ -1858,9 +1856,7 @@ no further processing).  URL is either a string or a parsed URL."
   (cl-loop for event across (cdr (assq 'results json))
 	   collect
 	   (list (csid-parse-iso8601 (cdr (assq 'start_time event)))
-		 (format "https://www.broadcast.events/events/%s/%s"
-			 (csid--simplify-string
-			  (cdr (assq 'name event)))
+		 (format "https://www.broadcast.events/events/event/%s"
 			 (cdr (assq 'objectId event)))
 		 (cdr (assq 'name event)))))
 
@@ -1954,9 +1950,7 @@ no further processing).  URL is either a string or a parsed URL."
   (cl-loop for event across json
 	   collect
 	   (list (csid-parse-iso8601 (cdr (assq 'start_time event)))
-		 (format "https://www.goldie.no/events/%s/%s"
-			 (csid--simplify-string
-			  (cdr (assq 'name event)))
+		 (format "https://www.goldie.no/events/event/%s"
 			 (cdr (assq 'id event)))
 		 (cdr (assq 'name event)))))
 

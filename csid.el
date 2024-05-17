@@ -779,31 +779,34 @@ no further processing).  URL is either a string or a parsed URL."
        string))
 
 (defun csid-parse-facebook-time (time)
-  (or (and (equal time "HAPPENING NOW")
-	   (format-time-string "%F"))
-      (csid--filter-date (csid-parse-short-month time))
-      (csid--filter-date (csid-parse-american-short-month time))
-      (csid--filter-date
-       (csid-parse-short-american-yearless-month time t))
-      (csid--filter-date
-       (csid-parse-short-yearless-month time t))
-      (and (string-match "TODAY" time)
-	   (format-time-string "%F"))
-      (and (string-match "TOMORROW" time)
-	   (format-time-string "%F" (+ (float-time)
-				       (* 60 60 24))))
-      (and (string-match "\\(?:KOMMENDE\\|THIS\\) \\([^ ]+\\)" time)
-	   (when-let ((day-num
-		       (or (seq-position csid-weekdays
-					 (downcase (match-string 1 time)))
-			   (seq-position csid-english-weekdays
-					 (downcase (match-string 1 time)))))
-	               (start (float-time)))
-	     (while (not (= (1- (string-to-number
-				 (format-time-string "%u" start)))
-			    day-num))
-	       (cl-incf start (* 60 60 24)))
-	     (format-time-string "%F" start)))))
+  (let ((case-fold-search nil))
+    (or (and (equal time "HAPPENING NOW")
+	     (format-time-string "%F"))
+	(csid--filter-date (csid-parse-short-month time))
+	(csid--filter-date (csid-parse-american-short-month time))
+	(csid--filter-date
+	 (csid-parse-short-american-yearless-month time t))
+	(csid--filter-date
+	 (csid-parse-short-yearless-month time t))
+	(and (or (string-match "TODAY" time)
+		 (string-match "I DAG" time))
+	     (format-time-string "%F"))
+	(and (or (string-match "TOMORROW" time)
+		 (string-match "I MORGEN" time))
+	     (format-time-string "%F" (+ (float-time)
+					 (* 60 60 24))))
+	(and (string-match "\\(?:KOMMENDE\\|THIS\\) \\([^ ]+\\)" time)
+	     (when-let ((day-num
+			 (or (seq-position csid-weekdays
+					   (downcase (match-string 1 time)))
+			     (seq-position csid-english-weekdays
+					   (downcase (match-string 1 time)))))
+			(start (float-time)))
+	       (while (not (= (1- (string-to-number
+				   (format-time-string "%u" start)))
+			      day-num))
+		 (cl-incf start (* 60 60 24)))
+	       (format-time-string "%F" start))))))
 
 (defun csid-parse-victoria (dom)
   (cl-loop for elem in (dom-by-class dom "t2-post-link")

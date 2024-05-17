@@ -780,7 +780,7 @@ no further processing).  URL is either a string or a parsed URL."
 
 (defun csid-parse-facebook-time (time)
   (let ((case-fold-search nil))
-    (or (and (equal time "HAPPENING NOW")
+    (or (and (equal time "\\bHAPPENING NOW\\b")
 	     (format-time-string "%F"))
 	(csid--filter-date (csid-parse-short-month time))
 	(csid--filter-date (csid-parse-american-short-month time))
@@ -788,14 +788,14 @@ no further processing).  URL is either a string or a parsed URL."
 	 (csid-parse-short-american-yearless-month time t))
 	(csid--filter-date
 	 (csid-parse-short-yearless-month time t))
-	(and (or (string-match "TODAY" time)
-		 (string-match "I DAG" time))
+	(and (or (string-match "\\bTODAY\\b" time)
+		 (string-match "\\bI DAG\\b" time))
 	     (format-time-string "%F"))
-	(and (or (string-match "TOMORROW" time)
-		 (string-match "I MORGEN" time))
+	(and (or (string-match "\\bTOMORROW\\b" time)
+		 (string-match "\\bI MORGEN\\b" time))
 	     (format-time-string "%F" (+ (float-time)
 					 (* 60 60 24))))
-	(and (string-match "\\(?:KOMMENDE\\|THIS\\) \\([^ ]+\\)" time)
+	(and (string-match "\\b\\(?:KOMMENDE\\|THIS\\)\\b \\([^ ]+\\)" time)
 	     (when-let ((day-num
 			 (or (seq-position csid-weekdays
 					   (downcase (match-string 1 time)))

@@ -139,6 +139,7 @@
     ("Becco" "https://www.facebook.com/oslobecco/events" facebook (59.91670717898022 10.737669752399908))
     ("Goldie" "https://www.goldie.no/api/eventsEdge?" goldie :json (59.916117083029285, 10.751099916199234))
     ("Dans for voksne" "https://www.facebook.com/dansforvoksne/events" facebook (59.919166020881384 10.751964621462855))
+    ("GSF Skatepark" "https://www.facebook.com/groups/143736812328608/events" facebook (59.54186 10.46084))
     ))
 
 (defvar csid-database nil)

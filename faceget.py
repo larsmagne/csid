@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 
+# apt install python3-selenium
+
 import time
 import random
 from selenium import webdriver

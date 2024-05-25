@@ -13,7 +13,7 @@ def cookie():
                    'Tillat nødvendige og valgfrie informasjonskapsler']:
         try:
             accept = driver.find_element(By.XPATH,
-                                         "//button[@title='" + phrase + "']")
+                                         "//span[text()='" + phrase + "']")
             time.sleep(5)
             accept.click()
             return False

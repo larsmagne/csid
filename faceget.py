@@ -75,7 +75,7 @@ time.sleep(6)
 for elem in urls:
     print(elem)
     bits = elem.split()
-    times = 2
+    times = 4
     # Fetch the URL.
     driver.get(bits[1])
 

@@ -20,5 +20,7 @@ dark-images:
 	if [ ! -d dark-logos/thumb ]; then mkdir -p dark-logos/thumb; fi; \
 	if [ ! -d dark-logos/larger ]; then mkdir -p dark-logos/larger; fi; \
 	for img in logos/thumb/*.png logos/larger/*.png logos/thumb/*.webp logos/larger/*.webp; do \
-		convert "$$img" -bordercolor none -border 10x10 -background white -alpha background -channel A -blur 0x10 -level 0,70% "dark-$$img"; \
+		if [ ! -e "dark-$$img" ]; then \
+			convert "$$img" -bordercolor none -border 10x10 -background white -alpha background -channel A -blur 0x10 -level 0,70% "dark-$$img"; \
+               fi ; \
 	done

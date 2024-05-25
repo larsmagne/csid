@@ -76,31 +76,19 @@ for elem in urls:
     print(elem)
     bits = elem.split()
     times = 2
-    max = 3
     # Fetch the URL.
     driver.get(bits[1])
+
     # Push "See More" some times.
     while times > 0:
         times -= 1
-        for phrase in ['See More', 'Se flere', 'See more']:
-            try:
-                path = "//*[text()='" + phrase + "']"
-                more = driver.find_element(By.XPATH, path)
-                print("Got the more")
-                more.click()
-                time.sleep(random.randint(5, 20))
-                # If there's two of these, keep trying until the first
-                # goes away.
-                if len(driver.find_elements(By.XPATH, path)) > 1:
-                    times = 1
-            except NoSuchElementException:
-                pass
-        max -= 1
-        if max < 0:
-            times = 0
+        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        print("Scrolled")
+        time.sleep(random.randint(5, 20))
     html = driver.execute_script("return document.body.innerHTML;")
     with open("/tmp/face/face-" + bits[0] + ".html", "w") as f:
         f.write(html)
+    print("Saved")
     time.sleep(random.randint(200, 400))
 
 driver.quit()

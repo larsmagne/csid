@@ -10,16 +10,19 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 
 def cookie():
-    for phrase in ['Godta alle', 'Alle akzeptieren',
-                   'Tillat alle informasjonskapsler',
+    for phrase in ['Tillat alle informasjonskapsler',
+                   'Godta alle', 'Alle akzeptieren',
+                   'Allow all cookies',
                    'Tillat nødvendige og valgfrie informasjonskapsler']:
         try:
             accept = driver.find_element(By.XPATH,
-                                         "//span[text()='" + phrase + "']")
+                                         "(//div[contains(@aria-label, '" + phrase + "')])[2]")
+            print("Found button")
             time.sleep(5)
             accept.click()
             return False
-        except Exception:
+        except Exception as e:
+            print(e)
             pass
     return True
 

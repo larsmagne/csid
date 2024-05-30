@@ -140,6 +140,7 @@
     ("Goldie" "https://www.goldie.no/api/eventsEdge?" goldie :json (59.916117083029285, 10.751099916199234))
     ("Dans for voksne" "https://www.facebook.com/dansforvoksne/events" facebook (59.919166020881384 10.751964621462855))
     ("GSF Skatepark" "https://www.facebook.com/groups/143736812328608/events" facebook (59.54186 10.46084))
+    ("Cafe sør" "https://demo.broadcastapp.no/api/layoutWidgetCors?limit=99&venue=kmrRvBSVbc&recommended=false&hostname=www.cafesor.no&city=Oslo" broadcast :json (59.91419391358847, 10.748342873797283))
     ))
 
 (defvar csid-database nil)

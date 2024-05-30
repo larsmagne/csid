@@ -74,7 +74,7 @@
     ;;("NB" "http://www.nb.no/Hva-skjer/Arrangementer/Konserter" nasjonalbiblioteket)
     ("Uhørt" "https://www.facebook.com/uhortistroget/events" facebook (59.914105 10.748769))
     ("Kulturhuset" "https://www.facebook.com/kulturhusetioslo/events" facebook (59.914646 10.750909))
-    ("Kampen Bistro" "http://www.kampenbistro.no/hvaskjer" kampenbistro (59.913718003724746 10.780875043457623))
+    ("Kampen Bistro" "https://demo.broadcastapp.no/api/layoutWidgetCors?limit=99&venue=5MppeDjv0d&recommended=false&hostname=www.kampenbistro.no&city=Oslo" broadcast :json (59.913718003724746 10.780875043457623))
     ("Telenor Arena" "http://telenorarena.no/en/calendar" telenor (59.903079 10.624335))
     ("Postkontoret" "https://www.facebook.com/toyenpostkontor/events?key=events" facebook (59.914083 10.775254))
     ;;("Per på hjørnet" "http://www.pph.oslo.no/" pph :date)

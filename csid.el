@@ -143,6 +143,7 @@
     ("Cafe sør" "https://demo.broadcastapp.no/api/layoutWidgetCors?limit=99&venue=kmrRvBSVbc&recommended=false&hostname=www.cafesor.no&city=Oslo" broadcast :json (59.91419391358847 10.748342873797283))
     ("Ostara" "https://www.facebook.com/ostaraoslo/events" facebook (59.91068506254991 10.744316664597749))
     ("Hør Hør" "https://www.facebook.com/horhoroslo/events?locale=nb_NO" facebook (59.9152360516513 10.755624739766278))
+    ("Kruttverket" "https://www.facebook.com/Kruttverketkultuhus/events" facebook (59.90497972996859 10.801840197644571))
     ))
 
 (defun csid-yank-coordinates ()

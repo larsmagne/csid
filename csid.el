@@ -775,6 +775,7 @@ no further processing).  URL is either a string or a parsed URL."
 	   when (and link
 		     (not (string-match-p "invite to" desc))
 		     (not (string-match-p "Unread Reminder" desc))
+		     (not (string-match-p "Uleste Reminder" desc))
 		     (string-match-p "/events/" link)
 		     (string-match-p "\\`http" link)
 		     (cl-plusp (length desc)))

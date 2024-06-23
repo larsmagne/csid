@@ -774,9 +774,9 @@ no further processing).  URL is either a string or a parsed URL."
 	   for desc = (string-trim (dom-texts event))
 	   when (and link
 		     (not (string-match-p "invite to" desc))
-		     (not (string-match-p "Unread Reminder" desc))
+		     (not (string-match-p "Unread " desc))
 		     (not (string-match-p "^Unread " desc))
-		     (not (string-match-p "Uleste Reminder" desc))
+		     (not (string-match-p "Uleste " desc))
 		     (string-match-p "/events/" link)
 		     (string-match-p "\\`http" link)
 		     (cl-plusp (length desc)))

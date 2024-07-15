@@ -762,7 +762,8 @@ function addLogos() {
     if (phoneGap && ! existingLogos[fixName(venue)]) {
       td.innerHTML = "<img src='https://csid.no/" + (isDark? "dark-": "") +
 	"logos/thumb/" +
-	imgur(fixName(venue)) + "' srcset='https://csid.no/logos/thumb/" +
+	imgur(fixName(venue)) + "' srcset='https://csid.no/" +
+	(isDark? "dark-": "") + "logos/thumb/" +
 	imgur2x(fixName(venue)) + " 2x'></td>";
     } else {
       td.innerHTML = "<img src='" + (isDark? "dark-": "") +

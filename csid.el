@@ -1354,7 +1354,7 @@ no further processing).  URL is either a string or a parsed URL."
 	       (setq prev-date date))
       (insert "</table><div id='meta-misc'><div id='selector'></div></div></div><div id='rightmargin'>&nbsp;</div></div>")
       (unless summaries
-	(dolist (js '("jquery-3.3.1.min.js"
+	(dolist (js '("jquery-3.7.1.min.js"
 		      "jquery.cookie.js"
 		      "jquery.colorbox-min.js"
 		      "FileSaver.min.js"

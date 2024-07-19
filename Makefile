@@ -1,3 +1,5 @@
+dist: images dark-images deploy
+
 deploy:
 	rsync -av logos dark-logos \
 	assets csid.css dark.css csid.js sha1.js \

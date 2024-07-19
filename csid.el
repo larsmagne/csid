@@ -145,6 +145,7 @@
     ("Hør Hør" "https://www.facebook.com/horhoroslo/events?locale=nb_NO" facebook (59.9152360516513 10.755624739766278))
     ("Kruttverket" "https://www.facebook.com/Kruttverketkultuhus/events" facebook (59.90497972996859 10.801840197644571))
     ("Skatten" "https://www.facebook.com/skattenoslo/events?locale=nb_NO" facebook (59.91467923597354 10.775451513232271))
+    ("Juret" "https://demo.broadcastapp.no/api/layoutWidgetCors?limit=99&venue=ZXCuIo7pBo&recommended=false&hostname=www-juret-no.filesusr.com&city=Oslo" broadcast :json (59.91411193829676 10.72913033854441))
     ))
 
 (defun csid-yank-coordinates ()

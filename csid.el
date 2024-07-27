@@ -170,7 +170,7 @@
   (dolist (elem data)
     (if (or (not (and (nth 1 elem)
 		      (csid-valid-date-p (nth 1 elem))))
-	    (null (nth 3 elem)))
+	    (zerop (length (nth 3 elem))))
 	(message "Invalid data for %S" elem)
       (setcar (nthcdr 3 elem) (csid-clean-string (nth 3 elem)))
       (let ((old

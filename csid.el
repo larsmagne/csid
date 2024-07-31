@@ -146,6 +146,7 @@
     ("Kruttverket" "https://www.facebook.com/Kruttverketkultuhus/events" facebook (59.90497972996859 10.801840197644571))
     ("Skatten" "https://www.facebook.com/skattenoslo/events?locale=nb_NO" facebook (59.91467923597354 10.775451513232271))
     ("Juret" "https://demo.broadcastapp.no/api/layoutWidgetCors?limit=99&venue=ZXCuIo7pBo&recommended=false&hostname=www-juret-no.filesusr.com&city=Oslo" broadcast :json (59.91411193829676 10.72913033854441))
+    ("Gutvik ukentlig" "http://gutvik.com/ukentlig/" gutvik (59.921667 10.761053))
     ))
 
 (defun csid-yank-coordinates ()
@@ -2010,6 +2011,19 @@ no further processing).  URL is either a string or a parsed URL."
 			   (or (not (string-match "facebook.com/" url))
 			       (string< (nth 1 elem) today)))
 		 collect elem)))
+
+(defun csid-parse-gutvik (dom)
+  (cl-loop for link in (dom-by-tag dom 'a)
+	   for date = (csid-parse-month-date (dom-text link))
+	   when (csid-valid-date-p date)
+	   collect (list date
+			 (shr-expand-url (dom-attr link 'href))
+			 (cl-loop for node
+				  in (memq link (dom-children
+						 (dom-parent dom link)))
+				  when (and (consp node)
+					    (eq (car node) 'b))
+				  return (string-trim (dom-texts node))))))
 
 (provide 'csid)
 

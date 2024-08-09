@@ -84,7 +84,7 @@
     ("Jæger" "https://www.facebook.com/jaegeroslo/events/?ref=page_internal" facebook (59.913957 10.743499))
     ("Union" "https://www.facebook.com/pg/UnionScene/events/?ref=page_internal" facebook (59.743974 10.192263) :nobound)
     ;;("Musikkflekken" "https://www.facebook.com/Musikkflekken/events" facebook (59.890424 10.524722) :nobound)
-    ;;("Smelteverket" "https://www.facebook.com/Smelteverket/events" facebook (59.921999 10.752267))
+    ("Smelteverket" "https://www.facebook.com/Smelteverket/events" facebook (59.921999 10.752267))
     ;;("Skuret" "https://www.facebook.com/skuret/events" facebook)
     ;;("Pizdets" "https://www.facebook.com/pissjets/events" facebook (59.916321 10.748236))
     ;;("Hvaskjer" "https://www.facebook.com/hvaskjertorshov/events" facebook (59.936192 10.765818))

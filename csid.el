@@ -2025,6 +2025,15 @@ no further processing).  URL is either a string or a parsed URL."
 					    (eq (car node) 'b))
 				  return (string-trim (dom-texts node))))))
 
+(defun csid-remove-facebook-events ()
+  (csid-read-database)
+  (setq csid-database
+	(cl-loop for elem in csid-database
+		 unless (and (string-match "facebook" (nth 2 elem))
+			     (string> (nth 1 elem) "2024-11-07"))
+		 collect elem))
+  (csid-write-database csid-database))
+
 (provide 'csid)
 
 ;;; csid.el ends here

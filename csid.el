@@ -812,9 +812,11 @@ no further processing).  URL is either a string or a parsed URL."
       (csid--filter-date
        (csid-parse-short-yearless-month time t))
       (and (or (csid-string-match "\\bTODAY\\b" time)
+	       (csid-string-match "\\bToday\\b" time)
 	       (csid-string-match "\\bI DAG\\b" time))
 	   (format-time-string "%F"))
       (and (or (csid-string-match "\\bTOMORROW\\b" time)
+	       (csid-string-match "\\bTomorrow\\b" time)
 	       (csid-string-match "\\bI MORGEN\\b" time))
 	   (format-time-string "%F" (+ (float-time)
 				       (* 60 60 24))))

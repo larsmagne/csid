@@ -49,7 +49,7 @@
     ("Blå" "https://www.blaaoslo.no/api/eventsEdge?" blaa :json (59.920284 10.752836))
     ("Mir" "https://demo.broadcastapp.no/api/layoutWidgetCors?limit=99&venue=APJXjIH1ND&recommended=false&hostname=www-lufthavna-no.filesusr.com&city=Oslo" broadcast :json (59.921667 10.761053))
     ("Victoria" "https://nasjonaljazzscene.no/arrangement/" victoria (59.914109 10.738198))
-    ("Rockefeller" "http://rockefeller.no/index.html" rockefeller :multi (59.916125 10.750050))
+    ("Rockefeller" "https://www.rockefeller.no/api/eventsEdge?" rockefeller :json :multi (59.916125 10.750050))
     ;;("Mono" "http://www.cafemono.no/program/" mono (59.913942 10.749326))
     ("Parkteateret" "https://www.parkteatret.no/program" parkteateret (59.923515 10.758537))
     ("Konsertforeninga" "https://www.facebook.com/Konsertforeninga/events/?ref=page_internal" facebook)
@@ -841,30 +841,14 @@ no further processing).  URL is either a string or a parsed URL."
 		    (dom-attr elem 'href)
 		    (dom-text (dom-by-tag elem 'h2)))))
 
-(defun csid-parse-rockefeller (dom)
-  (cl-loop for elem in (dom-by-class dom "^show bkg")
-	   collect (list (csid-parse-rockefeller-stage
-			  (dom-attr (dom-by-class elem "^sknapp ") 'class))
-			 (csid-parse-full-numeric-date
-			  (dom-texts (dom-by-class elem "datofelt")))
-			 (shr-expand-url (dom-attr (dom-by-tag elem 'a) 'href))
-			 (csid-clean-string
-			  (dom-texts (dom-by-class elem "showtitle"))))))
-
-(defun csid-parse-rockefeller-stage (class)
-  (cond
-   ((string-match "sc_P" class)
-    "Bushwick")
-   ((string-match "sc_L" class)
-    "Leiligheten")
-   ((string-match "sc_R" class)
-    "Rockefeller")
-   ((string-match "sc_J" class)
-    "John Dee")
-   ((string-match "sc_S" class)
-    "Sentrum")
-   (t
-    "Rockefeller")))
+(defun csid-parse-rockefeller (json)
+  (cl-loop for event across json
+	   for iid = (cdr (assq 'id event))
+	   collect (list
+		    (cdr (assq 'name (cdr (assq 'place event))))
+		    (csid-parse-iso8601 (cdr (assq 'start_time event)))
+		    (format "https://www.rockefeller.no/events/event/%s" iid)
+		    (cdr (assq 'name event)))))
 
 (defun csid-parse-mono (dom)
   (cl-loop for event in (dom-by-class

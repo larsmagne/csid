@@ -754,10 +754,8 @@ no further processing).  URL is either a string or a parsed URL."
       (format "%s-%02d-%02d" year month day))))
 
 (defun csid-parse-facebook (dom)
-  (seq-uniq (append (csid-parse-facebook-v1 dom)
-		    (csid-parse-facebook-v2 dom))
-	    (lambda (e1 e2)
-	      (equal (cadr e1) (cadr e2)))))
+  (csid--discard-duplicates (append (csid-parse-facebook-v1 dom)
+				    (csid-parse-facebook-v2 dom))))
 
 (defun csid-parse-facebook-v1 (dom)
   (cl-loop for event in (dom-by-tag dom 'a)
@@ -1872,55 +1870,60 @@ no further processing).  URL is either a string or a parsed URL."
 			 (cdr (assq 'objectId event)))
 		 (cdr (assq 'name event)))))
 
+(defun csid--discard-duplicates (events)
+  (seq-uniq events (lambda (e1 e2)
+		     (equal (cadr e1) (cadr e2)))))
+
 (defun csid-parse-cosmopolite (_ignore)
-  (cl-loop
-   for i from 1 upto 10
-   append
-   (cl-loop with json =
-	    (let ((url-request-method "POST")
-		  (url-request-extra-headers
-		   `(("Content-Type" . "application/x-www-form-urlencoded")
-		     ("Charset" . "UTF-8")))
-		  (url-request-data
-		   (mm-url-encode-www-form-urlencoded
-		    `(("view_name" . "events")
-		      ("view_display_id" . "page_1")
-		      ("view_args" . "")
-		      ("view_path" . "/program")
-		      ("view_base_path" . "program")
-		      ("view_dom_id" . "c8eaec1fc8c9fbb2244c5213c14a07b7c06b675f2a1c230ec2478bfd00d53ec9")
-		      ("pager_element" . "0")
-		      ("field_genres_target_id" . "All")
-		      ("field_organizer_value" . "All")
-		      ("page" . ,(format "%d" i))
-		      ("_drupal_ajax" . "1")
-		      ("ajax_page_state[theme]" . "cosmo")
-		      ("ajax_page_state[theme_token]" . "")
-		      ("ajax_page_state[libraries]" . "better_exposed_filters/auto_submit,better_exposed_filters/datepickers,better_exposed_filters/general,better_exposed_filters/links_use_ajax,blazy/bio.ajax,core/drupal.collapse,core/drupal.form,cosmo/global,extlink/drupal.extlink,google_analytics/google_analytics,system/base,views/views.ajax,views/views.module,views_infinite_scroll/views-infinite-scroll,zurb_foundation/global")))))
-	      (with-current-buffer (csid-retrieve-synchronously
-				    "https://cosmopolite.no/views/ajax?_wrapper_format=drupal_ajax")
-		(goto-char (point-min))
-		(search-forward "\n\n")
-		(prog1
-		    (json-read)
-		  (kill-buffer (current-buffer)))))
-	    for elem across json
-	    when (equal (cdr (assq 'command elem)) "insert")
-	    append
-	    (let ((dom (with-temp-buffer
-			 (insert (cdr (assq 'data elem)))
-			 (libxml-parse-html-region
-			  (point-min) (point-max)))))
-	      (cl-loop for event in (dom-by-tag dom 'li)
-		       for link = (dom-by-tag
-				   (dom-by-class event "field-title")
-				   'a)
-		       collect
-		       (list
-			(csid-parse-month-date
-			 (dom-text (dom-by-tag event 'time)))
-			(shr-expand-url (dom-attr link 'href))
-			(dom-text link)))))))
+  (csid--discard-duplicates
+   (cl-loop
+    for i from 1 upto 10
+    append
+    (cl-loop with json =
+	     (let ((url-request-method "POST")
+		   (url-request-extra-headers
+		    `(("Content-Type" . "application/x-www-form-urlencoded")
+		      ("Charset" . "UTF-8")))
+		   (url-request-data
+		    (mm-url-encode-www-form-urlencoded
+		     `(("view_name" . "events")
+		       ("view_display_id" . "page_1")
+		       ("view_args" . "")
+		       ("view_path" . "/program")
+		       ("view_base_path" . "program")
+		       ("view_dom_id" . "c8eaec1fc8c9fbb2244c5213c14a07b7c06b675f2a1c230ec2478bfd00d53ec9")
+		       ("pager_element" . "0")
+		       ("field_genres_target_id" . "All")
+		       ("field_organizer_value" . "All")
+		       ("page" . ,(format "%d" i))
+		       ("_drupal_ajax" . "1")
+		       ("ajax_page_state[theme]" . "cosmo")
+		       ("ajax_page_state[theme_token]" . "")
+		       ("ajax_page_state[libraries]" . "better_exposed_filters/auto_submit,better_exposed_filters/datepickers,better_exposed_filters/general,better_exposed_filters/links_use_ajax,blazy/bio.ajax,core/drupal.collapse,core/drupal.form,cosmo/global,extlink/drupal.extlink,google_analytics/google_analytics,system/base,views/views.ajax,views/views.module,views_infinite_scroll/views-infinite-scroll,zurb_foundation/global")))))
+	       (with-current-buffer (csid-retrieve-synchronously
+				     "https://cosmopolite.no/views/ajax?_wrapper_format=drupal_ajax")
+		 (goto-char (point-min))
+		 (search-forward "\n\n")
+		 (prog1
+		     (json-read)
+		   (kill-buffer (current-buffer)))))
+	     for elem across json
+	     when (equal (cdr (assq 'command elem)) "insert")
+	     append
+	     (let ((dom (with-temp-buffer
+			  (insert (cdr (assq 'data elem)))
+			  (libxml-parse-html-region
+			   (point-min) (point-max)))))
+	       (cl-loop for event in (dom-by-tag dom 'li)
+			for link = (dom-by-tag
+				    (dom-by-class event "field-title")
+				    'a)
+			collect
+			(list
+			 (csid-parse-month-date
+			  (dom-text (dom-by-tag event 'time)))
+			 (shr-expand-url (dom-attr link 'href))
+			 (dom-text link))))))))
 
 (defun csid-parse-jakob (_ignore)
   (cl-loop

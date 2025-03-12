@@ -818,7 +818,8 @@ no further processing).  URL is either a string or a parsed URL."
 	       (csid-string-match "\\bI MORGEN\\b" time))
 	   (format-time-string "%F" (+ (float-time)
 				       (* 60 60 24))))
-      (and (csid-string-match "\\b\\(?:KOMMENDE\\|THIS\\)\\b \\([^ ]+\\)" time)
+      (and (csid-string-match
+	    "\\b\\(?:KOMMENDE\\|THIS\\|This\\)\\b \\([^ ]+\\)" time)
 	   (when-let ((day-num
 		       (or (seq-position csid-weekdays
 					 (downcase (match-string 1 time)))

@@ -4,11 +4,11 @@
 
 import time
 import random
-import json
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
+import json
 
 def cookie():
     for phrase in ['Tillat alle informasjonskapsler',
@@ -47,44 +47,33 @@ chrome_options.add_argument("--disable-dev-shm-usage");
 chrome_options.add_experimental_option('prefs', {'intl.accept_languages': 'no'})
 driver = webdriver.Chrome(options=chrome_options)
 
-# Load cookies to a vaiable from a file
-with open('facebook.json', 'r') as file:
-    cookies = json.load(file)
-
-driver.get("http://www.facebook.com")
-
-# Set stored cookies to maintain the session
-for cookie in cookies:
-    driver.add_cookie(cookie)
-    
 # Login
-time.sleep(6)
 driver.get("http://www.facebook.com")
-time.sleep(6)
 
-# Fetch and dump all the URLs
-for elem in urls:
-    print(elem)
-    bits = elem.split()
-    times = 4
-    # Fetch the URL.
-    driver.get(bits[1])
+time.sleep(5)
 
-    # Push "See More" some times.
-    while times > 0:
-        times -= 1
-        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-        print("Scrolled")
-        time.sleep(random.randint(5, 20))
-    html = driver.execute_script("return document.body.innerHTML;")
-    with open("/tmp/face/face-" + bits[0] + ".html", "w") as f:
-        f.write(html)
-    print("Saved")
-    time.sleep(random.randint(200, 400))
+cookie_times = 0
+while cookie():
+    cookie_times += 1
+    if cookie_times > 30:
+        break;
+    print("Waiting for cookie")
+    time.sleep(1)
+
+time.sleep(5)
+
+#time.sleep(500)
+
+driver.find_element(By.ID, "email").send_keys(user)
+time.sleep(2)
+driver.find_element(By.ID, "pass").send_keys(passwd)
+time.sleep(3)
+driver.find_element(By.NAME, "login").click()
+
+time.sleep(120)
 
 # Store cookies in a file
 cookies = driver.get_cookies()
 with open('facebook.json', 'w') as file:
     json.dump(cookies, file)
 
-driver.quit()

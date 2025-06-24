@@ -155,6 +155,7 @@
     ("Deichman Bjørvika" "https://deichman.no/hva-skjer?serviceForm=serviceForm_Musikk+og+konsert" deichman-bjorvika (59.908844867800966 10.75297811826701))
     ("Trekanten" "https://www.facebook.com/trekantenoslo/events?locale=nb_NO" facebook (59.91763775019891 10.73940037812373))
     ("Boksen" "https://www.facebook.com/kjellerboksen/events?locale=nb_NO" facebook ((59.919338099883326 10.75203973674163)))
+    ("Nesodden jazzklubb" "https://www.facebook.com/nesoddenjazzklubb/events?locale=nb_NO" facebook (59.84971481562337 10.658536534899365) :nobound)
     ))
 
 (defun csid-yank-coordinates ()

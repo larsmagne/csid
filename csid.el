@@ -157,6 +157,7 @@
     ("Boksen" "https://www.facebook.com/kjellerboksen/events?locale=nb_NO" facebook ((59.919338099883326 10.75203973674163)))
     ("Nesodden jazzklubb" "https://www.facebook.com/nesoddenjazzklubb/events?locale=nb_NO" facebook (59.84971481562337 10.658536534899365) :nobound)
     ("Flytårnet" "https://demo.broadcastapp.no/api/layoutWidgetCors?limit=99&venue=00ec4bc4366a4a55ab698fdd558fc3ce&recommended=false&hostname=www.flytarnetfornebu.no&city=Oslo" broadcast :json (59.90074352286179 10.623234006416563) :nobound)
+    ("Klosterenga" "https://www.facebook.com/klosterengacafe/events?locale=nb_NO" facebook (59.90795282430357 10.771504973075684))
     ))
 
 (defun csid-yank-coordinates ()

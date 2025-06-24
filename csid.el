@@ -148,6 +148,7 @@
     ("Juret" "https://demo.broadcastapp.no/api/layoutWidgetCors?limit=99&venue=ZXCuIo7pBo&recommended=false&hostname=www-juret-no.filesusr.com&city=Oslo" broadcast :json (59.91411193829676 10.72913033854441))
     ("Gutvik ukentlig" "http://gutvik.com/ukentlig/" gutvik (59.921667 10.761053))
     ("Melahuset" "https://www.facebook.com/Melahuset/events?locale=nb_NO" facebook (59.91683324244809 10.750493951310949))
+    ("Abelone" "https://abeloneoslo.no/hva-skjer/" abelone (59.91388715550531 10.756550974379579))
     ))
 
 (defun csid-yank-coordinates ()
@@ -2015,6 +2016,13 @@ no further processing).  URL is either a string or a parsed URL."
 				  when (and (consp node)
 					    (eq (car node) 'b))
 				  return (string-trim (dom-texts node))))))
+
+(defun csid-parse-abelone (dom)
+  (cl-loop for event in (dom-by-class dom "is-post-type-resthon_event")
+	   collect (list (csid-parse-iso8601
+			  (dom-attr (dom-by-tag event 'time) 'datetime))
+			 (dom-attr (dom-by-tag event 'a) 'href)
+			 (dom-text (dom-by-tag event 'h2)))))
 
 ;; "2024-11-07"
 (defun csid-remove-facebook-events (after-date)

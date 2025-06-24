@@ -152,6 +152,7 @@
     ("Fuglen sentrum" "https://www.facebook.com/Fuglen.Oslo/events" facebook (59.91724545176485 10.739866820349572))
     ("Bernie's" "https://www.facebook.com/berniesoslo/upcoming_hosted_events" facebook (59.90894489282318 10.768094122000413))
     ("Stopp Pressen" "https://www.linticket.no/api/index.php3?action=events&appid=e59b5615-7db1-4c12-a517-ea020c47a11e&clientorganizerid=20_846&engelsk=0&version=6.00" stopp-pressen :json (59.915656412346564 10.742396644855074))
+    ("Deichman Bjørvika" "https://deichman.no/hva-skjer?serviceForm=serviceForm_Musikk+og+konsert" deichman-bjorvika (59.908844867800966 10.75297811826701))
     ))
 
 (defun csid-yank-coordinates ()
@@ -2034,6 +2035,18 @@ no further processing).  URL is either a string or a parsed URL."
 	   collect (list (cdr (assq 'datostart event))
 			 (cdr (assq 'link event))
 			 (cdr (assq 'navn event)))))
+
+(defun csid-parse-deichman-bjorvika (dom)
+  (cl-loop for event in (dom-by-tag dom 'article)
+	   collect (list (or
+			  (csid-parse-short-yearless-month
+			  (replace-regexp-in-string
+			   "[.]" "" (dom-text (dom-by-tag event 'time))))
+			  (csid-parse-month-date
+			   (dom-text (dom-by-tag event 'time))))
+			 (shr-expand-url
+			  (dom-attr (dom-by-tag event 'a) 'href))
+			 (dom-text (dom-by-tag event 'h3)))))
 
 ;; "2024-11-07"
 (defun csid-remove-facebook-events (after-date)

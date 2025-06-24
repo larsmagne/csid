@@ -147,6 +147,7 @@
     ("Skatten" "https://www.facebook.com/skattenoslo/events?locale=nb_NO" facebook (59.91467923597354 10.775451513232271))
     ("Juret" "https://demo.broadcastapp.no/api/layoutWidgetCors?limit=99&venue=ZXCuIo7pBo&recommended=false&hostname=www-juret-no.filesusr.com&city=Oslo" broadcast :json (59.91411193829676 10.72913033854441))
     ("Gutvik ukentlig" "http://gutvik.com/ukentlig/" gutvik (59.921667 10.761053))
+    ("Melahuset" "https://www.facebook.com/Melahuset/events?locale=nb_NO" facebook (59.91683324244809 10.750493951310949))
     ))
 
 (defun csid-yank-coordinates ()

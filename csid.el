@@ -149,6 +149,7 @@
     ("Gutvik ukentlig" "http://gutvik.com/ukentlig/" gutvik (59.921667 10.761053))
     ("Melahuset" "https://www.facebook.com/Melahuset/events?locale=nb_NO" facebook (59.91683324244809 10.750493951310949))
     ("Abelone" "https://abeloneoslo.no/hva-skjer/" abelone (59.91388715550531 10.756550974379579))
+    ("Fuglen sentrum" "https://www.facebook.com/Fuglen.Oslo/events" facebook (59.91724545176485 10.739866820349572))
     ))
 
 (defun csid-yank-coordinates ()

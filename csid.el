@@ -153,6 +153,7 @@
     ("Bernie's" "https://www.facebook.com/berniesoslo/upcoming_hosted_events" facebook (59.90894489282318 10.768094122000413))
     ("Stopp Pressen" "https://www.linticket.no/api/index.php3?action=events&appid=e59b5615-7db1-4c12-a517-ea020c47a11e&clientorganizerid=20_846&engelsk=0&version=6.00" stopp-pressen :json (59.915656412346564 10.742396644855074))
     ("Deichman Bjørvika" "https://deichman.no/hva-skjer?serviceForm=serviceForm_Musikk+og+konsert" deichman-bjorvika (59.908844867800966 10.75297811826701))
+    ("Trekanten" "https://www.facebook.com/trekantenoslo/events?locale=nb_NO" facebook (59.91763775019891 10.73940037812373))
     ))
 
 (defun csid-yank-coordinates ()

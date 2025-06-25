@@ -390,8 +390,9 @@ no further processing).  URL is either a string or a parsed URL."
 	      (when (file-exists-p file)
 		(insert "\n\n")
 		(insert-file-contents file)
-		(goto-char (point-min))
-		(when (search-forward ">Tidligere arrangementer<" nil t)
+		(goto-char (point-max))
+		(when (re-search-backward ">Tidligere\\( arrangementer\\)?<"
+					  nil t)
 		  (delete-region (point) (point-max))))
 	      (current-buffer)))
 	(csid-retrieve-synchronously url t t))
@@ -2052,6 +2053,11 @@ no further processing).  URL is either a string or a parsed URL."
 			 (shr-expand-url
 			  (dom-attr (dom-by-tag event 'a) 'href))
 			 (dom-text (dom-by-tag event 'h3)))))
+
+(defun csid-file-dom (file)
+  (with-temp-buffer
+    (insert-file-contents file)
+    (libxml-parse-html-region (point-min) (point-max))))
 
 ;; "2024-11-07"
 (defun csid-remove-facebook-events (after-date)

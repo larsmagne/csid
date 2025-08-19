@@ -79,7 +79,7 @@
     ("Postkontoret" "https://www.facebook.com/toyenpostkontor/events?key=events" facebook (59.914083 10.775254))
     ;;("Per på hjørnet" "http://www.pph.oslo.no/" pph :date)
     ("The Villa" "https://www.facebook.com/thevillaoslo/events?locale=nb_NO" facebook (59.915832 10.748751))
-    ("Dattera" "http://www.dattera.no/nb/pages/6-Kalender" dattera (59.913291 10.760122))
+    ("Dattera" "https://demo.broadcastapp.no/api/layoutWidgetCors?limit=99&venue=TIcPyhuyht&recommended=false&hostname=dattera.no&city=Oslo" broadcast :json (59.913291 10.760122))
     ;;("Internasjonalen" "https://www.facebook.com/pg/internasjonalenbar/events/?ref=page_internal" facebook (59.914558 10.749595))
     ("Jæger" "https://www.facebook.com/jaegeroslo/events/?ref=page_internal" facebook (59.913957 10.743499))
     ("Union" "https://www.facebook.com/pg/UnionScene/events/?ref=page_internal" facebook (59.743974 10.192263) :nobound)
@@ -1146,16 +1146,6 @@ no further processing).  URL is either a string or a parsed URL."
 		       (setq texts (cddr texts)))
 	     else
 	     do (setq texts (cdr texts)))))
-
-(defun csid-parse-dattera (dom)
-  (cl-loop for day in (dom-by-class dom "^date$")
-	   append (cl-loop for event in (dom-by-tag day 'h3)
-			   for text = (dom-texts event)
-			   collect (list (csid-parse-month-date
-					  (dom-text (dom-by-tag day 'h4)))
-					 (shr-expand-url
-					  (dom-attr (dom-by-tag event 'a) 'href))
-					 text))))
 
 (defun csid-parse-jaeger (dom)
   (cl-loop for event in (dom-by-class dom "program_right")

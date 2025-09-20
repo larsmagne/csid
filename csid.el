@@ -1025,8 +1025,9 @@ no further processing).  URL is either a string or a parsed URL."
 
 (defun csid-parse-konserthuset (json)
   (cl-loop for event across json
-	   collect (list (csid-parse-iso8601
-			  (cdr (assq 'datetime event)))
+	   for time = (cdr (assq 'datetime event))
+	   when time
+	   collect (list (csid-parse-iso8601 time)
 			 (cdr (assq 'url event))
 			 (cdr (assq 'title event)))))
 

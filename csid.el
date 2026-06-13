@@ -789,6 +789,7 @@ no further processing).  URL is either a string or a parsed URL."
 		     (not (string-match-p "invite to" desc))
 		     (not (string-match-p "^Unread " desc))
 		     (not (string-match-p "^Uleste " desc))
+		     (not (string-match-p "that might interest you" desc))
 		     (string-match-p "/events/" link)
 		     (string-match-p "\\`http" link)
 		     (cl-plusp (length desc)))

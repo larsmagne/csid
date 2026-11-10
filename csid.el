@@ -858,10 +858,16 @@ no further processing).  URL is either a string or a parsed URL."
   (cl-loop for event across json
 	   for iid = (cdr (assq 'id event))
 	   collect (list
-		    (cdr (assq 'name (cdr (assq 'place event))))
+		    (csid--transform-rockefeller-venue
+		     (cdr (assq 'name (cdr (assq 'place event)))))
 		    (csid-parse-iso8601 (cdr (assq 'start_time event)))
 		    (format "https://www.rockefeller.no/events/event/%s" iid)
 		    (cdr (assq 'name event)))))
+
+(defun csid--transform-rockefeller-venue (name)
+  (if (equal name "Sentrum Scene")
+      "Sentrum"
+    name))
 
 (defun csid-parse-mono (dom)
   (cl-loop for event in (dom-by-class
